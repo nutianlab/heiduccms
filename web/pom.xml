@@ -1,0 +1,62 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.heiduc</groupId>
+		<artifactId>heiduccms</artifactId>
+		<version>1.0</version>
+	</parent>
+	<artifactId>heiduc-web</artifactId>
+	<packaging>war</packaging>
+	<name>Heiduc CMS web module</name> 
+
+	<dependencies>
+
+        <dependency>
+            <groupId>com.heiduc</groupId>
+            <artifactId>heiduc-kernel</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+        </dependency>
+
+	</dependencies>
+
+	<properties>
+		<project_charset>UTF-8</project_charset>
+	</properties>
+
+	<!-- Build Settings -->
+	<build>
+		<finalName>heiduccms</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<!-- 
+					<webResources>
+						<resource>
+							<directory>src/main/webresources</directory>
+							<filtering>true</filtering>
+						</resource>
+					</webResources>
+					 -->
+				</configuration>
+			</plugin>
+			<plugin>
+	        <groupId>org.mortbay.jetty</groupId>
+	        <artifactId>maven-jetty-plugin</artifactId>
+	        <version>9.2.9-SNAPSHOT</version>
+	        <configuration>
+	        	<webAppSourceDirectory>target/heiduccms</webAppSourceDirectory>
+	        	<webApp>
+	        		
+	        	</webApp>
+	          <stopPort>9966</stopPort>
+	        </configuration>
+		</plugin>
+		</plugins>
+	</build>
+
+</project>

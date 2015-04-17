@@ -1,0 +1,78 @@
+
+<div id="attributes"> </div>
+<div class="form-sep">
+    <input class="btn btn-primary" id="addButton" type="button" 
+        value="<%= messages("add_attribute") %>" />
+    <input class="btn btn-default" id="deleteButton" type="button" 
+        value="<%= messages("delete_attribute") %>" />
+</div>    
+
+<div class="modal fade" id="attribute-dialog" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><%= messages("attribute") %></h4>
+      </div>
+      <div class="modal-body">
+      	  <form id="attributeForm">
+		    <div class="form-row">
+		        <label><%= messages("name") %></label>
+		        <input id="name" type="text"/>
+		    </div>
+		    <div class="form-row">
+		        <label><%= messages("title") %></label>
+		        <input id="title" type="text"/>
+		    </div>
+		    <div class="form-row">
+		        <label><%= messages("default_value") %></label>
+		        <input id="defaultValue" type="text"/>
+		    </div>
+		    <div class="form-row">
+		        <label><%= messages("inherited") %></label>
+		        <input type="checkbox" id="inherited" />
+		    </div>
+		    <div class="modal-footer">
+		        <input class="btn btn-primary" id="saveButton" type="submit" value="<%= messages("save") %>" />
+		        <input class="btn btn-default" data-dismiss="modal" id="cancelButton" type="button" value="<%= messages("cancel") %>" />
+		    </div>
+		  </form>
+      </div>	
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="attrValue-dialog" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><%= messages("attribute") %></h4>
+      </div>
+      <div class="modal-body">
+      	<form id="attrValueForm">
+		    <div class="form-row">
+		        <label><%= messages("name") %></label>
+		        <span id="attrName" />
+		    </div>
+		    <div class="form-row">
+		        <label><%= messages("language") %></label>
+		        <select id="language"/>
+		    </div>
+		    <div class="form-row">
+		        <label><%= messages("value") %></label>
+		        <input id="value" type="text"/>
+		    </div>
+		    <div id="applyChildren" class="form-row">
+		        <label><%= messages("page.apply_children") %></label>
+		        <input type="checkbox" id="attrInherited" />
+		    </div>
+		    <div class="modal-footer">
+		        <input class="btn btn-primary" id="saveValueButton" type="submit" value="<%= messages("save") %>" />
+		        <input class="btn btn-default" data-dismiss="modal" id="cancelValueButton" type="button" value="<%= messages("cancel") %>" />
+		    </div>
+		  </form>
+      </div>	
+    </div>
+  </div>
+</div>

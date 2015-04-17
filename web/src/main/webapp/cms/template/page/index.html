@@ -1,0 +1,175 @@
+<form id="pageForm">
+	<div id="titleDiv" class="form-group">
+		<div class="row">
+			<div class="col-lg-12">
+				<label><%= messages("title") %></label>
+				<input type="text" id="title" class="form-control">
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="row">
+			<div class="col-lg-6">
+				<label><%= messages("page.friendly_url") %></label>
+				<div class="input-group">
+					<span class="input-group-addon" id="parentFriendlyUrl"><%= messages("page.friendly_url") %></span>
+					<input class="form-control"  id="friendlyUrl" type="text">
+					<span class="input-group-addon" id="friendlyUrlSpan"></span>
+				</div>
+			</div>
+			<div class="col-lg-6">
+				<label><%= messages("template") %></label>
+				<select id="templates" class="form-control"></select>
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="row">
+			<div class="col-lg-12">
+				<label></label>
+				<label class="checkbox">
+					<input id="restful" type="checkbox" /><%= messages("restful") %>
+				</label>
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="row">
+			<div class="col-lg-12">
+				<label><%= messages("page.publication_date") %></label>
+				<div class="form-inline">
+					<input class="form-control datepicker" id="publishDate" type="text">
+					<input class="form-control"  id="publishTime" type="text">
+					-
+					<input class="form-control datepicker" id="endPublishDate" type="text">
+					<input class="form-control" id="endPublishTime" type="text">
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="row">
+			<div class="col-lg-12">
+				<label></label>
+				<label class="checkbox-inline">
+					<input type="checkbox" id="commentsEnabled"> <%= messages("enable_comments") %>
+				</label>
+				<label class="checkbox-inline">
+					<input type="checkbox" id="searchable" value=""> <%= messages("page.include_search") %>
+				</label>
+				<label class="checkbox-inline">
+					<input type="checkbox" id="velocityProcessing" value=""> <%= messages("page.velocity_processing") %>
+				</label>
+				<label class="checkbox-inline">
+					<input type="checkbox" id="wikiProcessing" value=""> <%= messages("page.wiki_processing") %>
+				</label>
+				<label class="checkbox-inline">
+					<input type="checkbox" id="enableCkeditor" value=""> <%= messages("config.enable_ckeditor") %>
+				</label>
+				<label class="checkbox-inline">
+					<input type="checkbox" id="skipPostProcessing" value=""> <%= messages("page.skip_postprocessing") %>
+				</label>
+				
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="row">
+			<div class="col-lg-12">
+				<label class="checkbox-inline">
+					<input id="cached" type="checkbox" /><%= messages("page.cache_enabled") %>
+				</label>
+			</div>
+		</div>
+	</div>
+	<div id="dependenciesDiv" class="form-group">
+		<div class="row">
+			<div class="col-lg-12">
+				<label><%= messages("cache_dependencies") %></label>
+				<input class="form-control" id="dependencies" type="text">
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="row">
+			<div class="col-lg-6">
+				<label><%= messages("tags") %></label>
+				<div class="input-group">
+					<a id="addTag" href="#"><%= messages("add_tag") %></a>
+			    	<span id="tags"></span>
+				</div>
+			</div>
+			
+			<div class="col-lg-6">
+				<label><%= messages("page.type") %></label>
+				<select id="pageType" class="form-control">
+			        <option value="SIMPLE"><%= messages("simple") %></option>
+			        <option value="STRUCTURED"><%= messages("structured") %></option>
+			    </select>
+			</div>
+		</div>
+	</div>
+	<div id="structuredControls" class="form-group">
+		<div class="row">
+			<div class="col-lg-6">
+				<label><%= messages("structure") %></label>
+				<select id="structure" class="form-control"></select>
+			</div>
+			
+			<div class="col-lg-6">
+				<label><%= messages("page.structure_template") %></label>
+    			<select id="structureTemplate" class="form-control"></select>
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		 <a id="metadata" href="#" ><%= messages("page.metadata") %></a>
+		 <div id="meta" class="row" style="display:none;">
+			<div class="col-lg-12">
+				<label><%= messages("page.meta_keywords") %></label>
+    			<textarea id="keywords" class="form-control"></textarea>
+			</div>
+			
+			<div class="col-lg-12">
+			    <label><%= messages("page.meta_description") %></label>
+			    <textarea id="description" class="form-control"></textarea>
+			</div>
+			<div class="col-lg-12">
+			    <label><%= messages("page.head_content") %></label>
+			    <textarea id="headHtml" class="form-control"></textarea>
+			</div>
+			<div class="col-lg-12">
+			    <label><%= messages("content_type") %></label>
+			    <input id="contentType" type="text"  class="form-control" />
+			</div>
+		</div>
+		 
+	</div>
+	<div class="form-sep">
+		<label class="checkbox-inline">
+			<input type="checkbox" id="approveOnPageSave" value=""> <%= messages("page.approve_save") %>
+		</label>
+		<div class="form-sep">
+		<input id="pageSaveButton" type="submit" class="btn btn-primary" value="<%= messages("save") %>"/>
+		<button id="pagePreview" class="btn"><%= messages("preview") %></button>
+		<button id="pageCancelButton" class="btn"><%= messages("cancel") %></button>
+		</div>
+	</div>
+</form>									
+
+						
+<div class="modal fade" id="tag-dialog" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><%= messages("select_tag") %></h4>
+      </div>
+      <div class="modal-body">
+      	<ul id="tagTree"></ul>
+      </div>	
+    </div>
+  </div>
+</div>
+
+

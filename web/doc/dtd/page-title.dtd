@@ -1,0 +1,14 @@
+<!-- 
+/**
+
+ */
+-->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE title [
+
+<!ELEMENT title (content*)>
+<!ELEMENT content (#PCDATA)>
+
+<!ATTLIST content lang CDATA #REQUIERED>
+
+]>

@@ -1,0 +1,50 @@
+  
+<div id="permissions"> </div>
+<div class="form-sep">
+    <input class="btn btn-primary" id="addPermissionButton" type="button" 
+        value="<%= messages("add_permission") %>" />
+    <input class="btn btn-default" id="deletePermissionButton" type="button" 
+        value="<%= messages("delete_permission") %>" />
+</div>    
+
+<div class="modal fade" id="permission-dialog" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><%= messages("permission_details") %></h4>
+      </div>
+      <div class="modal-body">
+      	<form id="permissionForm">
+		    <div class="form-row">
+		        <label><%= messages("group") %></label>
+		        <select id="groupSelect"></select>
+		        <span id="groupName"></span>        
+		    </div>
+		    <div id="permissionList" class="form-row">
+		        <fieldset>
+		            <legend><%= messages("permission") %></legend>
+		            <input type="radio" name="permission" value="DENIED"/> <%= messages("denied") %> <br />
+		            <input type="radio" name="permission" value="READ" /> <%= messages("read") %> <br />
+		            <input type="radio" name="permission" value="WRITE" /> <%= messages("read_write") %> <br />
+		            <input type="radio" name="permission" value="PUBLISH" /> <%= messages("read_write_publish") %> <br />
+		            <input type="radio" name="permission" value="ADMIN" /> <%= messages("read_write_publish_grant") %> <br />
+		        </fieldset>        
+		    </div>
+		    <div class="form-row">
+		        <label><%= messages("page.all_languages") %></label>
+		        <input id="allLanguages" type="checkbox" checked="checked" />
+		    </div>    
+		    <div id ="permLanguages" class="form-row" style="display:none"> </div>
+		    <div class="modal-footer">
+		        <input class="btn btn-primary" id="permissionSaveButton" type="submit" 
+		            value="<%= messages("save") %>" />
+		        <input class="btn btn-default" data-dismiss="modal" id="permissionCancelButton" type="button" 
+		            value="<%= messages("cancel") %>" />
+		    </div>
+		  </form>
+      </div>	
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,101 @@
+/* CSS crunched with Crunch - http://crunchapp.net/ */
+body {
+	color: #666
+}
+
+h1,h2,h3,h4,h5,h6 {
+	color: #22262e
+}
+
+.header {
+	background-color: #22262e
+}
+
+.navbar-header {
+	background: #191c22
+}
+
+.sidebar-switch,.sidebar-switch:hover {
+	color: #fff
+}
+
+.sidebar-toggle .sidebar-switch {
+	color: #16a085
+}
+
+.header-navbar .navbar-toggle {
+	background-color: #22262e;
+	color: #fff
+}
+
+.header-navbar .navbar-form .form-control {
+	background-color: #333945;
+	border-color: #333945;
+	color: #fff
+}
+
+.header-navbar .navbar-form .btn {
+	background-color: #333945;
+	color: #9aa3b5
+}
+
+.header-navbar .navbar-form .form-control::-webkit-input-placeholder {
+	color: #9aa3b5
+}
+
+.header-navbar .navbar-form .form-control:-moz-placeholder {
+	color: #9aa3b5
+}
+
+.header-navbar .navbar-form .form-control::-moz-placeholder {
+	color: #9aa3b5
+}
+
+.header-navbar .navbar-form .form-control:-ms-input-placeholder {
+	color: #9aa3b5
+}
+
+.header-navbar .navbar-nav>li>a {
+	border-color: #333945 !important;
+	color: #9aa3b5
+}
+
+@media (max-width:767px) {
+	.sidebar-switch {
+		background-color: #22262e
+	}
+
+	.header-navbar .navbar-collapse {
+		background-color: #2b303a
+	}
+	
+	.header-navbar .navbar-collapse.in {
+	  overflow-y: visible;
+	}
+}
+
+.sidebar {
+	background-color: #22262e
+}
+
+.sidebar-profile h6 {
+	color: #fff
+}
+
+.sidebar-profile h5 {
+	color: #fff
+}
+
+
+.main {
+	background-color: #edf0f5
+}
+
+#footer {
+	background-color: #fafafa;
+	color: #666
+}
+
+.modal {
+  top: 50px;
+}

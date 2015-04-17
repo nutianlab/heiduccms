@@ -1,0 +1,14 @@
+<!-- 
+/**
+ */
+-->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE structure [
+
+<!ELEMENT structure (field*)>
+<!ELEMENT field (title, name, type)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT type (#PCDATA)>
+
+]>

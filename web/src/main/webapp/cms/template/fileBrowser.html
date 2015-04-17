@@ -1,0 +1,42 @@
+
+<div id="tabs">
+<ul>
+    <li><a href="#tab-1"><%= messages("fileBrowser.resources") %></a></li>
+    <li class="picasaTab"><a href="#tab-2">Picasa</a></li>
+    <li class="pagesTab"><a href="#tab-3"><%= messages("pages") %></a></li>
+</ul>
+
+<div id="tab-1">
+    <div class="browser-folders">
+        <ul id="folders-tree">
+            <img src="/static/images/ajax-loader.gif" />
+        </ul>
+    </div>
+    <div class="browser-files">
+        <div id="currentFolder"></div>
+        <div id="filesDiv">
+        <ul id="files">
+            <img src="/static/images/ajax-loader.gif" />
+        </ul>
+        <div class="clear"> </div>
+        </div>
+    </div>
+    <div class="clear"> </div>
+</div>
+
+<div id="tab-2">
+    <div id="albums"><img src="/static/images/ajax-loader.gif" /></div>
+    <hr class="clear picasa-hr" />
+    <p class="album-name"><%= messages("album") %> : <span id="album-location"></span></p>
+    <div id="photos"></div>
+    <div class="clear"></div>
+</div>
+
+<div id="tab-3">
+    <ul id="pages-tree">
+        <img src="/static/images/ajax-loader.gif" />
+    </ul>
+</div>
+
+</div>
+

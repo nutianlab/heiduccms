@@ -1,0 +1,31 @@
+<!-- 
+/**
+ *
+ */
+-->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE heiduc-plugin [
+
+<!ELEMENT heiduc-plugin (name, title, version, description, website, 
+    plugin-config-url, header-javascript, header-css, config, 
+    entry-poing-class)>
+
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT version (#PCDATA)>
+<!ELEMENT description (#PCDATA)>
+<!ELEMENT website (#PCDATA)>
+<!ELEMENT entry-point-class (#PCDATA)>
+<!ELEMENT plugin-config-url (#PCDATA)>
+<!ELEMENT header-javascript (#PCDATA)>
+<!ELEMENT header-css (#PCDATA)>
+<!ELEMENT config (param*)>
+
+<!ELEMENT param EMPTY)>
+
+<!ATTLIST param name CDATA #REQUIERED>
+<!ATTLIST param title CDATA #REQUIERED>
+<!ATTLIST param type CDATA #REQUIERED>
+<!ATTLIST param value CDATA>
+
+]>

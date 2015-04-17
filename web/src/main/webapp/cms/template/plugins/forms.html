@@ -1,0 +1,55 @@
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-md-12">
+						<ul class="nav nav-tabs" id="tabs_a">
+							<li class="active"><a data-toggle="tab" href="#tab-1"><%= messages("forms") %></a></li>
+							<li><a id="_config" data-toggle="tab" href="#tab-2"><%= messages("config") %></a></li>
+						</ul>
+						<div class="tab-content" id="tabs_content_a">
+							<div id="tab-1" class="tab-pane fade in active">
+								<div id="forms"> </div>
+							    <div class="form-sep">
+							        <input class="btn btn-primary" id="addButton" type="button" value="<%= messages("add") %>" />
+							        <input class="btn btn-default" id="deleteButton" type="button" value="<%= messages("delete") %>" />
+							    </div>
+								
+							</div>
+							<div id="tab-2" class="tab-pane fade">
+								<div class="form-row">
+								    <label><%= messages("forms.form_template") %></label>
+								    <div>
+								        <a id="restoreFormTemplateLink" ><%= messages("restore_default") %></a>
+								    </div>
+								    <div>
+								        <textarea id="formTemplate" rows="20" cols="80"></textarea>
+								    </div>
+								</div>
+								<div class="form-row">
+								    <label><%= messages("forms.letter_template") %></label>
+								    <div>
+								        <a id="restoreFormLetterLink" ><%= messages("restore_default") %></a>
+								    </div>
+								    <div>
+								        <textarea id="letterTemplate" rows="20" cols="80"></textarea>
+								    </div>
+								</div>
+								<div class="buttons">
+								    <input id="saveButton" type="button" value="<%= messages("save") %>" />
+								</div>
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
