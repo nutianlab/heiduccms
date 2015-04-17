@@ -1,0 +1,55 @@
+package com.heiduc.api.datastore;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Set;
+
+import org.bson.BSONObject;
+import org.bson.types.Binary;
+
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
+
+public class Blob extends Binary implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2990211992332739090L;
+	private byte bytes[];
+
+	public Blob(byte[] value) {
+		super(value);
+		this.bytes = bytes;
+	}
+
+	public byte[] getBytes() {
+		return bytes;
+	}
+	
+	public int hashCode()
+    {
+        return Arrays.hashCode(bytes);
+    }
+	
+	public boolean equals(Object object)
+    {
+        if(object instanceof Blob)
+        {
+            Blob key = (Blob)object;
+            return Arrays.equals(bytes, key.bytes);
+        } else
+        {
+            return false;
+        }
+    }
+
+
+	
+	public String toString()
+    {
+        return (new StringBuilder()).append("<Blob: ").append(bytes.length).append(" bytes>").toString();
+    }
+
+}

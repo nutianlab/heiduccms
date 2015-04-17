@@ -1,0 +1,45 @@
+<div id="languages"> </div>
+<div class="form-sep">
+    <input class="btn btn-primary" id="addLanguageButton" type="button" value="<%= messages("add") %>" />
+    <input class="btn btn-default" id="removeLanguageButton" type="button" value="<%= messages("remove") %>" />
+</div>
+
+<div class="modal fade" id="language-dialog" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><%= messages("config.site_language") %></h4>
+      </div>
+      <div class="modal-body">
+      	<form id="languageForm">
+		    <div id="pageMessages"></div>
+		    <div id="languageSelection" style="padding-bottom: 10px;">
+        <input id="selectFromListRadio" type="radio" name="select" 
+            checked="checked" /> <%= messages("select_from_list") %>
+        <input id="notInListRadio" type="radio" name="select" />
+            <%= messages("config.not_in_list") %> 
+    </div>        
+    <div id="listed-language">
+        <select id="selectLanguage"></select>
+    </div>
+    <div id="not-listed-language" style="display:none">
+    <div class="form-row">
+        <label><%= messages("language") %> <a href="http://ftp.ics.uci.edu/pub/ietf/http/related/iso639.txt">iso639</a> 2 letter code</label>
+        <input id="languageCode" type="text"/>
+    </div>
+    <div class="form-row">
+        <label><%= messages("title") %></label>
+        <input id="languageTitle" type="text"/>
+    </div>
+    </div>
+    <div class="modal-footer">
+        <input class="btn btn-primary" id="languageSaveButton" type="submit" value="<%= messages("save") %>" />
+        <input class="btn btn-default" id="languageCancelButton" data-dismiss="modal" type="button" value="<%= messages("cancel") %>" />
+    </div>
+  </form>
+      </div>	
+    </div>
+  </div>
+</div>
+

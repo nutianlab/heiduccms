@@ -1,0 +1,35 @@
+<div class="row">
+	<div class="col-lg-8">
+		<div class="panel panel-default">
+			<div class="panel-heading"><%= messages("profile.title") %></div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="form-group">
+						<label><%= messages("profile.username") %></label>
+						<input type="text" name="name" id="name" class="form-control"/>
+					</div>
+					<div class="form-group">
+						<label><%= messages("profile.user_email") %></label>
+						<input disabled="disabled" type="text" name="email" id="email" class="form-control">
+					</div>
+					<div class="form-group">
+						<label><%= messages("password") %></label>
+						<input type="password" name="password1" id="password1" class="form-control">
+					</div>
+					<div class="form-group">
+						<label><%= messages("profile.retype_password") %></label>
+						<input type="password" name="password2" id="password1" class="form-control">
+					</div>
+					<div class="form-group">
+						<label><%= messages("profile.timezone") %></label>
+						<select id="timezone" class="form-control"></select>
+					</div>
+					<div class="form-sep">
+						<input class="btn btn-primary" id="saveButton" type="button" value="<%= messages("save") %>" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+

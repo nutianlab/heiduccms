@@ -1,0 +1,67 @@
+<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-body">
+			        <img src="/static/images/pages.png" />
+			        <a href="#pages">
+			            <%= messages("index.content_pages") %>
+			        </a>
+			        <p><%= messages("index.content_pages.description") %></p>
+			    </div>
+		    </div>
+		</div>
+</div>
+<% if (user.admin) { %>
+<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-body">
+			        <img src="/static/images/templates.png" />
+			        <a href="#templates">
+			            <%= messages("index.design_templates") %>
+			        </a>
+			        <p><%= messages("index.design_templates.description") %></p>
+			    </div>
+		    </div>
+		</div>
+</div>
+<% } %> 
+<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-body">
+			        <img src="/static/images/folders.png" />
+			        <a href="#folders">
+			            <%= messages("index.file_resources_storage") %>
+			        </a>
+			        <p><%= messages("index.file_resources_storage.description") %></p>
+			    </div>
+		    </div>
+		</div>
+</div>
+<% if (user.admin) { %>
+<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-body">
+			        <img src="/static/images/config.png" />
+			        <a href="#config">
+			            <%= messages("index.site_configuration") %>
+			        </a>
+			        <p><%= messages("index.site_configuration.description") %></p>
+			    </div>
+		    </div>
+		</div>
+</div>
+<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-body">
+			        <img src="/static/images/plugins.png" />
+			        <a href="#plugins"><%= messages("index.plugins") %></a>
+			        <p><%= messages("index.plugins.description") %></p>
+			    </div>
+		    </div>
+		</div>
+</div>
+<% } %> 

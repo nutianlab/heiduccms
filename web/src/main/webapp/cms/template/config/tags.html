@@ -1,0 +1,35 @@
+
+<ul id="tags"></ul>
+<div class="form-sep">
+    <input class="btn btn-primary" id="addButton" type="button" value="<%= messages("add") %>" />
+</div>
+
+<div class="modal fade" id="tag-dialog" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><%= messages("config.tag_details") %></h4>
+      </div>
+      <div class="modal-body">
+      	<form id="tagForm">
+		    <div class="messages"> </div>
+		    <div class="form-row">
+		        <label><%= messages("title") %></label>
+		        <input id="title" type="text"/>
+		    </div>
+		    <div class="form-row">
+		        <label><%= messages("config.tag_name") %></label>
+		        <input id="tagName" type="text"/>
+		    </div>
+		    <div id="pages"></div>
+		    <div class="modal-footer">
+		        <input class="btn btn-primary" id="tagSaveDlgButton" type="submit" value="<%= messages("save") %>" />
+		        <input class="btn btn-default"  id="tagDeleteDlgButton" type="button" value="<%= messages("delete") %>" />
+		        <input class="btn btn-default" data-dismiss="modal" id="tagCancelDlgButton" type="button" value="<%= messages("cancel") %>" />
+		    </div>
+		  </form>
+      </div>	
+    </div>
+  </div>
+</div>

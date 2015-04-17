@@ -1,0 +1,109 @@
+<form id="pageForm">
+	<div class="form-group">
+		<label class="checkbox-inline">
+			<input type="checkbox" id="autosave"> <%= messages("autosave") %>
+		</label>
+	</div>
+	<div class="form-group">
+		<div class="row">
+			<div class="col-lg-6">
+				<label><%= messages("page.friendly_url") %></label>
+				<div id="friendlyUrlDiv" class="input-group">
+					<span class="input-group-addon" id="parentFriendlyUrl"><%= messages("page.friendly_url") %></span>
+					<input class="form-control"  id="friendlyUrl" type="text">
+					<span class="input-group-addon" id="friendlyUrlSpan"></span>
+				</div>
+			</div>
+			<div class="col-lg-6">
+				 <label><%= messages("page.select_language") %></label> 
+        		<select id="language" class="form-control"></select>
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="row">
+			<div class="col-lg-12">
+				<label><%= messages("title") %></label>
+				<input type="text" id="titleLocal" class="form-control">
+			</div>
+		</div>
+	</div>
+	<div class="form-group" id="editorButtons">
+		 <a id="ckedit" href="#" ></a>
+	</div>
+	<div class="form-group" id="page-content">
+	</div>
+	<div class="form-sep">
+		<label class="checkbox-inline" id="approveOnContentSaveDiv">
+			<input type="checkbox" id="approveOnContentSave" value=""> <%= messages("page.approve_save") %>
+		</label>
+		<div class="form-sep">
+		<input id="saveContinueContentButton" type="button" class="btn" value="<%= messages("save_continue") %>"/>
+		<input id="saveContentButton" type="submit" class="btn btn-primary" value="<%= messages("save") %>"/>
+		<input id="contentPreviewButton" type="button" class="btn" value="<%= messages("preview") %>"/>
+		<input id="approveButton" type="button" class="btn" value="<%= messages("approve") %>"/>
+		<input id="restoreButton" type="button" class="btn" value="<%= messages("restore") %>"/>
+		<input id="resetCacheButton" type="button" class="btn" value="<%= messages("page.reset_cache") %>"/>
+		<input id="contentCancelButton" type="button" class="btn" value="<%= messages("cancel") %>"/>
+		</div>
+	</div>
+</form>
+
+<div class="modal fade" id="restore-dialog" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><%= messages("page.restore_content") %></h4>
+      </div>
+      <div class="modal-body">
+      	<form id="restoreForm">
+		    <div class="form-row">
+		        <input name="page" type="radio" value="home" checked="checked"/> 
+		            <%= messages("home_page") %> <br/>        
+		        <input name="page" type="radio" value="login" /> 
+		            <%= messages("login_page") %> <br/>        
+		        <input name="page" type="radio" value="search" /> 
+		            <%= messages("search_page") %>         
+		    </div>
+		    <div class="modal-footer">
+		        <input id="restoreSaveButton" class="btn btn-primary" type="submit" value="OK" />
+		    	<button id="cancelDlgButton" type="button" class="btn btn-default" data-dismiss="modal"><%= messages("cancel") %></button>
+		    </div>
+		</form>
+      </div>	
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="file-upload" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><%= messages("folder.upload_file") %></h4>
+      </div>
+      <div class="modal-body">
+      	<form id="upload" action="/cms/upload" method="post" enctype="multipart/form-data">
+	        <%= messages("file_upload") %>:
+	        <input type="hidden" name="fileType" value="resource" />
+	        <input type="hidden" name="folderId" />
+	        <input type="file" name="uploadFile" multiple="true" />
+	        <div class="buttons-dlg">
+	            <input type="submit" value="<%= messages("send") %>" />
+	            <input id="fileUploadCancelButton" type="button" 
+	                value="<%= messages("cancel") %>" />
+	        </div>
+	        <div class="modal-footer">
+	        	<input type="submit" class="btn btn-primary" value="<%= messages("send") %>" />
+	            <input id="fileUploadCancelButton" class="btn btn-primary" type="button" value="<%= messages("cancel") %>" />
+		    </div>
+    	</form>
+      </div>	
+    </div>
+  </div>
+</div>
+
+
+
+	

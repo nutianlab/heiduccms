@@ -1,0 +1,79 @@
+
+<div class="row">
+	<div class="col-lg-9">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<a href="#pages"><%= messages("content") %>:</a>
+				<a id="rootPage">/</a> 
+        		<span id="crumbs"></span>
+			</div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-md-12">
+						<ul class="nav nav-tabs" id="tabs_a">
+							<li><a href="#page/<%= id %>"><%= messages("page") %></a></li>
+							<li><a href="#page/content/<%= id %>"><%= messages("content") %></a></li>
+							<li><a href="#page/children/<%= id %>"><%= messages("page.children_pages") %></a></li>
+							<li><a href="#page/comments/<%= id %>"><%= messages("comments") %></a></li>
+							<li><a href="#page/security/<%= id %>"><%= messages("security") %></a></li>
+							<li><a href="#page/resources/<%= id %>"><%= messages("resources") %></a></li>
+							<li><a href="#page/attributes/<%= id %>"><%= messages("attributes") %></a></li>
+						</ul>
+						<div class="tab-content" id="tabs_content_a">
+							<div id="tab-1" class="tab-pane fade in active">
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-3">
+		<div class="panel panel-default">
+			<div class="panel-heading">History</div>
+			<div class="panel-body">
+				<div id="versions">
+			    <div class="vertical-buttons-panel"> </div>      
+			    <a id="addVersionLink" class="button ui-state-default ui-corner-all" 
+			        href="#">
+			        <span class="ui-icon ui-icon-plus"></span> <%= messages("add_version") %>
+			    </a>
+			    <div id="auditData">
+			        <div><%= messages("page.state") %>: <span id="pageState"> </span></div>
+			        <div><%= messages("page.user_created") %>: <span id="pageCreateUser"> </span></div>
+			        <div><%= messages("creation_date") %>: <span id="pageCreateDate"> </span></div>
+			        <div><%= messages("page.user_modified") %>: <span id="pageModUser"> </span></div>
+			        <div><%= messages("modify_date") %>: <span id="pageModDate"> </span></div>
+			    </div>
+			</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal fade" id="version-dialog" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><%= messages("page.version_title") %></h4>
+      </div>
+      <div class="modal-body">
+      	<form id="versionForm">
+		    <div class="form-row">
+		        <label><%= messages("page.version_title") %></label>
+		        <input id="version-title" type="text" />        
+		    </div>
+		    <div class="modal-footer">
+		        <input id="versionSaveButton" class="btn btn-primary" type="submit" 
+		            value="<%= messages("send") %>" />
+		        <input class="btn btn-default" data-dismiss="modal" id="versionCancelButton" type="button" 
+		            value="<%= messages("cancel") %>" />
+		    </div>
+		</form>
+      </div>	
+    </div>
+  </div>
+</div>

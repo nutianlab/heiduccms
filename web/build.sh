@@ -1,0 +1,1 @@
+mvn -Dappname=heiduccms clean package

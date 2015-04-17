@@ -1,0 +1,47 @@
+
+
+<div id="children"> </div>
+<div class="form-sep">
+    <input class="btn btn-primary" id="addChildButton" type="button" value="<%= messages("add_child_page") %>" />
+    <input class="btn btn-default" id="deleteChildButton" type="button" value="<%= messages("delete_pages") %>" />
+    <input class="btn btn-default" id="defaultSettingsButton" type="button" value="<%= messages("default_settings") %>" />
+</div>    
+
+
+<div class="modal fade" id="page-dialog" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><%= messages("pages.new_page") %></h4>
+      </div>
+      <div class="modal-body">
+      	<form id="pageForm">
+      		<div class="form-group">
+				<div class="row">
+					<div class="col-lg-12">
+		        		<label><%= messages("pages.page_title") %></label>
+		        		<input id="title" type="text" />
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="row">
+					<div class="col-lg-12">
+		        		<label><%= messages("pages.page_url") %></label>
+		        		<span id="parentURL"></span>
+		        		<input id="url" type="text"/>
+					</div>
+				</div>
+			</div>
+		    <div id="pageMessages"></div>
+		    
+		    <div class="modal-footer">
+		        <button id="cancelDlgButton" type="button" class="btn btn-default" data-dismiss="modal"><%= messages("cancel") %></button>
+		        <button type="submit" class="btn btn-primary"><%= messages("save") %></button>
+		    </div>
+		  </form>
+      </div>	
+    </div>
+  </div>
+</div>
