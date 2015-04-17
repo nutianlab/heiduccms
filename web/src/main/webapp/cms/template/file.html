@@ -1,0 +1,112 @@
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-md-12">
+						<ul class="nav nav-tabs" id="tabs_a">
+							<li class="active"><a data-toggle="tab" href="#tab-1"><%= messages("file") %></a></li>
+							<li class ="contentTab"><a id= "_fileContent" data-toggle= "tab" href= "#tab-2" ><%= messages("content")%></a></li>
+						</ul>
+						<div class="tab-content" id="tabs_content_a">
+							<div id="tab-1" class="tab-pane fade in active">
+								<form id="fileForm">
+									<div class="form-group">
+										<div class="row">
+											<div class="col-lg-6">
+												<label><%= messages("title") %></label>
+								        		<input id="title" class="form-control" type="text" />
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="row">
+											<div class="col-lg-6">
+												<label><%= messages("name") %></label>
+								        		<input id="name" class="form-control" type="text" />
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="row">
+											<div class="col-lg-6">
+												<label><%= messages("content_type") %></label>
+								        		<span id="mimeType"> </span>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="row">
+											<div class="col-lg-6">
+												<label><%= messages("size") %></label>
+								        		<span id="size"> </span>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="row">
+											<div class="col-lg-6">
+												<label><%= messages("external_link") %></label>
+								        		<span id="fileLink"> </span>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="row">
+											<div class="col-lg-6">
+												<label></label>
+								        		<span id="download"> </span>
+											</div>
+										</div>
+									</div>
+									<div id="imageContent" style="float:left;margin-left: 20px;"> </div>
+									<div class="form-sep">
+										<input id="saveButton" class="btn btn-primary" type="submit" value="<%= messages("save") %>" />
+								    	<input id="cancelButton" class="btn btn-default" type="button" value="<%= messages("cancel") %>" />
+									</div>
+									
+								</form>	
+								
+							</div>
+							<div id="tab-2" class="tab-pane fade">
+								<form id="contentForm">
+									<div class="form-group">
+										<div class="row">
+											<div class="col-lg-6">
+								        		<span id="filename"></span>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="row">
+											<div class="col-lg-6">
+												<label></label>
+												<label class="checkbox-inline">
+													<input id="autosave" type="checkbox" id="enablePicasa" value=""> <%= messages("autosave") %>
+												</label>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="row">
+											<div class="col-lg-6">
+												<label></label>
+												<textarea id="fileContent" rows="20" cols="80"></textarea>
+											</div>
+										</div>
+									</div>
+								    <div class="form-sep">
+								        <input id="saveContentButton" class="btn btn-primary" type="submit" value="<%= messages("save_continue") %>" />
+								        <input id="contentCancelButton" class="btn btn-default" type="button" value="<%= messages("cancel") %>" />
+								    </div>    
+							  </form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+

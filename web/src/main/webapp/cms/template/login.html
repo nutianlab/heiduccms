@@ -1,0 +1,55 @@
+
+<div class="login_container">
+	<form id="login">
+		<h1 class="login_heading"><%= messages("login.sign") %> <span></h1>
+		<div class="form-group">
+			<label for="login_username"><%= messages("email") %></label>
+			<input type="text" class="form-control input-lg" value="" id="loginEmail">
+		</div>
+		<div class="form-group">
+			<label for="login_password"><%= messages("password") %></label>
+			<input type="password" class="form-control input-lg" value="" id="loginPassword">
+		</div>
+		<div class="submit_section">
+			<button class="btn btn-lg btn-success btn-block"><%= messages("login") %></button>
+		</div>
+		<span class="help-block"><a id="forgot" data-toggle="modal" data-target="#forgot-dialog"><%= messages("forgot_password") %>?</a></span>
+		<div class="form-group" id="login-messages"> </div>
+		
+	</form>
+</div>
+
+<div class="modal fade" id="forgot-dialog" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="forgotForm">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><%= messages("forgot_password") %></h4>
+      </div>
+      <div class="modal-body">
+      	<div class="row">
+      	<div class="form-group">
+			<p><%= messages("login.forgot_dialog") %></p>
+		</div>
+		</div>
+		<div class="row">
+		<div class="col-lg-12">
+			<label><%= messages("email") %></label>
+			<input type="text" id="email">
+		</div>
+		</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"><%= messages("cancel") %></button>
+        <button type="button" class="btn btn-primary">OK</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+

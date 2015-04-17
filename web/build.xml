@@ -1,0 +1,14 @@
+<project name="Guestbook" default="datanucleusenhance">
+
+    <property name="war.dir" value="target/heiduccms"/>
+
+    <target name="datanucleusenhance" description="Performs JDO enhancement on compiled data classes.">
+        <enhance_war war="${war.dir}"/>
+    </target>
+
+    <target name="runserver" depends="datanucleusenhance" description="Starts the development server.">
+        <!--many developer's workstation using port 8080, change the default port -->
+        <dev_appserver war="${war.dir}" port="9000"/>
+    </target>
+
+</project>

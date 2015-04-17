@@ -1,0 +1,31 @@
+
+<div id="messageBundle"> </div>
+<div class="form-sep">
+    <input class="btn btn-primary" id="addMessageButton" type="button" value="<%= messages("add") %>" />
+    <input class="btn btn-default" id="removeMessageButton" type="button" value="<%= messages("remove") %>" />
+</div>
+
+<div class="modal fade" id="message-dialog" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><%= messages("config.localized_message") %></h4>
+      </div>
+      <div class="modal-body">
+      	<form id="messageForm">
+		    <div class="messages"> </div>
+		    <div class="form-row">
+		        <label><%= messages("config.message_code") %></label>
+		        <input id="messageCode" type="text"/>
+		    </div>
+		    <div id="messagesInput"> </div>
+		    <div class="modal-footer">
+		        <input class="btn btn-primary" id="saveMessageDlgButton" type="submit" value="<%= messages("save") %>" />
+		        <input class="btn btn-default" data-dismiss="modal" id="cancelMessageDlgButton" type="button" value="<%= messages("cancel") %>" />
+		    </div>
+		  </form>
+      </div>	
+    </div>
+  </div>
+</div>

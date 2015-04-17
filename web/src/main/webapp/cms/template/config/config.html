@@ -1,0 +1,175 @@
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-md-9">
+						<ul class="nav nav-tabs" id="tabs">
+							<li><a href="#config"><%= messages("config.title") %></a></li>
+						    <li><a href="#config/comments"><%= messages("comments") %></a></li>
+						    <li><a href="#config/languages"><%= messages("languages") %></a></li>
+						    <li><a href="#config/messages"><%= messages("message_bundle") %></a></li>
+						    <li><a href="#config/users"><%= messages("users") %></a>
+						    <li><a href="#config/groups"><%= messages("groups") %></a></li>
+						    <li><a href="#config/tags"><%= messages("tags") %></a></li>
+						    <li><a href="#config/attributes"><%= messages("attributes") %></a></li>
+						</ul>
+						<div class="tab-content" id="tabs_content_a">
+							<div id="tab-1" class="tab-pane fade in active">
+								
+							</div>
+						</div>
+					</div>
+					<div class="col-md-3">
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal fade" id="import-dialog" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><%= messages("config.import_site") %></h4>
+      </div>
+      <div class="modal-body">
+      	<form id="upload" action="/cms/upload" method="post" enctype="multipart/form-data">
+		    <%= messages("file_upload") %>:
+		    <input type="hidden" name="fileType" value="import" />
+		    <input type="file" name="uploadFile" />
+		    <div class="modal-footer">
+		    	<input type="submit" class="btn btn-default" value="<%= messages("send") %>" />
+		        <input id="importCancelButton" data-dismiss="modal" class="btn btn-default" type="button" value="<%= messages("cancel") %>" />
+		    </div>    
+		</form>
+      </div>	
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="afterUpload-dialog" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><%= messages("status_window") %></h4>
+      </div>
+      <div class="modal-body">
+      	<form id="okForm">
+		    <p class="message"></p>
+		    <div class="modal-footer">
+		        <input class="btn btn-default" id="okButton" type="submit" value="OK" />
+		    </div>
+		</form>
+      </div>	
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="export-dialog" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><%= messages("export_window") %></h4>
+      </div>
+      <div class="modal-body">
+      	<form id="exportForm">
+		    <div class="form-row">
+		    <input type="radio" name="exportType" value="full" />
+		        <%= messages("config.full_export") %> <br/>
+		    <input type="radio" name="exportType" value="site" checked="checked"/>
+		        <%= messages("config.export_site") %> <br/>
+		    <input type="radio" name="exportType" value="resources"/>
+		        <%= messages("resources") %> <br/>
+		    </div>
+		    <div id="exportInfo" class="form-row"></div>    
+		    <div id="timer" class="form-row"></div>
+		    <div class="modal-footer">
+		        <input class="btn btn-default" id="exportDialogButton" type="submit" value="<%= messages("export") %>" />
+		        <input class="btn btn-default" data-dismiss="modal" id="exportCancelButton" type="button" value="<%= messages("cancel") %>" />
+		    </div>
+		</form>
+      </div>	
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="stat-dialog" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><%= messages("stat") %></h4>
+      </div>
+      <div class="modal-body">
+      	<div class="form-row">
+	    	<label><%= messages("pages") %>:</label>
+	    	<span id="statPages"></span>
+	    </div>
+	    <div class="form-row">
+	    	<label><%= messages("stat.page_permissions") %>:</label>
+	    	<span id="statPagePermissions"></span>
+	    </div>
+	    <div class="form-row">
+	    	<label><%= messages("structures") %>:</label>
+	    	<span id="statStructures"></span>
+	    </div>
+	    <div class="form-row">
+	    	<label><%= messages("stat.structure_templates") %>:</label>
+	    	<span id="statStructureTemplates"></span>
+	    </div>
+	    <div class="form-row">
+	    	<label><%= messages("templates") %>:</label>
+	    	<span id="statTemplates"></span>
+	    </div>
+	    <div class="form-row">
+	    	<label><%= messages("folders") %>:</label>
+	    	<span id="statFolders"></span>
+	    </div>
+	    <div class="form-row">
+	    	<label><%= messages("stat.folder_permissions") %>:</label>
+	    	<span id="statFolderPermissions"></span>
+	    </div>
+	    <div class="form-row">
+	    	<label><%= messages("files") %>:</label>
+	    	<span id="statFiles"></span>
+	    </div>
+	    <div class="form-row">
+	    	<label><%= messages("languages") %>:</label>
+	    	<span id="statLanguages"></span>
+	    </div>
+	    <div class="form-row">
+	    	<label><%= messages("messages") %>:</label>
+	    	<span id="statMessages"></span>
+	    </div>
+	    <div class="form-row">
+	    	<label><%= messages("users") %>:</label>
+	    	<span id="statUsers"></span>
+	    </div>
+	    <div class="form-row">
+	    	<label><%= messages("groups") %>:</label>
+	    	<span id="statGroups"></span>
+	    </div>
+	    <div class="form-row">
+	    	<label><%= messages("tags") %>:</label>
+	    	<span id="statTags"></span>
+	    </div>
+	    <div class="form-row">
+	    	<label><b><%= messages("stat.total") %>:</b></label>
+	    	<span id="statTotal" style="font-weight:bold;"></span>
+	    </div>
+	    <div class="modal-footer">
+	        <input class="btn btn-default" id="statOKButton" data-dismiss="modal" type="button" value="OK" />
+	    </div>
+      </div>	
+    </div>
+  </div>
+</div>
+
+

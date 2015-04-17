@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<tools>
+    <toolbox scope="application">
+        <tool key="messages" class="com.heiduc.i18n.MessagesTool" />
+        <tool key="heiduc" class="com.heiduc.velocity.impl.HeiducTool" />
+    </toolbox>
+</tools>

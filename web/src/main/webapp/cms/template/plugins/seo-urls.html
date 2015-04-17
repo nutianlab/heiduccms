@@ -1,0 +1,58 @@
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-md-12">
+						<ul class="nav nav-tabs" id="tabs_a">
+							<li class="active"><a data-toggle="tab" href="#tab-1"><%= messages("plugins.seo_urls") %></a></li>
+						</ul>
+						<div class="tab-content" id="tabs_content_a">
+							<div id="tab-1" class="tab-pane fade in active">
+								<div id="urls"><img src="/static/images/ajax-loader.gif" /></div>
+
+								<div class="form-sep">
+								    <input class="btn btn-primary" id="addButton" type="button" value="<%= messages("add") %>" />
+								    <input class="btn btn-default" id="removeButton" type="button" value="<%= messages("remove") %>" />
+								</div>
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal fade" id="url-dialog" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><%= messages("seo_urls.details") %></h4>
+      </div>
+      <div class="modal-body">
+      	
+      	<form id="seoForm">
+		    <div id="url-messages" class="messages"> </div>
+		    <div class="form-row">
+		        <label><%= messages("seo_urls.from_link") %></label>
+		        <input id="fromLink" type="text" />
+		    </div>
+		    <div class="form-row">
+		        <label><%= messages("seo_urls.to_link") %></label>
+		        <input id="toLink" type="text" />
+		    </div>
+		    <div class="modal-footer">
+		        <input id="saveAndAddButton" class="btn btn-default" type="button" value="<%= messages("save_add") %>" />
+		        <input id="saveDlgButton" class="btn btn-default" type="submit" value="<%= messages("save") %>" />
+		        <input id="cancelDlgButton" class="btn btn-default" type="button" value="<%= messages("cancel") %>" />
+		    </div>
+		 </form>
+      </div>	
+    </div>
+  </div>
+</div>
