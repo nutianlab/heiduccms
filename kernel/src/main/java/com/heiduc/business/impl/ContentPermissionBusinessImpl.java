@@ -34,7 +34,8 @@ public class ContentPermissionBusinessImpl extends AbstractBusinessImpl
 	@Override
 	public ContentPermissionEntity getPermission(final String url,
 			final UserEntity user) {
-		if (user == null || getGuestPermission(url).isRead()) {
+		
+		if (user == null) {//修复管理员无法删除页面
 			return getGuestPermission(url);
 		}
 		if (user.isAdmin()) {
