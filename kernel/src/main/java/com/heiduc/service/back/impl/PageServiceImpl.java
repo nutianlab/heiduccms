@@ -259,6 +259,9 @@ public class PageServiceImpl extends AbstractServiceImpl
 		if (vo.get("wikiProcessing") != null) {
 			page.setWikiProcessing(Boolean.valueOf(vo.get("wikiProcessing")));
 		}
+		if (vo.get("phpProcessing") != null) {
+			page.setPHPProcessing(Boolean.valueOf(vo.get("phpProcessing")));
+		}		
 		if (vo.get("enableCkeditor") != null) {
 			page.setEnableCkeditor(Boolean.valueOf(vo.get("enableCkeditor")));
 		}

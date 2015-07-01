@@ -193,6 +193,11 @@ public abstract class AbstractPageRenderDecorator implements PageRenderDecorator
 	}
 	
 	@Override
+	public boolean isPHPProcessing(){
+		return page.isPHPProcessing();
+	}
+	
+	@Override
 	public boolean isForInternalUse() {
 		return page.isForInternalUse();
 	}

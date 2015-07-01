@@ -60,6 +60,7 @@ public class PageEntity extends BaseEntityImpl {
 	private Integer sortIndex;
 	private boolean velocityProcessing;
 	private boolean wikiProcessing;
+	private boolean phpProcessing;
 	private String headHtml;
 	private boolean skipPostProcessing;
 	private boolean cached;
@@ -85,6 +86,7 @@ public class PageEntity extends BaseEntityImpl {
 		sortIndex = 0;
 		velocityProcessing = false;
 		wikiProcessing = false;
+		phpProcessing = false;
 		skipPostProcessing = false;
 		cached = true;
 		enableCkeditor = true;
@@ -116,6 +118,7 @@ public class PageEntity extends BaseEntityImpl {
 		cached = getBooleanProperty(entity, "cached", true);
 		contentType = getStringProperty(entity, "contentType");
 		wikiProcessing = getBooleanProperty(entity, "wikiProcessing", false);
+		phpProcessing = getBooleanProperty(entity, "phpProcessing", false);
 		enableCkeditor = getBooleanProperty(entity, "enableCkeditor", true);
 		attributes = getStringProperty(entity, "attributes");
 		restful = getBooleanProperty(entity, "restful", false);
@@ -147,6 +150,7 @@ public class PageEntity extends BaseEntityImpl {
 		setProperty(entity, "cached", cached, false);
 		setProperty(entity, "contentType", contentType, false);
 		setProperty(entity, "wikiProcessing", wikiProcessing, false);
+		setProperty(entity, "phpProcessing", phpProcessing, false);
 		setProperty(entity, "enableCkeditor", enableCkeditor, false);
 		setProperty(entity, "attributes", attributes, false);
 		setProperty(entity, "restful", restful, false);
@@ -503,9 +507,17 @@ public class PageEntity extends BaseEntityImpl {
 	public boolean isWikiProcessing() {
 		return wikiProcessing;
 	}
+	
+	public boolean isPHPProcessing() {
+		return phpProcessing;
+	}
 
 	public void setWikiProcessing(boolean wikiProcessing) {
 		this.wikiProcessing = wikiProcessing;
+	}
+	
+	public void setPHPProcessing(boolean phpProcessing) {
+		this.phpProcessing = phpProcessing;
 	}
 	
 	public boolean isForInternalUse() {
@@ -574,4 +586,5 @@ public class PageEntity extends BaseEntityImpl {
 		}
 		return getPublishDate().before(date) && getEndPublishDate().after(date);
 	}
+
 }

@@ -60,4 +60,6 @@ public interface SystemService {
 	 */
 	String renderWiki(String template, PageEntity page);
 	
+	String renderPHP(String template, PageEntity page);
+	
 }

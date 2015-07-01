@@ -128,6 +128,8 @@ public interface PageRenderDecorator {
 
 	boolean isWikiProcessing();
 	
+	boolean isPHPProcessing();
+	
 	boolean isForInternalUse();
 	
 	Date getEndPublishDate();
