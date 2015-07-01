@@ -3,7 +3,9 @@
 package com.heiduc.global.impl;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -19,7 +21,6 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
@@ -31,6 +32,7 @@ import org.heiduc.api.quota.QuotaServiceFactory;
 import org.heiduc.api.taskqueue.Queue;
 import org.heiduc.api.taskqueue.QueueFactory;
 
+import com.caucho.quercus.QuercusEngine;
 import com.heiduc.bliki.HeiducWikiModel;
 import com.heiduc.common.HeiducContext;
 import com.heiduc.entity.PageEntity;
@@ -55,6 +57,8 @@ public class SystemServiceImpl implements SystemService, Serializable {
 	private DatastoreService datastore;
 	private FileCache fileCache;	
 	private PageCache pageCache;
+//	private ScriptEngine scriptEngine;
+	private QuercusEngine quercusEngine;
 	
 	public SystemServiceImpl() {
 		transformers = new HashMap<String, Transformer>();
@@ -199,6 +203,43 @@ public class SystemServiceImpl implements SystemService, Serializable {
 		} catch (MethodInvocationException e) {
 			return e.toString();
 		} catch (ResourceNotFoundException e) {
+			return e.toString();
+		}
+	}
+
+	@Override
+	public String renderPHP(String template, PageEntity page) {
+		try {
+			
+			/*if (scriptEngine == null){
+				QuercusScriptEngineFactory factory = new QuercusScriptEngineFactory();
+				scriptEngine = factory.getScriptEngine();
+			}
+			OutputStream out2 = new ByteArrayOutputStream();
+			Writer writer = new PrintWriter(out2);
+			scriptEngine.getContext().setWriter(writer);
+			scriptEngine.eval(template);
+			System.out.println(out2.toString());
+			out2.flush();
+			writer.flush();
+			out2.close();
+			writer.close();*/
+			
+			if (quercusEngine == null){
+				quercusEngine = new QuercusEngine();
+				
+			}
+			OutputStream out = new ByteArrayOutputStream();
+			quercusEngine.setOutputStream(out);
+			quercusEngine.execute(template);
+			String _out = out.toString();
+			
+			out.flush();
+			out.close();
+			return _out;
+		} /*catch (ScriptException e) {
+			return e.toString();
+		}*/ catch (IOException e) {
 			return e.toString();
 		}
 	}
