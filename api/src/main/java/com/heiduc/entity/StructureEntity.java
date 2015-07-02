@@ -83,7 +83,7 @@ public class StructureEntity extends BaseEntityImpl {
 			}
 			return result;
 		} catch (DocumentException e) {
-			logger.error(e.getMessage());
+			LOGGER.error(e.getMessage());
 			return Collections.EMPTY_LIST;
 		}
 	}

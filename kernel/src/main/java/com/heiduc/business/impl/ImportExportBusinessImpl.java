@@ -1,5 +1,3 @@
-
-
 package com.heiduc.business.impl;
 
 import java.io.ByteArrayOutputStream;
@@ -34,16 +32,18 @@ import com.heiduc.entity.StructureEntity;
 import com.heiduc.entity.TemplateEntity;
 import com.heiduc.utils.FolderUtil;
 
-public class ImportExportBusinessImpl extends AbstractBusinessImpl implements
-		ImportExportBusiness {
+public class ImportExportBusinessImpl extends AbstractBusinessImpl implements ImportExportBusiness {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private DaoTaskAdapter daoTaskAdapter;
 	private ExporterFactory exporterFactory;
 
 	public ExporterFactory getExporterFactory() {
 		if (exporterFactory == null) {
-			exporterFactory = new ExporterFactoryImpl(getBusiness(),
-					getDaoTaskAdapter());
+			exporterFactory = new ExporterFactoryImpl(getBusiness(), getDaoTaskAdapter());
 		}
 		return exporterFactory;
 	}
@@ -65,16 +65,12 @@ public class ImportExportBusinessImpl extends AbstractBusinessImpl implements
 	}
 
 	@Override
-	public void createTemplateExportFile(final ZipOutStreamTaskAdapter zip,
-			final List<TemplateEntity> list, 
-			final List<StructureEntity> structures)	throws IOException, 
-				TaskTimeoutException {
+	public void createTemplateExportFile(final ZipOutStreamTaskAdapter zip, final List<TemplateEntity> list, final List<StructureEntity> structures) throws IOException, TaskTimeoutException {
 		getThemeExporter().exportThemes(zip, list);
 		getStructureExporter().exportStructures(zip, structures);
 	}
 
-	public void importZip(ZipInputStream in) throws IOException,
-			DocumentException, DaoTaskException {
+	public void importZip(ZipInputStream in) throws IOException, DocumentException, DaoTaskException {
 
 		List<String> result = new ArrayList<String>();
 		ZipEntry entry;
@@ -82,8 +78,7 @@ public class ImportExportBusinessImpl extends AbstractBusinessImpl implements
 		boolean skipping = getDaoTaskAdapter().getCurrentFile() != null;
 		while ((entry = in.getNextEntry()) != null) {
 			if (skipping) {
-				if (entry.getName()
-						.equals(getDaoTaskAdapter().getCurrentFile())) {
+				if (entry.getName().equals(getDaoTaskAdapter().getCurrentFile())) {
 					skipping = false;
 				} else {
 					continue;
@@ -92,8 +87,7 @@ public class ImportExportBusinessImpl extends AbstractBusinessImpl implements
 			getDaoTaskAdapter().setCurrentFile(entry.getName());
 			getDaoTaskAdapter().nextFile();
 			if (entry.isDirectory()) {
-				getBusiness().getFolderBusiness().createFolder(
-						"/" + entry.getName());
+				getBusiness().getFolderBusiness().createFolder("/" + entry.getName());
 			} else {
 				ByteArrayOutputStream data = new ByteArrayOutputStream();
 				int len = 0;
@@ -101,17 +95,13 @@ public class ImportExportBusinessImpl extends AbstractBusinessImpl implements
 					data.write(buffer, 0, len);
 				}
 				if (getSiteExporter().isSiteContent(entry)) {
-					getSiteExporter().readSiteContent(entry,
-							data.toString("UTF-8"));
+					getSiteExporter().readSiteContent(entry, data.toString("UTF-8"));
 				} else if (getThemeExporter().isThemeDescription(entry)) {
-					getThemeExporter().createThemeByDescription(entry,
-							data.toString("UTF-8"));
+					getThemeExporter().createThemeByDescription(entry, data.toString("UTF-8"));
 				} else if (getThemeExporter().isThemeContent(entry)) {
-					getThemeExporter().createThemeByContent(entry,
-							data.toString("UTF-8"));
+					getThemeExporter().createThemeByContent(entry, data.toString("UTF-8"));
 				} else {
-					result.add(getResourceExporter().importResourceFile(entry,
-							data.toByteArray()));
+					result.add(getResourceExporter().importResourceFile(entry, data.toByteArray()));
 				}
 			}
 			getDaoTaskAdapter().resetCounters();
@@ -122,46 +112,39 @@ public class ImportExportBusinessImpl extends AbstractBusinessImpl implements
 	private void clearResourcesCache(List<String> files) {
 		for (String file : files) {
 			getBusiness().getSystemService().getFileCache().remove(file);
-			logger.debug("Clear cache " + file);
+			LOGGER.debug("Clear cache " + file);
 		}
 	}
 
 	@Override
-	public void createSiteExportFile(ZipOutStreamTaskAdapter out) 
-			throws IOException, TaskTimeoutException {
+	public void createSiteExportFile(ZipOutStreamTaskAdapter out) throws IOException, TaskTimeoutException {
 		exportRootFolder(out);
 		List<TemplateEntity> list = getDao().getTemplateDao().select();
 		getThemeExporter().exportThemes(out, list);
 		getSiteExporter().exportSite(out);
 	}
 
-	private void exportRootFolder(ZipOutStreamTaskAdapter out) 
-			throws IOException, TaskTimeoutException {
+	private void exportRootFolder(ZipOutStreamTaskAdapter out) throws IOException, TaskTimeoutException {
 		FolderEntity root = getDao().getFolderDao().getByPath("/");
 		if (root == null) {
-			logger.error("Folder not found: /");
+			LOGGER.error("Folder not found: /");
 		} else {
 			getResourceExporter().addFolder(out, root, "");
 		}
 	}
 
 	@Override
-	public void createExportFile(final ZipOutStreamTaskAdapter out, FolderEntity folder) 
-			throws IOException, TaskTimeoutException {
-		TreeItemDecorator<FolderEntity> root = getBusiness()
-				.getFolderBusiness().getTree();
+	public void createExportFile(final ZipOutStreamTaskAdapter out, FolderEntity folder) throws IOException, TaskTimeoutException {
+		TreeItemDecorator<FolderEntity> root = getBusiness().getFolderBusiness().getTree();
 		TreeItemDecorator<FolderEntity> exportFolder = root.find(folder);
 		if (exportFolder != null) {
-			String zipPath = removeRootSlash(getBusiness().getFolderBusiness()
-					.getFolderPath(folder, root))
-					+ "/";
-			if (zipPath.equals("/")) {
+			String zipPath = removeRootSlash(getBusiness().getFolderBusiness().getFolderPath(folder, root)) + "/";
+			if ("/".equals(zipPath)) {
 				zipPath = "";
 			}
-			getResourceExporter().addResourcesFromFolder(out, exportFolder,
-					zipPath);
+			getResourceExporter().addResourcesFromFolder(out, exportFolder, zipPath);
 		} else {
-			logger.error("folder decorator was not found " + folder.getName());
+			LOGGER.error("folder decorator was not found " + folder.getName());
 		}
 	}
 
@@ -188,8 +171,7 @@ public class ImportExportBusinessImpl extends AbstractBusinessImpl implements
 	}
 
 	@Override
-	public void createFullExportFile(final ZipOutStreamTaskAdapter out) 
-			throws IOException, TaskTimeoutException {
+	public void createFullExportFile(final ZipOutStreamTaskAdapter out) throws IOException, TaskTimeoutException {
 		exportRootFolder(out);
 		List<TemplateEntity> list = getDao().getTemplateDao().select();
 		getThemeExporter().exportThemes(out, list);
@@ -197,14 +179,11 @@ public class ImportExportBusinessImpl extends AbstractBusinessImpl implements
 		exportResources(out);
 	}
 
-	private void exportResources(ZipOutStreamTaskAdapter out) 
-			throws IOException, TaskTimeoutException {
-		TreeItemDecorator<FolderEntity> root = getBusiness()
-				.getFolderBusiness().getTree();
+	private void exportResources(ZipOutStreamTaskAdapter out) throws IOException, TaskTimeoutException {
+		TreeItemDecorator<FolderEntity> root = getBusiness().getFolderBusiness().getTree();
 		for (TreeItemDecorator<FolderEntity> child : root.getChildren()) {
 			if (!isSkipFolder(child.getEntity().getName())) {
-				getResourceExporter().addResourcesFromFolder(out, child,
-						child.getEntity().getName() + "/");
+				getResourceExporter().addResourcesFromFolder(out, child, child.getEntity().getName() + "/");
 			}
 		}
 	}
@@ -221,13 +200,11 @@ public class ImportExportBusinessImpl extends AbstractBusinessImpl implements
 	}
 
 	@Override
-	public void createResourcesExportFile(final ZipOutStreamTaskAdapter out) 
-			throws IOException, TaskTimeoutException {
+	public void createResourcesExportFile(final ZipOutStreamTaskAdapter out) throws IOException, TaskTimeoutException {
 		exportResources(out);
 	}
 
-	public void importZip2(ZipInputStream in) throws IOException,
-			DocumentException, DaoTaskException {
+	public void importZip2(ZipInputStream in) throws IOException, DocumentException, DaoTaskException {
 
 		List<String> result = new ArrayList<String>();
 		ZipEntry entry;
@@ -235,8 +212,7 @@ public class ImportExportBusinessImpl extends AbstractBusinessImpl implements
 		boolean skipping = getDaoTaskAdapter().getCurrentFile() != null;
 		while ((entry = in.getNextEntry()) != null) {
 			if (skipping) {
-				if (entry.getName()
-						.equals(getDaoTaskAdapter().getCurrentFile())) {
+				if (entry.getName().equals(getDaoTaskAdapter().getCurrentFile())) {
 					skipping = false;
 				} else {
 					continue;
@@ -251,8 +227,7 @@ public class ImportExportBusinessImpl extends AbstractBusinessImpl implements
 					data.write(buffer, 0, len);
 				}
 				if (!getSiteExporter().importSystemFile(entry, data)) {
-					result.add(getResourceExporter().importResourceFile(entry,
-							data.toByteArray()));
+					result.add(getResourceExporter().importResourceFile(entry, data.toByteArray()));
 				}
 			}
 			getDaoTaskAdapter().resetCounters();
@@ -261,8 +236,7 @@ public class ImportExportBusinessImpl extends AbstractBusinessImpl implements
 	}
 
 	@Override
-	public void importUnzip(ZipInputStream in, String currentFile) 
-			throws IOException, RequestTimeoutException {
+	public void importUnzip(ZipInputStream in, String currentFile) throws IOException, RequestTimeoutException {
 		ZipEntry entry;
 		byte[] buffer = new byte[4096];
 		boolean skipping = currentFile != null;
@@ -284,8 +258,7 @@ public class ImportExportBusinessImpl extends AbstractBusinessImpl implements
 				String name = FolderUtil.removeTrailingSlash(entry.getName());
 				VfsNode.createDirectory("/" + name);
 				checkTheme(name);
-			}
-			else {
+			} else {
 				ByteArrayOutputStream data = new ByteArrayOutputStream();
 				int len = 0;
 				while ((len = in.read(buffer)) > 0) {
@@ -294,22 +267,18 @@ public class ImportExportBusinessImpl extends AbstractBusinessImpl implements
 				if (isGlobalSequenceImportFile(entry.getName())) {
 					try {
 						getSiteExporter().importSystemFile(entry, data);
-					}
-					catch (DaoTaskException e) {
+					} catch (DaoTaskException e) {
+						e.printStackTrace();
+					} catch (DocumentException e) {
 						e.printStackTrace();
 					}
-					catch (DocumentException e) {
-						e.printStackTrace();
-					}
-				}
-				else {
+				} else {
 					VfsNode.createFile("/" + entry.getName(), data.toByteArray());
 				}
 			}
 		}
-		getBusiness().getMessageQueue().publish(new SimpleMessage(
-					Topic.IMPORT_FOLDER, "/"));
-		logger.info("Unzip finished.");
+		getBusiness().getMessageQueue().publish(new SimpleMessage(Topic.IMPORT_FOLDER, "/"));
+		LOGGER.info("Unzip finished.");
 	}
 
 	private void checkTheme(String path) {
@@ -317,8 +286,7 @@ public class ImportExportBusinessImpl extends AbstractBusinessImpl implements
 			String[] parts = path.split("/");
 			if (parts.length == 2) {
 				String url = parts[1];
-				TemplateEntity template = getDao().getTemplateDao()
-					.getByUrl(url);
+				TemplateEntity template = getDao().getTemplateDao().getByUrl(url);
 				if (template == null) {
 					template = new TemplateEntity(url, "", url);
 					getDao().getTemplateDao().save(template);
@@ -326,10 +294,9 @@ public class ImportExportBusinessImpl extends AbstractBusinessImpl implements
 			}
 		}
 	}
-	
-	private static final String[] FILES_TO_IMPORT = {"_structures.xml",
-		"_tags.xml"};
-	
+
+	private static final String[] FILES_TO_IMPORT = { "_structures.xml", "_tags.xml" };
+
 	public static boolean isGlobalSequenceImportFile(String name) {
 		for (String file : FILES_TO_IMPORT) {
 			if (file.equals(name)) {
@@ -338,5 +305,5 @@ public class ImportExportBusinessImpl extends AbstractBusinessImpl implements
 		}
 		return false;
 	}
-	
+
 }

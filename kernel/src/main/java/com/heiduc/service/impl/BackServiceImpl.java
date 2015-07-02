@@ -59,7 +59,12 @@ import com.heiduc.service.plugin.PluginServiceManager;
 
 public class BackServiceImpl implements BackService, Serializable {
 
-	private static final Log log = LogFactory.getLog(BackServiceImpl.class);
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private static final Log LOG = LogFactory.getLog(BackServiceImpl.class);
 
 	private FileService fileService;
 	private FolderService folderService;
@@ -412,11 +417,11 @@ public class BackServiceImpl implements BackService, Serializable {
 					manager.register(bridge);
 				}
 			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+				LOG.error(e.getStackTrace());
 			} catch (InstantiationException e) {
-				e.printStackTrace();
+				LOG.error(e.getStackTrace());
 			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+				LOG.error(e.getStackTrace());
 			}
 		}
 	}
@@ -430,11 +435,11 @@ public class BackServiceImpl implements BackService, Serializable {
 					manager.unregister(bridge);
 				}				
 			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+				LOG.error(e.getStackTrace());
 			} catch (InstantiationException e) {
-				e.printStackTrace();
+				LOG.error(e.getStackTrace());
 			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+				LOG.error(e.getStackTrace());
 			}
 		}
 	}

@@ -160,7 +160,7 @@ public class PageBusinessImpl extends AbstractBusinessImpl
 			return new StructurePageRenderDecorator(page, languageCode, null, 
 					getDao(), this, getSystemService());
 		}
-		logger.error("Wrong page type " + page.getTitle());
+		LOGGER.error("Wrong page type " + page.getTitle());
 		return null;
 	}
 	
@@ -173,7 +173,7 @@ public class PageBusinessImpl extends AbstractBusinessImpl
 					template, getDao(), this, getSystemService());
 		}
 		else {
-			logger.error("Wrong page type " + page.getTitle());
+			LOGGER.error("Wrong page type " + page.getTitle());
 			return null;
 		}
 	}
@@ -281,7 +281,7 @@ public class PageBusinessImpl extends AbstractBusinessImpl
 					getBusiness().getDefaultLanguage());
 		}
 		if (content == null) {
-			logger.error("No content found for page " + page.getTitle());
+			LOGGER.error("No content found for page " + page.getTitle());
 			content = new ContentEntity();
 			content.setParentClass(PageEntity.class.getName());
 			content.setParentKey(page.getId());
@@ -554,7 +554,7 @@ public class PageBusinessImpl extends AbstractBusinessImpl
 		Collections.sort(pages, PageHelper.SORT_INDEX_ASC);
 		PageEntity currentPage = findByFriendlyURL(pages, page.getFriendlyURL());
 		if (currentPage == null) {
-			logger.error("page not found in moveDown");
+			LOGGER.error("page not found in moveDown");
 		}
 		int currentPos = pages.indexOf(currentPage);
 		if (currentPos < pages.size() - 1 ) {
@@ -599,7 +599,7 @@ public class PageBusinessImpl extends AbstractBusinessImpl
 		Collections.sort(pages, PageHelper.SORT_INDEX_ASC);
 		PageEntity currentPage = findByFriendlyURL(pages, page.getFriendlyURL());
 		if (currentPage == null) {
-			logger.error("page not found in moveUp");
+			LOGGER.error("page not found in moveUp");
 		}
 		int currentPos = pages.indexOf(currentPage);
 		if (currentPos > 0) {

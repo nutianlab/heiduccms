@@ -123,13 +123,13 @@ public class FileBusinessImpl extends AbstractBusinessImpl
 		TreeItemDecorator<FolderEntity> folder = getFolderBusiness()
 				.findFolderByPath(getFolderBusiness().getTree(), path);
 		if (folder == null) {
-			logger.error("Folder not found. " + path);
+			LOGGER.error("Folder not found. " + path);
 			return;
 		}
 		FileEntity file = getDao().getFileDao().getByName(folder.getEntity()
 				.getId(), name);
 		if (file == null) {
-			logger.error("File not found. " + filename);
+			LOGGER.error("File not found. " + filename);
 			return;
 		}
 		FolderPermissionEntity perm = getFolderPermissionBusiness()

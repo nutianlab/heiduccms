@@ -68,7 +68,7 @@ public class PageAttributeBusinessImpl extends AbstractBusinessImpl
 			String value, boolean applyToChildren) {
 		PageAttributeEntity attribute = getByPage(page.getFriendlyURL(), name);
 		if (attribute == null) {
-			logger.error("Attribute definition: " + name
+			LOGGER.error("Attribute definition: " + name
 					+ " not found for page " + page.getFriendlyURL());
 			return;
 		}
