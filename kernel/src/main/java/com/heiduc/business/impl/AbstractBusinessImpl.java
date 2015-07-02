@@ -21,7 +21,11 @@ import com.heiduc.global.SystemService;
 public abstract class AbstractBusinessImpl implements AbstractBusiness,
 		Serializable {
 
-	protected static final Log logger = LogFactory.getLog(
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	protected static final Log LOGGER = LogFactory.getLog(
 			AbstractBusinessImpl.class);
 
 	protected Dao getDao() {

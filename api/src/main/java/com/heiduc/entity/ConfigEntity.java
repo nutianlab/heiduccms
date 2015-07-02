@@ -245,7 +245,7 @@ public class ConfigEntity extends BaseEntityImpl {
 				getAttributes().put(attrName, obj.getString(attrName));
 			}
 		} catch (org.json.JSONException e) {
-			logger.error("Config atributes parsing problem: " + attributes);
+			LOGGER.error("Config atributes parsing problem: " + attributes);
 		}
     }
 

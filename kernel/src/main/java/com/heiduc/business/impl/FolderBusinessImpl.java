@@ -150,7 +150,7 @@ public class FolderBusinessImpl extends AbstractBusinessImpl
 					parent = newFolder;
 				}
 				else {
-					logger.error("access denied " + path);
+					LOGGER.error("access denied " + path);
 					return null;
 				}
 			}

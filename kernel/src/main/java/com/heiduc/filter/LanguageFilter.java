@@ -39,7 +39,7 @@ public class LanguageFilter extends AbstractFilter implements Filter {
     	if (httpRequest.getParameter("language") != null) {
     		String languageCode = httpRequest.getParameter("language");
    			Locale locale = getLocale(languageCode);
-   			logger.info("Locale " + locale.getDisplayName());
+   			LOGGER.info("Locale " + locale.getDisplayName());
    			ctx.setLocale(locale);
        		ctx.getSession().setLocale(locale);
     	}

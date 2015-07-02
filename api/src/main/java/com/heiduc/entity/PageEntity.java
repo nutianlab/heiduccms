@@ -408,7 +408,7 @@ public class PageEntity extends BaseEntityImpl {
 					titles.put(key, obj.getString(key));
 				}
 			} catch (org.json.JSONException e) {
-				logger.error("Page title parsing problem: " + getTitleValue());
+				LOGGER.error("Page title parsing problem: " + getTitleValue());
 			}
 		}
 	}

@@ -48,7 +48,7 @@ public class CommentBusinessImpl extends AbstractBusinessImpl
 				config.getSiteEmail(), 
 				config.getSiteDomain() + " admin", 
 				StringUtils.strip(email));
-			logger.debug("New comment letter was sent to " + email);
+			LOGGER.debug("New comment letter was sent to " + email);
 		}
 		return comment;
 	}

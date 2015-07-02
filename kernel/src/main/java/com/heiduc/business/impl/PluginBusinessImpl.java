@@ -42,6 +42,10 @@ import com.heiduc.service.plugin.PluginServiceManager;
 public class PluginBusinessImpl extends AbstractBusinessImpl 
 	implements PluginBusiness {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private PluginLoader pluginLoader;
 	private PluginClassLoaderFactory pluginClassLoaderFactory;
 	private Map<String, PluginEntryPoint> plugins;
@@ -122,11 +126,11 @@ public class PluginBusinessImpl extends AbstractBusinessImpl
 				if (e.getName().equals("param")) {
 					PluginPropertyVO p = new PluginPropertyVO();
 					if (e.attributeValue("name") == null) {
-						logger.error("There must be name attribute for param tag.");
+						LOGGER.error("There must be name attribute for param tag.");
 						continue;
 					}
 					if (e.attributeValue("type") == null) {
-						logger.error("There must be type attribute for param tag.");
+						LOGGER.error("There must be type attribute for param tag.");
 						continue;
 					}
 					p.setName(e.attributeValue("name"));
@@ -144,8 +148,8 @@ public class PluginBusinessImpl extends AbstractBusinessImpl
 			return result;
 		}
 		catch (DocumentException e) {
-			logger.error(e.getMessage());
-			return Collections.EMPTY_LIST;
+			LOGGER.error(e.getMessage());
+			return Collections.emptyList();
 		}
 	}
 
@@ -206,10 +210,10 @@ public class PluginBusinessImpl extends AbstractBusinessImpl
 						entryPoint.getRewriteRules());
 			}
 			catch (ClassNotFoundException e) {
-				logger.error("Class not found " + e.getMessage());
+				LOGGER.error("Class not found " + e.getMessage());
 			}
 			catch (Exception e) {
-				e.printStackTrace();
+				LOGGER.error(e.getMessage());
 			}
 		}
 		return plugins.get(plugin.getName());

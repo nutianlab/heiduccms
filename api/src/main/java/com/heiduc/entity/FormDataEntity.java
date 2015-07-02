@@ -89,7 +89,7 @@ public class FormDataEntity extends BaseEntityImpl {
 			}
 		}
 		catch (DocumentException e) {
-			logger.error(e.getMessage());
+			LOGGER.error(e.getMessage());
 		}
 		return result;
 	}

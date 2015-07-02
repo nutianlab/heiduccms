@@ -138,7 +138,7 @@ public class TagBusinessImpl extends AbstractBusinessImpl
 				parent = parentTag.getParent();
 			}
 			else {
-				logger.error("Tag not found " + parent);
+				LOGGER.error("Tag not found " + parent);
 				parent = null;
 			}
 		}

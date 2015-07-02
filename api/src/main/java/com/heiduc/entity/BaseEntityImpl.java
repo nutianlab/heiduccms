@@ -1,5 +1,3 @@
-
-
 package com.heiduc.entity;
 
 import static com.heiduc.utils.EntityUtil.*;
@@ -21,8 +19,7 @@ public abstract class BaseEntityImpl implements BaseEntity {
 	 */
 	private static final long serialVersionUID = -6669536468737342559L;
 
-	protected static final Log logger = LogFactory.getLog(
-			BaseEntityImpl.class);
+	protected static final Log LOGGER = LogFactory.getLog(BaseEntityImpl.class);
 
 	private Key key;
 	private String createUserEmail;
@@ -36,7 +33,7 @@ public abstract class BaseEntityImpl implements BaseEntity {
 		createUserEmail = "";
 		modUserEmail = "";
 	}
-	
+
 	@Override
 	public Long getId() {
 		return key == null ? null : key.getId();
@@ -46,8 +43,7 @@ public abstract class BaseEntityImpl implements BaseEntity {
 	public void setId(Long id) {
 		if (id != null && id > 0) {
 			key = KeyFactory.createKey(getKind(getClass()), id);
-		}
-		else {
+		} else {
 			key = null;
 		}
 	}
@@ -83,19 +79,18 @@ public abstract class BaseEntityImpl implements BaseEntity {
 	public boolean isNew() {
 		return key == null;
 	}
-	
+
 	@Override
 	public void copy(BaseEntity entity) {
-		Key myKey = getKey(); 
+		Key myKey = getKey();
 		Entity buf = new Entity("tmp");
 		entity.save(buf);
 		load(buf);
 		setKey(myKey);
 	}
-	
+
 	public boolean equals(Object object) {
-		if (object instanceof BaseEntity
-				&& object.getClass().equals(this.getClass())) {
+		if (object instanceof BaseEntity && object.getClass().equals(this.getClass())) {
 			BaseEntity entity = (BaseEntity) object;
 			if (getId() == null && entity.getId() == null) {
 				return true;
@@ -105,6 +100,11 @@ public abstract class BaseEntityImpl implements BaseEntity {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
 	}
 
 	@Override
@@ -156,7 +156,7 @@ public abstract class BaseEntityImpl implements BaseEntity {
 	public String getCreateDateString() {
 		return DateUtil.toString(createDate);
 	}
-	
+
 	@Override
 	public String getModDateTimeString() {
 		return DateUtil.dateTimeToString(modDate);

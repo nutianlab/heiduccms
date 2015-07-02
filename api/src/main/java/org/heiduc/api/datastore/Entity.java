@@ -39,14 +39,15 @@ public class Entity implements Serializable, Cloneable {
 
 	public void setUnindexedProperty(String propertyName, Object value) {
 		// DataTypeUtils.checkSupportedValue(propertyName, value);
-//		propertyMap.put(propertyName, new UnindexedValue(value));
-		 propertyMap.put(propertyName, value);
+		// propertyMap.put(propertyName, new UnindexedValue(value));
+		propertyMap.put(propertyName, value);
 	}
 
 	public void removeProperty(String propertyName) {
 		propertyMap.remove(propertyName);
 	}
 
+	@Override
 	public boolean equals(Object object) {
 		if (object instanceof Entity) {
 			Entity otherEntity = (Entity) object;
@@ -56,15 +57,17 @@ public class Entity implements Serializable, Cloneable {
 		}
 	}
 
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
+
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append((new StringBuilder()).append("<Entity [").append(key)
-				.append("]:\n").toString());
+		buffer.append((new StringBuilder()).append("<Entity [").append(key).append("]:\n").toString());
 		java.util.Map.Entry entry;
-		for (Iterator i$ = propertyMap.entrySet().iterator(); i$.hasNext(); buffer
-				.append((new StringBuilder()).append("\t")
-						.append((String) entry.getKey()).append(" = ")
-						.append(entry.getValue()).append("\n").toString()))
+		for (Iterator i$ = propertyMap.entrySet().iterator(); i$.hasNext(); buffer.append((new StringBuilder()).append("\t").append((String) entry.getKey()).append(" = ").append(entry.getValue())
+				.append("\n").toString()))
 			entry = (java.util.Map.Entry) i$.next();
 
 		buffer.append(">\n");
@@ -79,59 +82,46 @@ public class Entity implements Serializable, Cloneable {
 	public Map getProperties() {
 		Map properties = new HashMap(propertyMap.size());
 		java.util.Map.Entry entry;
-		for (Iterator i$ = propertyMap.entrySet().iterator(); i$.hasNext(); properties
-				.put(entry.getKey(), unwrapValue(entry.getValue())))
+		for (Iterator i$ = propertyMap.entrySet().iterator(); i$.hasNext(); properties.put(entry.getKey(), unwrapValue(entry.getValue())))
 			entry = (java.util.Map.Entry) i$.next();
 
 		return Collections.unmodifiableMap(properties);
 	}
 
 	static Object unwrapValue(Object obj) {
-		/*if (obj instanceof UnindexedValue)
-			return ((UnindexedValue) obj).getValue();
-		else*/
-			return obj;
+		/*
+		 * if (obj instanceof UnindexedValue) return ((UnindexedValue)
+		 * obj).getValue(); else
+		 */
+		return obj;
 	}
 
 	Map getPropertyMap() {
 		return propertyMap;
 	}
 
-	/*static final class UnindexedValue implements Serializable  {
-
-		*//**
+	/*
+	 * static final class UnindexedValue implements Serializable {
+	 *//**
 		 * 
-		 *//*
-		private static final long serialVersionUID = 7701997879076042650L;
-
-		public Object getValue() {
-			return value;
-		}
-
-		public boolean equals(Object that) {
-			if (that instanceof UnindexedValue) {
-				UnindexedValue uv = (UnindexedValue) that;
-				return value != null ? value.equals(uv.value)
-						: uv.value == null;
-			} else {
-				return false;
-			}
-		}
-
-		public int hashCode() {
-			return value != null ? value.hashCode() : 0;
-		}
-
-		public String toString() {
-			return (new StringBuilder()).append(value).append(" (unindexed)")
-					.toString();
-		}
-
-		private final Object value;
-
-		UnindexedValue(Object value) {
-			this.value = value;
-		}
-	}*/
+		 */
+	/*
+	 * private static final long serialVersionUID = 7701997879076042650L;
+	 * 
+	 * public Object getValue() { return value; }
+	 * 
+	 * public boolean equals(Object that) { if (that instanceof UnindexedValue)
+	 * { UnindexedValue uv = (UnindexedValue) that; return value != null ?
+	 * value.equals(uv.value) : uv.value == null; } else { return false; } }
+	 * 
+	 * public int hashCode() { return value != null ? value.hashCode() : 0; }
+	 * 
+	 * public String toString() { return (new
+	 * StringBuilder()).append(value).append(" (unindexed)") .toString(); }
+	 * 
+	 * private final Object value;
+	 * 
+	 * UnindexedValue(Object value) { this.value = value; } }
+	 */
 
 }

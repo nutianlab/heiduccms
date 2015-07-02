@@ -27,7 +27,12 @@ import com.heiduc.service.plugin.PluginServiceManager;
 
 public class FrontServiceImpl implements FrontService, Serializable {
 
-	private static final Log log = LogFactory.getLog(FrontServiceImpl.class);
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private static final Log LOG = LogFactory.getLog(FrontServiceImpl.class);
 
 	private LoginService loginService;
 	private FormService formService;
@@ -111,11 +116,11 @@ public class FrontServiceImpl implements FrontService, Serializable {
 					manager.register(bridge);
 				}
 			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+				LOG.error(e.getStackTrace());
 			} catch (InstantiationException e) {
-				e.printStackTrace();
+				LOG.error(e.getStackTrace());
 			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+				LOG.error(e.getStackTrace());
 			}
 		}
 	}
@@ -129,11 +134,11 @@ public class FrontServiceImpl implements FrontService, Serializable {
 					manager.unregister(bridge);
 				}				
 			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+				LOG.error(e.getStackTrace());
 			} catch (InstantiationException e) {
-				e.printStackTrace();
+				LOG.error(e.getStackTrace());
 			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+				LOG.error(e.getStackTrace());
 			}
 		}
 	}
