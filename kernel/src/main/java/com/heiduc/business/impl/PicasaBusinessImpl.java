@@ -47,7 +47,7 @@ public class PicasaBusinessImpl extends AbstractBusinessImpl
 						config.getPicasaPassword());
 				}
 				catch (AuthenticationException e) {
-					logger.error("Picasa auth problem. " + e.getMessage());
+					LOGGER.error("Picasa auth problem. " + e.getMessage());
 				}
 			}
 		}

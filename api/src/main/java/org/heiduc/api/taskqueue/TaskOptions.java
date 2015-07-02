@@ -27,71 +27,65 @@ public class TaskOptions implements Serializable {
 	private Long etaMillis;
 	// private RetryOptions retryOptions;
 	private byte[] tag;
-	
-	private TaskOptions()
-	  {
-	    this.method = Method.POST;
-	    this.headers = new LinkedHashMap<String, List<String>>();
-	    this.params = new LinkedList<Param> ();
-	  }
 
-	
-	public TaskOptions(TaskOptions options)
-	  {
-	    this.taskName = options.taskName;
-	    this.method = options.method;
-	    this.url = options.url;
-	    this.countdownMillis = options.countdownMillis;
-	    this.etaMillis = options.etaMillis;
-	    this.tag = options.tag;
-	    
-	    if (options.getPayload() != null)
-	      payload(options.getPayload());
-	    else {
-	      this.payload = null;
-	    }
-	    initializeHeaders(options.getHeaders());
-	    initializeParams(options.getParams());
-	  }
+	private TaskOptions() {
+		this.method = Method.POST;
+		this.headers = new LinkedHashMap<String, List<String>>();
+		this.params = new LinkedList<Param>();
+	}
 
-	  private void initializeHeaders(Map<String, List<String>> headers) {
-	    this.headers = new LinkedHashMap<String, List<String>>();
+	public TaskOptions(TaskOptions options) {
+		this.taskName = options.taskName;
+		this.method = options.method;
+		this.url = options.url;
+		this.countdownMillis = options.countdownMillis;
+		this.etaMillis = options.etaMillis;
+		this.tag = options.tag;
 
-	    for (Map.Entry<String, List<String>> entry : headers.entrySet())
-	      this.headers.put(entry.getKey(), new ArrayList<String>(entry.getValue()));
-	  }
+		if (options.getPayload() != null)
+			payload(options.getPayload());
+		else {
+			this.payload = null;
+		}
+		initializeHeaders(options.getHeaders());
+		initializeParams(options.getParams());
+	}
 
-	  private void initializeParams(List<Param> params)
-	  {
-	    this.params = new LinkedList<Param>(params);
-	  }
+	private void initializeHeaders(Map<String, List<String>> headers) {
+		this.headers = new LinkedHashMap<String, List<String>>();
 
-	  Method getMethod() {
-	    return this.method;
-	  }
-	  
-	  public TaskOptions taskName(String taskName)
-	  {
-	    if ((taskName != null) && (taskName.length() != 0)) {
-	      TaskHandle.validateTaskName(taskName);
-	    }
-	    this.taskName = taskName;
-	    return this;
-	  }
+		for (Map.Entry<String, List<String>> entry : headers.entrySet())
+			this.headers.put(entry.getKey(), new ArrayList<String>(entry.getValue()));
+	}
 
-	  String getTaskName() {
-	    return this.taskName;
-	  }
+	private void initializeParams(List<Param> params) {
+		this.params = new LinkedList<Param>(params);
+	}
 
-	  byte[] getPayload() {
-	    return this.payload;
-	  }
-	  
-	  public TaskOptions payload(byte[] payload)
-	  {
-	    this.payload = ((byte[])payload.clone());
-	    return this;
-	  }
+	Method getMethod() {
+		return this.method;
+	}
+
+	public TaskOptions taskName(String taskName) {
+		if ((taskName != null) && (taskName.length() != 0)) {
+			TaskHandle.validateTaskName(taskName);
+		}
+		this.taskName = taskName;
+		return this;
+	}
+
+	String getTaskName() {
+		return this.taskName;
+	}
+
+	byte[] getPayload() {
+		return this.payload;
+	}
+
+	public TaskOptions payload(byte[] payload) {
+		this.payload = ((byte[]) payload.clone());
+		return this;
+	}
 
 	public TaskOptions url(String url) {
 		if (url == null) {
@@ -100,28 +94,24 @@ public class TaskOptions implements Serializable {
 		this.url = url;
 		return this;
 	}
-	
-	TaskOptions param(Param param)
-	  {
-	    this.params.add(param);
-	    return this;
-	  }
 
-	  public TaskOptions clearParams()
-	  {
-	    this.params.clear();
-	    return this;
-	  }
+	TaskOptions param(Param param) {
+		this.params.add(param);
+		return this;
+	}
 
-	  public TaskOptions param(String name, String value)
-	  {
-	    return param(new StringValueParam(name, value));
-	  }
+	public TaskOptions clearParams() {
+		this.params.clear();
+		return this;
+	}
 
-	  public TaskOptions param(String name, byte[] value)
-	  {
-	    return param(new ByteArrayValueParam(name, value));
-	  }
+	public TaskOptions param(String name, String value) {
+		return param(new StringValueParam(name, value));
+	}
+
+	public TaskOptions param(String name, byte[] value) {
+		return param(new ByteArrayValueParam(name, value));
+	}
 
 	public static final class Builder {
 		public static TaskOptions withUrl(String url) {
@@ -136,95 +126,94 @@ public class TaskOptions implements Serializable {
 		}
 	}
 
-	static class ByteArrayValueParam extends TaskOptions.Param
-	  {
+	static class ByteArrayValueParam extends TaskOptions.Param {
 		private static final long serialVersionUID = 450872030885528392L;
 		protected final byte[] value;
 
-	    ByteArrayValueParam(String name, byte[] value)
-	    {
-	      super(name);
+		ByteArrayValueParam(String name, byte[] value) {
+			super(name);
 
-	      if (value == null) {
-	        throw new IllegalArgumentException("value must not be null");
-	      }
-	      this.value = value;
-	    }
+			if (value == null) {
+				throw new IllegalArgumentException("value must not be null");
+			}
+			this.value = value;
+		}
 
-	    public boolean equals(Object o)
-	    {
-	      if (this == o) {
-	        return true;
-	      }
+		public boolean equals(Object o) {
+			if (this == o) {
+				return true;
+			}
 
-	      if (!(o instanceof ByteArrayValueParam)) {
-	        return false;
-	      }
+			if (!(o instanceof ByteArrayValueParam)) {
+				return false;
+			}
 
-	      ByteArrayValueParam that = (ByteArrayValueParam)o;
+			ByteArrayValueParam that = (ByteArrayValueParam) o;
 
-	      return (Arrays.equals(this.value, that.value)) && (this.name.equals(that.name));
-	    }
+			return (Arrays.equals(this.value, that.value)) && (this.name.equals(that.name));
+		}
 
-	    public String getURLEncodedValue()
-	      throws UnsupportedEncodingException
-	    {
-	      StringBuilder result = new StringBuilder();
-	      for (int i = 0; i < this.value.length; i++)
-	      {
-	        result.append("%");
-	        char character = Character.toUpperCase(Character.forDigit(this.value[i] >> 4 & 0xF, 16));
-	        result.append(character);
-	        character = Character.toUpperCase(Character.forDigit(this.value[i] & 0xF, 16));
-	        result.append(character);
-	      }
-	      return result.toString();
-	    }
-	  }
+		@Override
+		public int hashCode() {
+			return super.hashCode();
+		}
 
-	  static class StringValueParam extends TaskOptions.Param
-	  {
+		public String getURLEncodedValue() throws UnsupportedEncodingException {
+			StringBuilder result = new StringBuilder();
+			for (int i = 0; i < this.value.length; i++) {
+				result.append("%");
+				char character = Character.toUpperCase(Character.forDigit(this.value[i] >> 4 & 0xF, 16));
+				result.append(character);
+				character = Character.toUpperCase(Character.forDigit(this.value[i] & 0xF, 16));
+				result.append(character);
+			}
+			return result.toString();
+		}
+	}
+
+	static class StringValueParam extends TaskOptions.Param {
 		private static final long serialVersionUID = -3203392774179779894L;
 		protected final String value;
 
-	    StringValueParam(String name, String value)
-	    {
-	      super(name);
+		StringValueParam(String name, String value) {
+			super(name);
 
-	      if (value == null) {
-	        throw new IllegalArgumentException("value must not be null");
-	      }
-	      this.value = value;
-	    }
+			if (value == null) {
+				throw new IllegalArgumentException("value must not be null");
+			}
+			this.value = value;
+		}
 
-	    public boolean equals(Object o)
-	    {
-	      if (this == o) {
-	        return true;
-	      }
+		public boolean equals(Object o) {
+			if (this == o) {
+				return true;
+			}
 
-	      if (!(o instanceof StringValueParam)) {
-	        return false;
-	      }
+			if (!(o instanceof StringValueParam)) {
+				return false;
+			}
 
-	      StringValueParam that = (StringValueParam)o;
+			StringValueParam that = (StringValueParam) o;
 
-	      return (this.value.equals(that.value)) && (this.name.equals(that.name));
-	    }
+			return (this.value.equals(that.value)) && (this.name.equals(that.name));
+		}
 
-	    public String getURLEncodedValue() throws UnsupportedEncodingException
-	    {
-	      return encodeURLAsUtf8(this.value);
-	    }
-	  }
-	
+		@Override
+		public int hashCode() {
+			return super.hashCode();
+		}
+
+		public String getURLEncodedValue() throws UnsupportedEncodingException {
+			return encodeURLAsUtf8(this.value);
+		}
+	}
+
 	static abstract class Param implements Serializable {
 		protected final String name;
 
 		public Param(String name) {
 			if ((name == null) || (name.length() == 0)) {
-				throw new IllegalArgumentException(
-						"name must not be null or empty");
+				throw new IllegalArgumentException("name must not be null or empty");
 			}
 			this.name = name;
 		}
@@ -233,8 +222,7 @@ public class TaskOptions implements Serializable {
 			return this.name.hashCode();
 		}
 
-		protected static String encodeURLAsUtf8(String url)
-				throws UnsupportedEncodingException {
+		protected static String encodeURLAsUtf8(String url) throws UnsupportedEncodingException {
 			return URLEncoder.encode(url, "UTF-8");
 		}
 
@@ -244,8 +232,7 @@ public class TaskOptions implements Serializable {
 			return encodeURLAsUtf8(this.name);
 		}
 
-		abstract String getURLEncodedValue()
-				throws UnsupportedEncodingException;
+		abstract String getURLEncodedValue() throws UnsupportedEncodingException;
 	}
 
 	public static enum RequestMethod {
@@ -281,11 +268,7 @@ public class TaskOptions implements Serializable {
 	}
 
 	public static enum Method {
-		DELETE(RequestMethod.DELETE, false), 
-		GET(RequestMethod.GET, false), 
-		HEAD(RequestMethod.HEAD, false), 
-		POST(RequestMethod.POST, true), 
-		PUT(RequestMethod.PUT, true),
+		DELETE(RequestMethod.DELETE, false), GET(RequestMethod.GET, false), HEAD(RequestMethod.HEAD, false), POST(RequestMethod.POST, true), PUT(RequestMethod.PUT, true),
 
 		PULL(null, true);
 
@@ -310,11 +293,10 @@ public class TaskOptions implements Serializable {
 		return params;
 	}
 
-
 	public Long getEtaMillis() {
 		return etaMillis;
 	}
-	
+
 	public String getUrl() {
 		return this.url;
 	}

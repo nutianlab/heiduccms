@@ -21,7 +21,7 @@ import com.heiduc.global.SystemService;
  */
 public abstract class AbstractFilter {
 	
-    protected static final Log logger = LogFactory.getLog(AbstractFilter.class);
+    protected static final Log LOGGER = LogFactory.getLog(AbstractFilter.class);
 
     private FilterConfig config;
 	private ServletContext servletContext;

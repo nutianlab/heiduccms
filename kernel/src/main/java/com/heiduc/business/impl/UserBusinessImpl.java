@@ -71,7 +71,7 @@ public class UserBusinessImpl extends AbstractBusinessImpl
 					"com/heiduc/resources/html/forgot-letter.html");
 		}
 		catch (IOException e) {
-			logger.error(e.getMessage());
+			LOGGER.error(e.getMessage());
 			return;
 		}
 		ConfigEntity config = HeiducContext.getInstance().getConfig();
@@ -83,7 +83,7 @@ public class UserBusinessImpl extends AbstractBusinessImpl
 		String error = EmailUtil.sendEmail(letter, "Forgot password", 
 				config.getSiteEmail(), "Site admin", email);
 		if (error != null) {
-			logger.error(error);
+			LOGGER.error(error);
 		}
 	}
 	
