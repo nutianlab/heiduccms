@@ -1,5 +1,3 @@
-
-
 package com.heiduc.business.impl;
 
 import java.util.ArrayList;
@@ -20,22 +18,16 @@ import com.heiduc.i18n.Messages;
 import com.heiduc.utils.FolderUtil;
 import com.heiduc.utils.MimeType;
 
-public class FileBusinessImpl extends AbstractBusinessImpl 
-	implements FileBusiness {
+public class FileBusinessImpl extends AbstractBusinessImpl implements FileBusiness {
 
 	@Override
 	public List<String> validateBeforeUpdate(final FileEntity entity) {
 		List<String> errors = new ArrayList<String>();
 		if (StringUtils.isEmpty(entity.getFilename())) {
 			errors.add(Messages.get("filename_is_empty"));
-		}
-		else {
-			FileEntity file = getDao().getFileDao().getByName(
-					entity.getFolderId(), entity.getFilename());
-			if (file != null && 
-				(entity.isNew() 
-				||
-				(!entity.isNew() && !file.getId().equals(entity.getId())))) {
+		} else {
+			FileEntity file = getDao().getFileDao().getByName(entity.getFolderId(), entity.getFilename());
+			if (file != null && (entity.isNew() || (!entity.isNew() && !file.getId().equals(entity.getId())))) {
 				errors.add(Messages.get("file_already_exists"));
 			}
 		}
@@ -50,8 +42,7 @@ public class FileBusinessImpl extends AbstractBusinessImpl
 		try {
 			String path = FolderUtil.getFilePath(filename);
 			String name = FolderUtil.getFileName(filename);
-			FolderEntity folder = getFolderBusiness().findFolderByPath(
-					getFolderBusiness().getTree(), path).getEntity();
+			FolderEntity folder = getFolderBusiness().findFolderByPath(getFolderBusiness().getTree(), path).getEntity();
 			if (folder == null) {
 				return null;
 			}
@@ -60,8 +51,7 @@ public class FileBusinessImpl extends AbstractBusinessImpl
 				return getDao().getFileDao().getFileContent(file);
 			}
 			return null;
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -75,15 +65,12 @@ public class FileBusinessImpl extends AbstractBusinessImpl
 			FolderEntity folder = getFolderBusiness().createFolder(path);
 			FileEntity file = getDao().getFileDao().getByName(folder.getId(), name);
 			if (file == null) {
-				file = new FileEntity(name, name, folder.getId(), 
-						MimeType.getContentTypeByExt(FolderUtil.getFileExt(filename)), 
-						new Date(), data.length);
+				file = new FileEntity(name, name, folder.getId(), MimeType.getContentTypeByExt(FolderUtil.getFileExt(filename)), new Date(), data.length);
 			}
 			getDao().getFileDao().save(file, data);
 			getSystemService().getFileCache().remove(filename);
 			return file;
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -102,15 +89,12 @@ public class FileBusinessImpl extends AbstractBusinessImpl
 		try {
 			String path = FolderUtil.getFilePath(filename);
 			String name = FolderUtil.getFileName(filename);
-			TreeItemDecorator<FolderEntity> folder = getFolderBusiness()
-					.findFolderByPath(getFolderBusiness().getTree(), path);
+			TreeItemDecorator<FolderEntity> folder = getFolderBusiness().findFolderByPath(getFolderBusiness().getTree(), path);
 			if (folder == null) {
 				return null;
 			}
-			return getDao().getFileDao().getByName(folder.getEntity().getId(), 
-					name);
-		}
-		catch (Exception e) {
+			return getDao().getFileDao().getByName(folder.getEntity().getId(), name);
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -120,21 +104,17 @@ public class FileBusinessImpl extends AbstractBusinessImpl
 	public void remove(String filename) {
 		String path = FolderUtil.getFilePath(filename);
 		String name = FolderUtil.getFileName(filename);
-		TreeItemDecorator<FolderEntity> folder = getFolderBusiness()
-				.findFolderByPath(getFolderBusiness().getTree(), path);
+		TreeItemDecorator<FolderEntity> folder = getFolderBusiness().findFolderByPath(getFolderBusiness().getTree(), path);
 		if (folder == null) {
 			LOGGER.error("Folder not found. " + path);
 			return;
 		}
-		FileEntity file = getDao().getFileDao().getByName(folder.getEntity()
-				.getId(), name);
+		FileEntity file = getDao().getFileDao().getByName(folder.getEntity().getId(), name);
 		if (file == null) {
 			LOGGER.error("File not found. " + filename);
 			return;
 		}
-		FolderPermissionEntity perm = getFolderPermissionBusiness()
-				.getPermission(folder.getEntity(), 
-						HeiducContext.getInstance().getUser());
+		FolderPermissionEntity perm = getFolderPermissionBusiness().getPermission(folder.getEntity(), HeiducContext.getInstance().getUser());
 		if (perm.isChangeGranted()) {
 			getDao().getFileDao().remove(file.getId());
 			getSystemService().getFileCache().remove(filename);
@@ -154,8 +134,7 @@ public class FileBusinessImpl extends AbstractBusinessImpl
 
 	@Override
 	public String getFilePath(FileEntity file) {
-		return getDao().getFolderDao().getFolderPath(file.getFolderId())
-				+ "/" +file.getFilename();
+		return getDao().getFolderDao().getFolderPath(file.getFolderId()) + "/" + file.getFilename();
 	}
-	
+
 }
