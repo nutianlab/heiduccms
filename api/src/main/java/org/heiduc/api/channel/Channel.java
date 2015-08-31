@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 //			"org.atmosphere.websocket.WebSocketProtocol=org.atmosphere.websocket.protocol.StreamingHttpProtocol",
 //			"org.atmosphere.websocket.DefaultWebSocketProcessor=org.atmosphere.config.managed.ManagedAtmosphereHandler",
 //			"org.atmosphere.cpr.AtmosphereInterceptor.disableDefaults=true",
-//			"org.atmosphere.interceptor.HeartbeatInterceptor.heartbeatFrequencyInSeconds=60",
+			"org.atmosphere.interceptor.HeartbeatInterceptor.heartbeatFrequencyInSeconds=60",
 //			"org.atmosphere.cpr.AtmosphereInterceptor=org.atmosphere.interceptor.JavaScriptProtocol,org.atmosphere.interceptor.OnDisconnectInterceptor",
 //			"org.atmosphere.interceptor.HeartbeatInterceptor.paddingChar=X",
 			"org.atmosphere.cpr.broadcaster.maxProcessingThreads=10",
