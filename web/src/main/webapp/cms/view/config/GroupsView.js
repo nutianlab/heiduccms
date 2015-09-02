@@ -163,7 +163,7 @@ function(tmpl) {
 			});
 			$('#groupUsers').html(h);
 			//$('#user-group-dialog').dialog('open');
-			$('#group-dialog').modal({show:true});
+			$('#user-group-dialog').modal({show:true});
 		});
 	}
 
