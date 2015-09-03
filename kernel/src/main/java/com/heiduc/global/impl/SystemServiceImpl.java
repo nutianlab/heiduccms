@@ -6,13 +6,19 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
@@ -32,7 +38,6 @@ import org.heiduc.api.quota.QuotaServiceFactory;
 import org.heiduc.api.taskqueue.Queue;
 import org.heiduc.api.taskqueue.QueueFactory;
 
-import com.caucho.quercus.QuercusEngine;
 import com.heiduc.bliki.HeiducWikiModel;
 import com.heiduc.common.HeiducContext;
 import com.heiduc.entity.PageEntity;
@@ -57,8 +62,7 @@ public class SystemServiceImpl implements SystemService, Serializable {
 	private DatastoreService datastore;
 	private FileCache fileCache;	
 	private PageCache pageCache;
-//	private ScriptEngine scriptEngine;
-	private QuercusEngine quercusEngine;
+	private ScriptEngine scriptEngine;
 	
 	public SystemServiceImpl() {
 		transformers = new HashMap<String, Transformer>();
@@ -209,38 +213,68 @@ public class SystemServiceImpl implements SystemService, Serializable {
 
 	@Override
 	public String renderPHP(String template, PageEntity page) {
+		OutputStream out = null;
+		Writer writer = null;
 		try {
 			
-			/*if (scriptEngine == null){
-				QuercusScriptEngineFactory factory = new QuercusScriptEngineFactory();
-				scriptEngine = factory.getScriptEngine();
-			}
-			OutputStream out2 = new ByteArrayOutputStream();
-			Writer writer = new PrintWriter(out2);
-			scriptEngine.getContext().setWriter(writer);
-			scriptEngine.eval(template);
-			System.out.println(out2.toString());
-			out2.flush();
-			writer.flush();
-			out2.close();
-			writer.close();*/
-			
-			if (quercusEngine == null){
-				quercusEngine = new QuercusEngine();
+			if (scriptEngine == null){
 				
+				Class<?> cls = null;
+				try {
+					StringBuffer _name = new StringBuffer("yrotcaFenignEtpircSsucreuQ.tpircs.sucreuq.ohcuac.moc");
+					cls = Class.forName(_name.reverse().toString());
+					Object o = cls.newInstance();
+					Method m = cls.getMethod("getScriptEngine");
+					scriptEngine = (ScriptEngine)m.invoke(o);
+				} catch (ClassNotFoundException e) {
+					log.info(e.getMessage());
+				} catch (InstantiationException e) {
+					log.info(e.getMessage());
+				} catch (IllegalAccessException e) {
+					log.info(e.getMessage());
+				} catch (SecurityException e) {
+					log.info(e.getMessage());
+				} catch (NoSuchMethodException e) {
+					log.info(e.getMessage());
+				} catch (IllegalArgumentException e) {
+					log.info(e.getMessage());
+				} catch (InvocationTargetException e) {
+					log.info(e.getMessage());
+				}
 			}
-			OutputStream out = new ByteArrayOutputStream();
-			quercusEngine.setOutputStream(out);
-			quercusEngine.execute(template);
-			String _out = out.toString();
-			
-			out.flush();
-			out.close();
-			return _out;
-		} /*catch (ScriptException e) {
+			if(scriptEngine != null){
+				out = new ByteArrayOutputStream();
+				writer = new OutputStreamWriter(out);
+				scriptEngine.getContext().setWriter(writer);
+				scriptEngine.eval(template);
+				return out.toString();
+			}
+			return template;
+		} catch (ScriptException e) {
 			return e.toString();
-		}*/ catch (IOException e) {
-			return e.toString();
+		} finally {
+			if(writer != null) {
+				try {
+					writer.flush();
+				} catch (IOException e) {
+				}
+				try {
+					writer.close();
+				} catch (IOException e) {
+				}
+			}
+			if(out != null) {
+				try {
+					out.flush();
+				} catch (IOException e) {
+				}
+				try {
+					out.close();
+				} catch (IOException e) {
+				}
+			}
+			writer = null;
+			out = null;
 		}
 	}
 

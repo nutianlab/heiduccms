@@ -251,7 +251,7 @@ function(LoginView, PagesView, IndexView,
 	        Heiduc.jsonrpc.loginFrontService.logout(function (r, e) {
 	            if (Heiduc.serviceFailed(e)) return;
 	            if (r.result == 'success') {
-	                location.href = '/';
+	                location.href = '/cms';
 	            }
 	            else {
 	                Heiduc.showServiceMessages(r);

@@ -129,23 +129,23 @@ Heiduc.message = function(s) {
 
 Heiduc.addCSSFile = function(css) {
 	$('head').append('<link rel="stylesheet" href="' + css + '" type="text/css" />');
-}
+};
 
 Heiduc.addCSSFiles = function(cssFiles) {
 	$.each(cssFiles, function(i, css) {
-		$('head').append('<link rel="stylesheet" href="' + css + '" type="text/css" />');
+		Heiduc.addCSSFile(css);
 	});
-}
+};
 
 Heiduc.removeCSSFile = function(css) {
 	$('head link[href="' + css + '"]').remove();
-}
+};
 
 Heiduc.removeCSSFiles = function(cssFiles) {
 	$.each(cssFiles, function(i, css) {
-		$('head link[href="' + css + '"]').remove();
+		Heiduc.removeCSSFile(css);
 	});
-}
+};
 
 // GAE Channel API channel for current page.
 // page should include <script type="text/javascript" src="/_ah/channel/jsapi"></script>
@@ -177,7 +177,7 @@ Heiduc.initChannel = function(onOpened, onMessage, onError, onClose) {
 	var transport = 'websocket';
 	var request = { url: "/_ah/channel/"+Heiduc.clientId,
         contentType : "application/json",
-        logLevel : 'debug',
+        logLevel : 'error',
         transport : transport ,
         fallbackTransport : "long-polling",
         trackMessageLength : false,

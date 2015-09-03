@@ -52,25 +52,26 @@ public class CacheServiceImpl implements CacheService {
 			 */
 
 			// resolve a cache manager
+			synchronized(this) {  
+				cache = Caching.getCache("heiducCache",String.class, Object.class);
+				if(cache == null){
+					CachingProvider cachingProvider = Caching.getCachingProvider();
+					CacheManager cacheManager = cachingProvider.getCacheManager();
+		
+					// configure the cache
+					MutableConfiguration<String, Object> config = new MutableConfiguration<String, Object>();
+					// uses store by reference
+					config.setStoreByValue(false).setTypes(String.class, Object.class)
+							.setExpiryPolicyFactory(
+									AccessedExpiryPolicy.factoryOf(ONE_HOUR))
+							.setStatisticsEnabled(true);
+		
+	//				cacheManager.destroyCache("heiducCache");
+					// create the cache
+					cache = cacheManager.createCache("heiducCache", config);
+				}
 			
-			cache = Caching.getCache("heiducCache",String.class, Object.class);
-			if(cache == null){
-				CachingProvider cachingProvider = Caching.getCachingProvider();
-				CacheManager cacheManager = cachingProvider.getCacheManager();
-	
-				// configure the cache
-				MutableConfiguration<String, Object> config = new MutableConfiguration<String, Object>();
-				// uses store by reference
-				config.setStoreByValue(false).setTypes(String.class, Object.class)
-						.setExpiryPolicyFactory(
-								AccessedExpiryPolicy.factoryOf(ONE_HOUR))
-						.setStatisticsEnabled(true);
-	
-				// create the cache
-				cache = cacheManager.createCache("heiducCache", config);
 			}
-			
-			
 			
 
 		} catch (CacheException e) {
