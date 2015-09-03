@@ -93,10 +93,13 @@ public class Messages {
 	 */
 	public static String getJSMessages() {
 		HeiducContext ctx = HeiducContext.getInstance();
-		String cached = (String)getBusiness().getSystemService().getCache().get(
-				I18N_CACHE_KEY + ctx.getLanguage());
 		
-		logger.debug("checking is i18n_" + ctx.getLanguage() + " in cache: " + (cached != null ? "yes":"no"));
+		String cached = (String)getBusiness().getSystemService().getCache().get(
+				I18N_CACHE_KEY + ctx.getLocale().toString());
+		
+		
+		
+		logger.debug("checking is i18n_" + ctx.getLocale().toString() + " in cache: " + (cached != null ? "yes":"no"));
 		
 		if (cached != null) return cached;	
 		Map<String, String> messages = new HashMap<String, String>();
@@ -146,9 +149,9 @@ public class Messages {
 		
 		cached = result.toString();
 		getBusiness().getSystemService().getCache().put(
-				I18N_CACHE_KEY + ctx.getLanguage(), cached);
+				I18N_CACHE_KEY + ctx.getLocale().toString(), cached);
 
-		logger.debug("put i18n_" + ctx.getLanguage() + " to cache");
+		logger.debug("put i18n_" + ctx.getLocale().toString() + " to cache");
 		
 		return cached;
 	}
@@ -157,7 +160,7 @@ public class Messages {
 		HeiducContext ctx = HeiducContext.getInstance();
 		for (LanguageEntity language : ctx.getBusiness().getDao().getLanguageDao().select()) {
 			getBusiness().getSystemService().getCache().remove(
-					I18N_CACHE_KEY + language.getCode());
+					I18N_CACHE_KEY + ctx.getLocale().toString());
 		}
 	}
 	
