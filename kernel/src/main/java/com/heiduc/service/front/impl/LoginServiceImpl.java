@@ -54,6 +54,7 @@ public class LoginServiceImpl extends AbstractServiceImpl
 				return passwordIncorrect;
 			}
 		}
+		
 		HeiducContext ctx = HeiducContext.getInstance();
 		ctx.getSession().set(AuthenticationFilter.USER_SESSION_ATTR, user.getEmail());
 		String originalView = ctx.getSession().getString(AuthenticationFilter.ORIGINAL_VIEW_KEY);
@@ -67,7 +68,9 @@ public class LoginServiceImpl extends AbstractServiceImpl
 		getMessageQueue().publish(new SimpleMessage(Topic.LOGIN.name(), 
 				user.getEmail()));
 		
-		return ServiceResponse.createSuccessResponse(originalView);
+		//处理siteUser
+		return ServiceResponse.createSuccessResponse(originalView,user.isSiteUser() ? "siteUser" : null);
+		
 	}
 
 	@Override
