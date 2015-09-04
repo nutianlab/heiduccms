@@ -271,6 +271,7 @@ function(LoginView, PagesView, IndexView,
 			Heiduc.createJSONRpc();
 		    Heiduc.initJSONRpcSystem(Heiduc.initBackServices);
 			Heiduc.initJSONRpc(function() {
+				try{
 				Heiduc.jsonrpc.userService.getLoggedIn(function(user) {
 					Heiduc.app.user = user;
 
@@ -344,6 +345,9 @@ function(LoginView, PagesView, IndexView,
 						Heiduc.app.navigate('index', true);
 					}
 				});
+			}catch(e){
+				
+			}
 			});
 		},
 		
