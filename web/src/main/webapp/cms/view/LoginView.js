@@ -58,6 +58,9 @@ function(tmpl, localeTmpl, loginTopbarTmpl) {
 	    			if (Heiduc.serviceFailed(e))
 	    				return false;
 	    			if (r.result == 'success') {
+	    				if(r.data == 'siteUser'){
+	    					location.href = '/';
+	    				}
 	    				Heiduc.infoMessage('#login-messages', messages('success_logging_in'));
 	    				Heiduc.app.loggedIn = true;
 	    	    		Heiduc.app.trigger('login');
