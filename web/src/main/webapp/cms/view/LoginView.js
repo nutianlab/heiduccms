@@ -59,7 +59,8 @@ function(tmpl, localeTmpl, loginTopbarTmpl) {
 	    				return false;
 	    			if (r.result == 'success') {
 	    				if(r.data == 'siteUser'){
-	    					location.href = '/';
+	    					Heiduc.error(messages('permission_denied'));
+	    					return false;
 	    				}
 	    				Heiduc.infoMessage('#login-messages', messages('success_logging_in'));
 	    				Heiduc.app.loggedIn = true;
