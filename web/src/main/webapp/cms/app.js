@@ -23,6 +23,7 @@ function(LoginView, PagesView, IndexView,
 
 		initialize:function() {
 			this.bind("login", this.login, this);
+			this.bind("renderSide", this.renderSide, this);
 			if (Heiduc.loggedIn) {
 				this.login();
 			}
@@ -280,79 +281,107 @@ function(LoginView, PagesView, IndexView,
 						{locale: localeHtml, "Heiduc": Heiduc, "messages": messages}
 					));
 					
-					//渲染侧边栏
-					$('#topbar').after(_.template(sidebarTmpl, 
-							{locale: localeHtml, "Heiduc": Heiduc, "messages": messages}
-						));
-						
-						$('.sidebar .nicescroll .wrapper').niceScroll({scrollspeed: 26, cursorcolor:"#429eee", cursorborder: 0, horizrailenabled: false, railoffset: {left:-1}});
-						// collapse
-					    $(".nav-sidebar .submenu > a").on('click', function (evt) {
-
-					        evt.preventDefault();
-
-					        var parent = $(this).closest('.sidebar');
-					        var submenuOpen = parent.find('.submenu .in');
-
-					        // Close Parent Open Submenus
-					        submenuOpen.collapse('hide');
-
-					        // Show Current Submenu
-					        $(this).next('ul').show().collapse('show');
-
-
-					        // display:none All Previously Opene Submenus
-					        submenuOpen.hide();
-
-					        // Toggle Open Classes
-					        if ($(this).hasClass("open")) {
-					            $(this).removeClass("open");
-					        }
-
-					        parent.find('a.open').removeClass('open');
-					        $(this).addClass('open');
-
-
-					    });
-
-					    // nicescroll resize without debounce delay on collapse
-					    $('sidebar').find('.collapse').on('shown.bs.collapse', function () {
-					        $(".sidebar").getNiceScroll().show().onResize();
-					    });
-					    
-					    
-					  //SIDEBAR TOGGLE
-					    $('.sidebar-switch').on('click', function () {
-					        if (parseInt($(window).width()) < 1169) {
-					            $('.wrapper').removeClass('sidebar-toggle');
-					            $('.wrapper').toggleClass('sidebar-toggle-sm');
-					        }
-					        else if (parseInt($(window).width()) > 1170) {
-					            $('.wrapper').toggleClass('sidebar-toggle');
-					        }
-					    });
-					    
-					    $(window).on('resize', function() {
-					        if ($(window).width() > 1169) {
-					            $('.wrapper').removeClass('sidebar-toggle-sm');
-					        }
-					        else if ($(window).width() < 1170) {
-					            $('.wrapper').removeClass('sidebar-toggle');
-					        }
-					    });
+					Heiduc.app.trigger("renderSide");
 
 					if (!Backbone.history.start()) {
 						Heiduc.app.navigate('index', true);
 					}
 				});
 			}catch(e){
-				
+				alert(e);
 			}
 			});
 		},
 		
 		renderSide: function(){
+			try{
+			var localeHtml = _.template(localeTmpl, {messages:messages});
+			Heiduc.jsonrpc.pluginService.select(function (r) {
+				plugins = r.list;
+				var html = '';//<li><a href="#plugins/config"><%= messages("plugins.config") %></a></li>
+				$.each(plugins, function(i, plugin) {
+					var configURL = '#plugin/' + plugin.id;
+			    	if (plugin.configURL) {
+			        	//configURL = '/file/plugins/' + plugin.name + '/' + plugin.configURL;
+			        	configURL = '#addons/' + plugin.name ;
+			        }
+			    	var roles = plugin.role == null ? [] : plugin.role.split(",");
+			    	if(Heiduc.app.user.user && $.inArray("ALL",roles)<0 ){
+			    		if($.inArray("USER",roles)<0 ){
+			    			return true;
+			    		}
+			    	}
+			    	html += '<li><a href="#'+ configURL + '">'+ Heiduc.message(plugin.title) +'</a></li>\r\n';
+			    	
+			    	
+				});
+				
+				//渲染侧边栏
+				var localeHtml = _.template(localeTmpl, {messages:messages});
+				$('#topbar').after(_.template(sidebarTmpl, 
+					{locale: localeHtml, "Heiduc": Heiduc, "messages": messages, "plugins" : html }
+				));
+				$('.sidebar .nicescroll .wrapper').niceScroll({scrollspeed: 26, cursorcolor:"#429eee", cursorborder: 0, horizrailenabled: false, railoffset: {left:-1}});
+				// collapse
+			    $(".nav-sidebar .submenu > a").on('click', function (evt) {
+
+			        evt.preventDefault();
+
+			        var parent = $(this).closest('.sidebar');
+			        var submenuOpen = parent.find('.submenu .in');
+
+			        // Close Parent Open Submenus
+			        submenuOpen.collapse('hide');
+
+			        // Show Current Submenu
+			        $(this).next('ul').show().collapse('show');
+
+
+			        // display:none All Previously Opene Submenus
+			        submenuOpen.hide();
+
+			        // Toggle Open Classes
+			        if ($(this).hasClass("open")) {
+			            $(this).removeClass("open");
+			        }
+
+			        parent.find('a.open').removeClass('open');
+			        $(this).addClass('open');
+
+
+			    });
+
+			    // nicescroll resize without debounce delay on collapse
+			    $('sidebar').find('.collapse').on('shown.bs.collapse', function () {
+			        $(".sidebar").getNiceScroll().show().onResize();
+			    });
+			    
+			    
+			  //SIDEBAR TOGGLE
+			    $('.sidebar-switch').on('click', function () {
+			        if (parseInt($(window).width()) < 1169) {
+			            $('.wrapper').removeClass('sidebar-toggle');
+			            $('.wrapper').toggleClass('sidebar-toggle-sm');
+			        }
+			        else if (parseInt($(window).width()) > 1170) {
+			            $('.wrapper').toggleClass('sidebar-toggle');
+			        }
+			    });
+			    
+			    $(window).on('resize', function() {
+			        if ($(window).width() > 1169) {
+			            $('.wrapper').removeClass('sidebar-toggle-sm');
+			        }
+			        else if ($(window).width() < 1170) {
+			            $('.wrapper').removeClass('sidebar-toggle');
+			        }
+			    });
+				
+			});
 			
+			}catch(e){
+				alert(e);
+			}
 		}
 		
 		
