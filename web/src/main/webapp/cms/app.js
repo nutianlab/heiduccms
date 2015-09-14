@@ -311,7 +311,7 @@ function(LoginView, PagesView, IndexView,
 			    			return true;
 			    		}
 			    	}
-			    	html += '<li><a href="#'+ configURL + '">'+ Heiduc.message(plugin.title) +'</a></li>\r\n';
+			    	html += '<li><a href="'+ configURL + '">'+ Heiduc.message(plugin.title) +'</a></li>\r\n';
 			    	
 			    	
 				});
