@@ -25,12 +25,14 @@ public class PluginEntity extends BaseEntityImpl {
 	private String configURL;
 	private String pageHeader;
 	private String version;
+	private String role;
 	private boolean disabled;
 
 	public PluginEntity() {
 		configStructure = "";
 		configData = "";
 		pageHeader = "";
+		role = "";
 		disabled = false;
     }
     
@@ -47,6 +49,7 @@ public class PluginEntity extends BaseEntityImpl {
 		configURL = getStringProperty(entity, "configURL");
 		pageHeader = getTextProperty(entity, "pageHeader");
 		version = getStringProperty(entity, "version");
+		role = getStringProperty(entity, "role");
 		disabled = getBooleanProperty(entity, "disabled", true);
 	}
 	
@@ -63,6 +66,7 @@ public class PluginEntity extends BaseEntityImpl {
 		setProperty(entity, "configURL", configURL, false);
 		setTextProperty(entity, "pageHeader", pageHeader);
 		setProperty(entity, "version", version, false);
+		setProperty(entity, "role", role, false);
 		setProperty(entity, "disabled", disabled, true);
 	}
 
@@ -153,6 +157,14 @@ public class PluginEntity extends BaseEntityImpl {
 
 	public void setVersion(String version) {
 		this.version = version;
+	}
+	
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 	public boolean isDisabled() {
