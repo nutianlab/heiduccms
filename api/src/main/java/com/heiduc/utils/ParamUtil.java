@@ -63,7 +63,9 @@ public class ParamUtil {
 	
 	static public String filterXSS(String value) {
 		//return StringEscapeUtils.escapeHtml(xssFilter.filter(value));
-		return StringEscapeUtils.escapeHtml(value);
+		
+//		return StringEscapeUtils.escapeHtml(value);
+		return HtmlUtils.htmlEscape(value);
 	}
 	
 }
