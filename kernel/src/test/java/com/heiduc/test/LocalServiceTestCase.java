@@ -23,5 +23,10 @@ public abstract class LocalServiceTestCase extends TestCase {
     	helper.tearDown();
     	super.tearDown();
     }*/
+	
+	@Override
+    public void setUp() throws Exception {
+        super.setUp();
+    }
 
 }

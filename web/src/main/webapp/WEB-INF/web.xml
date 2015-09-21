@@ -76,6 +76,14 @@
     <url-pattern>/rest/*</url-pattern>
   </filter-mapping>
   <filter>
+    <filter-name>Oauth2Filter</filter-name>
+    <filter-class>org.heiduc.oauth2.filter.Oauth2Filter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>Oauth2Filter</filter-name>
+    <url-pattern>/api/pro/*</url-pattern>
+  </filter-mapping>
+  <filter>
     <filter-name>RewriteFilter</filter-name>
     <filter-class>com.heiduc.filter.RewriteFilter</filter-class>
   </filter>
@@ -91,6 +99,24 @@
     <filter-name>SiteFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+  
+  <servlet>
+    <servlet-name>Authorize</servlet-name>
+    <servlet-class>org.heiduc.oauth2.servlet.AuthorizeServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Authorize</servlet-name>
+    <url-pattern>/authorize</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>AccessTokenServlet</servlet-name>
+    <servlet-class>org.heiduc.oauth2.servlet.AccessTokenServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AccessTokenServlet</servlet-name>
+    <url-pattern>/access_token</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <servlet-name>com.heiduc.servlet.ServiceServlet</servlet-name>
     <servlet-class>com.heiduc.servlet.ServiceServlet</servlet-class>

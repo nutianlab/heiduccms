@@ -13,6 +13,8 @@ import com.heiduc.enums.UserRole;
 public interface UserDao extends BaseDao<UserEntity> {
 
 	UserEntity getByEmail(final String email);
+	
+	UserEntity getByName(final String name);
 
 	List<UserEntity> getByRole(final UserRole role);
 

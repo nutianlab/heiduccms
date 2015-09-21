@@ -21,6 +21,7 @@ import com.heiduc.business.FormDataBusiness;
 import com.heiduc.business.GroupBusiness;
 import com.heiduc.business.ImportExportBusiness;
 import com.heiduc.business.MessageBusiness;
+import com.heiduc.business.Oauth2Business;
 import com.heiduc.business.PageAttributeBusiness;
 import com.heiduc.business.PageBusiness;
 import com.heiduc.business.PicasaBusiness;
@@ -79,6 +80,7 @@ public class BusinessImpl implements Business, Serializable {
 	private FormDataBusiness formDataBusiness;
 	private PageAttributeBusiness pageAttributeBusiness;
 	private RewriteUrlBusiness rewriteUrlBusiness;
+	private Oauth2Business oauth2Business;
 
 	private SetupBean setupBean;
 
@@ -477,6 +479,19 @@ public class BusinessImpl implements Business, Serializable {
 	@Override
 	public void setRewriteUrlBusiness(RewriteUrlBusiness bean) {
 		rewriteUrlBusiness = bean;
+	}
+
+	@Override
+	public Oauth2Business getOauth2Business() {
+		if (oauth2Business == null) {
+			oauth2Business = new Oauth2BusinessImpl();
+		}
+		return oauth2Business;
+	}
+
+	@Override
+	public void setOauth2Business(Oauth2Business bean) {
+		oauth2Business = bean;
 	}
 
 }
