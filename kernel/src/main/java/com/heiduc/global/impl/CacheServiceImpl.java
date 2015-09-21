@@ -90,11 +90,11 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
-	public boolean containsKey(Object arg0) {
-		if (localCache.containsKey(arg0)) {
+	public boolean containsKey(Object key) {
+		if (localCache.containsKey(key)) {
 			return true;
 		}
-		return cache.containsKey(arg0);
+		return cache.containsKey(key);
 	}
 
 	@Override
@@ -131,10 +131,8 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
-	public void deregisterCacheEntryListener(
-			CacheEntryListenerConfiguration arg0) {
-		log.error("deregisterCacheEntryListener(CacheEntryListenerConfiguration arg0) not implemented");		
-		
+	public void deregisterCacheEntryListener(CacheEntryListenerConfiguration cacheEntryListenerConfiguration) {
+		cache.deregisterCacheEntryListener(cacheEntryListenerConfiguration);
 	}
 
 	@Override
@@ -158,21 +156,21 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
-	public Object getAndPut(Object arg0, Object arg1) {
-		log.error("getAndPut(Object arg0, Object arg1) not implemented");
-		return null;
+	public Object getAndPut(Object key, Object value) {
+		localCache.remove(key);
+		return cache.getAndPut(key, value);
 	}
 
 	@Override
-	public Object getAndRemove(Object arg0) {
-		log.error("getAndRemove(Object arg0) not implemented");
-		return null;
+	public Object getAndRemove(Object key) {
+		localCache.remove(key);
+		return cache.getAndRemove(key);
 	}
 
 	@Override
-	public Object getAndReplace(Object arg0, Object arg1) {
-		log.error("getAndReplace(Object arg0, Object arg1) not implemented");
-		return null;
+	public Object getAndReplace(Object key, Object value) {
+		localCache.remove(key);
+		return cache.getAndReplace(key, value);
 	}
 
 	@Override
@@ -181,8 +179,8 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
-	public Configuration getConfiguration(Class arg0) {
-		return cache.getConfiguration(arg0);
+	public Configuration getConfiguration(Class clazz) {
+		return cache.getConfiguration(clazz);
 	}
 
 	@Override
@@ -191,14 +189,14 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
-	public Object invoke(Object arg0, EntryProcessor arg1, Object... arg2)
+	public Object invoke(Object key, EntryProcessor entryProcessor, Object... arguments)
 			throws EntryProcessorException {
-		return cache.invoke(arg0, arg1, arg2);
+		return cache.invoke(key, entryProcessor, arguments);
 	}
 
 	@Override
-	public Map invokeAll(Set arg0, EntryProcessor arg1, Object... arg2) {
-		return cache.invokeAll(arg0, arg1, arg2);
+	public Map invokeAll(Set keys, EntryProcessor entryProcessor, Object... arguments) {
+		return cache.invokeAll(keys, entryProcessor, arguments);
 	}
 
 	@Override
@@ -212,8 +210,9 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
-	public void loadAll(Set arg0, boolean arg1, CompletionListener arg2) {
-		log.error("loadAll(Set arg0, boolean arg1, CompletionListener arg2) not implemented");		
+	public void loadAll(Set keys, boolean replaceExistingValues, CompletionListener completionListener) {
+		localCache.clear();
+		cache.loadAll(keys, replaceExistingValues, completionListener);
 		
 	}
 
@@ -230,14 +229,13 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
-	public boolean putIfAbsent(Object arg0, Object arg1) {
-		log.error("putIfAbsent(Object arg0, Object arg1) not implemented");		
-		return false;
+	public boolean putIfAbsent(Object key, Object value) {
+		return cache.putIfAbsent(key, value);
 	}
 
 	@Override
-	public void registerCacheEntryListener(CacheEntryListenerConfiguration arg0) {
-		log.error("registerCacheEntryListener(CacheEntryListenerConfiguration arg0) not implemented");		
+	public void registerCacheEntryListener(CacheEntryListenerConfiguration cacheEntryListenerConfiguration) {
+		cache.registerCacheEntryListener(cacheEntryListenerConfiguration);
 		
 	}
 
@@ -254,37 +252,44 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
-	public boolean remove(Object arg0, Object arg1) {
-		log.error("remove(Object arg0, Object arg1) not implemented");		
-		return false;
+	public boolean remove(Object key, Object oldValue) {
+		localCache.remove(key);
+		return cache.remove(key,oldValue);
 	}
 
 	@Override
 	public void removeAll() {
-		log.error("removeAll() not implemented");
+		localCache.clear();
+		cache.removeAll();
 	}
 
 	@Override
-	public void removeAll(Set arg0) {
-		log.error("removeAll(Set arg0) not implemented");
+	public void removeAll(Set keys) {
+		for (Object key : keys) {
+			if (localCache.containsKey(key)) {
+				localCache.remove(key);
+			}
+		}
+		cache.removeAll(keys);
 	}
 
 	@Override
-	public boolean replace(Object arg0, Object arg1) {
-		log.error("replace(Object arg0, Object arg1) not implemented");
-		return false;
+	public boolean replace(Object key, Object value) {
+		localCache.put(key+"", value);
+		return cache.replace(key, value);
 	}
 
 	@Override
-	public boolean replace(Object arg0, Object arg1, Object arg2) {
-		log.error("replace(Object arg0, Object arg1, Object arg2) not implemented");
-		return false;
+	public boolean replace(Object key, Object oldValue, Object newValue) {
+		if (localCache.containsKey(key) && oldValue.equals(localCache.get(key))) {
+			localCache.put(key+"", newValue);
+		}
+		return cache.replace(key, oldValue, newValue);
 	}
 
 	@Override
-	public Object unwrap(Class arg0) {
-		log.error("unwrap(Class arg0) not implemented");
-		return null;
+	public Object unwrap(Class clazz) {
+		return cache.unwrap(clazz);
 	}
 	
 	@Override
