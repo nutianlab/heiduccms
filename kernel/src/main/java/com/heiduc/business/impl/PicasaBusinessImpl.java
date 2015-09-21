@@ -39,7 +39,7 @@ public class PicasaBusinessImpl extends AbstractBusinessImpl
 	@Override
 	public PicasawebService getPicasawebService() {
 		if (picasawebService == null) {
-			picasawebService = new PicasawebService("vosao-cms");
+			picasawebService = new PicasawebService("heiduc-cms");
 			ConfigEntity config = HeiducContext.getInstance().getConfig();
 			if (config.isEnablePicasa()) {
 				try {

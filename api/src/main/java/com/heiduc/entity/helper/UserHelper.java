@@ -20,6 +20,6 @@ public class UserHelper {
 	}
 	
 	public static UserEntity ADMIN = new UserEntity("System", "", 
-			"system@vosao.org", UserRole.ADMIN);
+			"system@heiduc.com", UserRole.ADMIN);
 	
 }
