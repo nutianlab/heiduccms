@@ -30,6 +30,12 @@ public class UserDaoImpl extends BaseDaoImpl<UserEntity>
 		q.addFilter("email", EQUAL, email);
 		return selectOne(q, "getByEmail", params(email));
 	}
+	
+	public UserEntity getByName(final String name) {
+		Query q = newQuery();
+		q.addFilter("name", EQUAL, name);
+		return selectOne(q, "getByName", params(name));
+	}
 
 	public List<UserEntity> getByRole(final UserRole role) {
 		Query q = newQuery();

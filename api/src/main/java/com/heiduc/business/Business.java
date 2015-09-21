@@ -112,4 +112,8 @@ public interface Business {
 	
 	RewriteUrlBusiness getRewriteUrlBusiness();
 	void setRewriteUrlBusiness(RewriteUrlBusiness bean);
+	
+	Oauth2Business getOauth2Business();
+	void setOauth2Business(Oauth2Business bean);
+	
 }
