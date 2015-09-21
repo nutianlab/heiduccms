@@ -100,5 +100,8 @@ public interface Dao {
 	
 	PageAttributeDao getPageAttributeDao();
 	void setPageAttributeDao(final PageAttributeDao bean);
+	
+	Oauth2Dao getOauth2Dao();
+	void setOauth2Dao(final Oauth2Dao bean);
 
 }

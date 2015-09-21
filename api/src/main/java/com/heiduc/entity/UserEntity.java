@@ -24,11 +24,13 @@ public class UserEntity extends BaseEntityImpl {
 	private String forgotPasswordKey;
 	private boolean disabled;
 	private String timezone;
+	private String salt;
 	
 	public UserEntity() {
 		role = UserRole.USER;
 		disabled = false;
 		timezone = TimeZone.getDefault().getID();
+		salt = "";
 	}
 	
 	@Override
@@ -41,6 +43,7 @@ public class UserEntity extends BaseEntityImpl {
 		forgotPasswordKey = getStringProperty(entity, "forgotPasswordKey");
 		disabled = getBooleanProperty(entity, "disabled", false);
 		timezone = getStringProperty(entity, "timezone");
+		salt = getStringProperty(entity, "salt");
 	}
 	
 	@Override
@@ -53,6 +56,7 @@ public class UserEntity extends BaseEntityImpl {
 		setProperty(entity, "forgotPasswordKey", forgotPasswordKey, true);
 		setProperty(entity, "disabled", disabled, false);
 		setProperty(entity, "timezone", timezone, false);
+		setProperty(entity, "salt", salt, false);
 	}
 
 	public UserEntity(String aName, String aPassword,
@@ -142,6 +146,14 @@ public class UserEntity extends BaseEntityImpl {
 
 	public void setDisabled(boolean disabled) {
 		this.disabled = disabled;
+	}
+	
+	public String getSalt() {
+		return salt;
+	}
+
+	public void setSlat(String salt) {
+		this.salt = salt;
 	}
 
 	public String getTimezone() {

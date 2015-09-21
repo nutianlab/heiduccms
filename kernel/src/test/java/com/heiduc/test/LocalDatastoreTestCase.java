@@ -21,5 +21,10 @@ public abstract class LocalDatastoreTestCase extends LocalServiceTestCase {
     	//helper.tearDown();
     	super.tearDown();
     }*/
+	
+	@Override
+    public void setUp() throws Exception {
+        super.setUp();
+    }
 
 }
