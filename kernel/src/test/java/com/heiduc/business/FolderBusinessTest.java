@@ -59,7 +59,7 @@ public class FolderBusinessTest extends AbstractBusinessTest {
 	/**
 	 * /images/
 	 *        /logos/
-	 *              /vosao 
+	 *              /heiduc 
 	 *        
 	 *        /photos
 	 *        /test
@@ -71,7 +71,7 @@ public class FolderBusinessTest extends AbstractBusinessTest {
 		FolderEntity logos = addFolder("logos", images.getId());
 		FolderEntity photos = addFolder("photos", images.getId());
 		FolderEntity test = addFolder("test", images.getId());
-		FolderEntity vosao = addFolder("vosao", logos.getId());
+		FolderEntity heiduc = addFolder("heiduc", logos.getId());
 		TreeItemDecorator<FolderEntity> treeRoot = getBusiness().getFolderBusiness()
 				.getTree();
 		
@@ -96,12 +96,12 @@ public class FolderBusinessTest extends AbstractBusinessTest {
 		assertEquals(test.getId(), result.getEntity().getId());
 
 		result = getBusiness().getFolderBusiness().findFolderByPath(treeRoot, 
-			"/images/logos/vosao");
+			"/images/logos/heiduc");
 		assertNotNull(result);
-		assertEquals(vosao.getId(), result.getEntity().getId());
+		assertEquals(heiduc.getId(), result.getEntity().getId());
 
 		result = getBusiness().getFolderBusiness().findFolderByPath(treeRoot, 
-			"/images/logos/vosao1");
+			"/images/logos/heiduc1");
 		assertNull(result);
 	}	
 
@@ -135,7 +135,7 @@ public class FolderBusinessTest extends AbstractBusinessTest {
 	/**
 	 * /images/
 	 *        /logos/
-	 *              /vosao 
+	 *              /heiduc 
 	 *        
 	 *        /photos
 	 *        /test
@@ -147,13 +147,13 @@ public class FolderBusinessTest extends AbstractBusinessTest {
 		FolderEntity logos = addFolder("logos", images.getId());
 		FolderEntity photos = addFolder("photos", images.getId());
 		FolderEntity test = addFolder("test", images.getId());
-		FolderEntity vosao = addFolder("vosao", logos.getId());
+		FolderEntity heiduc = addFolder("heiduc", logos.getId());
 		assertEquals("/images", getBusiness().getFolderBusiness()
 				.getFolderPath(images));
 		assertEquals("/images/logos", getBusiness().getFolderBusiness()
 				.getFolderPath(logos));
-		assertEquals("/images/logos/vosao", getBusiness().getFolderBusiness()
-				.getFolderPath(vosao));
+		assertEquals("/images/logos/heiduc", getBusiness().getFolderBusiness()
+				.getFolderPath(heiduc));
 		assertEquals("/images/photos", getBusiness().getFolderBusiness()
 				.getFolderPath(photos));
 	}
