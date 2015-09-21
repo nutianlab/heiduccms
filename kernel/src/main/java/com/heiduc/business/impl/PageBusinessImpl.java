@@ -197,9 +197,9 @@ public class PageBusinessImpl extends AbstractBusinessImpl
 		context.put("request", HeiducContext.getInstance().getRequest());
 		context.put("response", HeiducContext.getInstance().getResponse());
 		context.put("timezone", getBusiness().getTimeZone());
-		HeiducTool vosaoTool = new HeiducTool();
-		vosaoTool.setPage(page);
-		context.put("vosao", vosaoTool);
+		HeiducTool heiducTool = new HeiducTool();
+		heiducTool.setPage(page);
+		context.put("heiduc", heiducTool);
 		return context;
 	}
 
