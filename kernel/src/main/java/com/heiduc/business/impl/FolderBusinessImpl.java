@@ -291,10 +291,8 @@ public class FolderBusinessImpl extends AbstractBusinessImpl
 
 	@Override
 	public FolderEntity getByPath(String path) {
-		/*TreeItemDecorator<FolderEntity> result = findFolderByPath(getTree(), path);
-		return result != null ? result.getEntity() : null;*/
-		FolderEntity result = getDao().getFolderDao().getByPath(path);
-		return result != null ? result: null;
+		TreeItemDecorator<FolderEntity> result = findFolderByPath(getTree(), path);
+		return result != null ? result.getEntity() : null;
 	}
 	
 }
