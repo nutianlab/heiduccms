@@ -37,7 +37,7 @@
 			<version>2.2</version>
 		</dependency>
 
-		<!--  -->
+		
 		<dependency>
 			<groupId>javax.cache</groupId>
 			<artifactId>cache-api</artifactId>
@@ -48,6 +48,27 @@
 			<artifactId>cache-ri-impl</artifactId>
 			<version>1.0.0-RC1</version>
 		</dependency>
+		
+		<!-- resteasy -->
+		<!-- 
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>jaxrs-api</artifactId>
+			<version>3.0.12.Final</version>
+		</dependency>
+		 <dependency>
+		    <groupId>org.jboss.resteasy</groupId>
+		    <artifactId>resteasy-servlet-initializer</artifactId>
+		    <version>3.0.13.Final</version>
+		</dependency>
+		 -->
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+			<version>3.0.13.Final</version>
+		</dependency>
+		
+		<!--  -->
 
 
 		<!--
