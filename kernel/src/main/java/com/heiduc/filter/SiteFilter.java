@@ -35,8 +35,6 @@ import com.heiduc.i18n.Messages;
 public class SiteFilter extends AbstractFilter implements Filter {
     
     public static final String[] SKIP_URLS = {
-    	"/authorize",
-    	"/access_token",
 		"/_ah",
 		"/cms",
 		"/static",
