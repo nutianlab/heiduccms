@@ -4,8 +4,11 @@ package com.heiduc.business.plugin;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServlet;
+
+import org.jboss.resteasy.spi.Registry;
 
 import com.heiduc.business.Business;
 import com.heiduc.service.BackService;
@@ -67,4 +70,11 @@ public interface PluginEntryPoint {
 	String getBundleName();
 	
 	Map<String,String> getRewriteRules();
+	
+	/**
+	 * restful
+	 * @return
+	 */
+
+	Registry getRegistry();
 }
