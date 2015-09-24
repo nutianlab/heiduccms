@@ -19,9 +19,8 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
 import com.heiduc.business.PluginBusiness;
-import com.heiduc.business.impl.plugin.PluginClassLoaderFactoryImpl;
+import com.heiduc.business.impl.plugin.PluginClassLoaderFactory;
 import com.heiduc.business.impl.plugin.PluginLoader;
-import com.heiduc.business.plugin.PluginClassLoaderFactory;
 import com.heiduc.business.plugin.PluginCronJob;
 import com.heiduc.business.plugin.PluginEntryPoint;
 import com.heiduc.business.plugin.PluginResourceCache;
@@ -48,12 +47,11 @@ public class PluginBusinessImpl extends AbstractBusinessImpl
 	private static final long serialVersionUID = 1L;
 	private PluginLoader pluginLoader;
 	private PluginClassLoaderFactory pluginClassLoaderFactory;
-	private Map<String, PluginEntryPoint> plugins;
-	private Map<String, PluginEntity> pluginTimestamps;
+	private static Map<String, PluginEntryPoint> plugins = new HashMap<String, PluginEntryPoint>();
+	private static Map<String, PluginEntity> pluginTimestamps = new HashMap<String, PluginEntity>();
 	
 	public PluginBusinessImpl() {
-		plugins = new HashMap<String, PluginEntryPoint>();
-		pluginTimestamps = new HashMap<String, PluginEntity>();
+		
 	}
 	
 	/**
@@ -87,7 +85,7 @@ public class PluginBusinessImpl extends AbstractBusinessImpl
 
 	public PluginClassLoaderFactory getPluginClassLoaderFactory() {
 		if (pluginClassLoaderFactory == null) {
-			pluginClassLoaderFactory = new PluginClassLoaderFactoryImpl();
+			pluginClassLoaderFactory = PluginClassLoaderFactory.getInstance();
 		}
 		return pluginClassLoaderFactory;
 	}
