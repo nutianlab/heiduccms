@@ -8,20 +8,31 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.heiduc.business.plugin.PluginClassLoaderFactory;
 import com.heiduc.business.plugin.PluginResourceCache;
 import com.heiduc.common.HeiducContext;
 import com.heiduc.dao.Dao;
 import com.heiduc.global.SystemService;
 
-public class PluginClassLoaderFactoryImpl implements PluginClassLoaderFactory {
+public class PluginClassLoaderFactory {
 
 	private static final Log logger = LogFactory.getLog(PluginClassLoader.class);
 	
 	private Map<String, ClassLoader> classLoaders;
 	private PluginResourceCache cache;
+	private static PluginClassLoaderFactory instance;
+	private PluginClassLoaderFactory (){
+		
+	}
 	
-	public ClassLoader getClassLoader(String pluginName) {
+	public static synchronized PluginClassLoaderFactory getInstance(){
+		if(instance == null){
+			logger.info("PluginClassLoaderFactory instance is null. ");
+			instance = new PluginClassLoaderFactory();
+		}
+		return instance;
+	}
+	
+	public synchronized ClassLoader getClassLoader(String pluginName) {
 		if (!getClassLoaders().containsKey(pluginName)) {
 			logger.info("creating class loader " + pluginName);
 			PluginClassLoader classLoader = new PluginClassLoader(
@@ -36,7 +47,7 @@ public class PluginClassLoaderFactoryImpl implements PluginClassLoaderFactory {
 	}
 	
 	private Map<String, ClassLoader> getClassLoaders() {
-		if (classLoaders == null) {
+		if(classLoaders == null){
 			classLoaders = new HashMap<String, ClassLoader>();
 		}
 		return classLoaders;
