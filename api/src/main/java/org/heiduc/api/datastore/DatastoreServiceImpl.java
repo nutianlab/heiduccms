@@ -11,53 +11,28 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
-import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 
 public class DatastoreServiceImpl implements DatastoreService {
 
-	private DB db;
+	private DB database;
 //	Datastore datastore;
 	private IdWorker idWorker = new IdWorker(1);
 	
 	public DatastoreServiceImpl(){
-		/*
-		   Root User:     admin
-		   Root Password: NaZiYp1n9X4l
-		   Database Name: cms
-
-		Connection URL: mongodb://$OPENSHIFT_MONGODB_DB_HOST:$OPENSHIFT_MONGODB_DB_PORT/
-*/			
-		
-//		Mongo mongo = new Mongo("localhost");
-//		Mongo mongo = new Mongo(Constants.DATABASE_URI);
-//		mongo.dropDatabase(dbName)
-//		DB db = mongo.getDB("cms");
-//		mongo,Constants.DATABASE_NAME
-		Mongo mongo = null;
+		MongoClient mongo = null;
 		try {
-			mongo = new Mongo(Constants.DATABASE_HOST,Constants.DATABASE_PORT);
-//			mongo = new Mongo(Constants.DATABASE_URL);
-			db = mongo.getDB(Constants.DATABASE_NAME);
+			mongo = new MongoClient(new MongoClientURI(Constants.DATABASE_URI));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-		if(!"".equals(Constants.DATABASE_USER_NAME)){
-			boolean auth = db.authenticate(Constants.DATABASE_USER_NAME, Constants.DATABASE_USER_PASSWORD.toCharArray());
-			if(!auth){
-				System.out.println(" MongoDB 鉴权失败.");
-			}
-		}
+		database = mongo.getDB(Constants.DATABASE_NAME);
 	}
-	
-	/*public DatastoreServiceImpl(Mongo mongo,String dbname) {
-		
-		this.db = mongo.getDB(dbname);
-//		datastore = new Morphia().createDatastore(mongo, dbname);
-	}*/
 
 	@Override
 	public PreparedQuery prepare(Query query) {
-		return new PreparedQueryImpl(this.db, query);
+		return new PreparedQueryImpl(this.database, query);
 	}
 
 	@Override
@@ -69,7 +44,7 @@ public class DatastoreServiceImpl implements DatastoreService {
             return result;*/
 		
 		Entity entity = new Entity(key);
-		DBCollection collection = db.getCollection(key.getKind());
+		DBCollection collection = database.getCollection(key.getKind());
 		
 		DBCursor cursor = collection.find(new BasicDBObject("_id",key.getId()));
 		
@@ -119,7 +94,8 @@ public class DatastoreServiceImpl implements DatastoreService {
 	@Override
 	public void delete(Key key) {
 //		datastore.delete(key);
-		DBCollection collection = db.getCollection(key.getKind());
+		DBCollection collection = database.getCollection(key.getKind());
+//		collection.deleteOne(new BasicDBObject("_id",key.getId()));
 		collection.remove(new BasicDBObject("_id",key.getId()));
 	}
 
@@ -133,36 +109,17 @@ public class DatastoreServiceImpl implements DatastoreService {
 
 	@Override
 	public Key put(Entity entity) {
-		DBCollection collection = db.getCollection(entity.getKey().getKind());
+		DBCollection collection = database.getCollection(entity.getKey().getKind());
 //		collection.insert((DBObject)JSON.parse(JSON.serialize()));
 		DBObject doc = new BasicDBObject(entity.getPropertyMap());
-		if(entity.getKey().getId() == 0L){
-//			long _id = ByteBuffer.wrap(UUID.randomUUID().toString().getBytes()).getLong();
+		if(entity.getKey().getId() == 0L){//插入
 			long _id = idWorker.nextId();
 			doc.put("_id", _id);
 			entity.getKey().setId(_id);
 		}
 		collection.save(doc);
 		
-		/*ObjectId objectId = (ObjectId)doc.get("_id");
-		System.out.println("objectId =  "+doc.get("_id").toString());
-		
-		
-		System.out.println("objectId long = "+ByteBuffer.wrap(objectId.toByteArray()).getLong());
-		System.out.println();
-		
-		long longid = Utils.bytes2long(doc.get("_id").toString().getBytes());
-		System.out.println("longid = "+longid);
-		
-		byte[] b = Utils.long2bytes(longid);
-		String s = new String(b);
-		System.out.println("s = "+s);
-		System.out.println("--------------------------------------");*/
-//		ObjectId id = new ObjectId();
-//		ByteBuffer.wrap(id.toByteArray()).getLong();
-//		System.out.println(objectId);
-		return entity.getKey();//new Key(entity.getKey().getKind(), entity.getKey().getParent(), _id);
-//		return (Key)put(Collections.singleton(entity)).get(0);
+		return entity.getKey();
 	}
 	
 	/*public List<Key> put(Iterable<Entity> entities)

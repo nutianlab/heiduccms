@@ -16,4 +16,6 @@ public interface PreparedQuery {
 	
 	Iterator<Entity> asIterator(FetchOptions fetchOptions);
 
+	int count(FetchOptions fetchOptions);
+
 }

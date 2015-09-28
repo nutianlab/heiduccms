@@ -240,22 +240,28 @@ public class BaseDaoImpl<T extends BaseEntity>
 
 	protected List<T> select(Query query, String queryId, int queryLimit, 
 			Object[] params) {
-		List<T> result = (List<T>) getQueryCache().getQuery(clazz, queryId, 
-				params);
+		List<T> result = (List<T>) getQueryCache().getQuery(clazz, queryId, queryLimit,params);
 		if (result == null) {
-			getDao().getDaoStat().incQueryCalls();
+//			getDao().getDaoStat().incQueryCalls();
 			result = selectNotCache(query);
-			getQueryCache().putQuery(clazz, queryId, params, 
-					(List<BaseEntity>)result);			
+			getQueryCache().putQuery(clazz, queryId, params, queryLimit,(List<BaseEntity>)result);			
 		}
 		return result;
 	}
 
 	protected List<T> selectNotCache(Query query) {
+		return selectNotCache(query,0);
+	}
+	
+	protected List<T> selectNotCache(Query query,int queryLimit) {
 		getDao().getDaoStat().incQueryCalls();
 		PreparedQuery p = getDatastore().prepare(query);
 		List<Entity> entities = new ArrayList<Entity>();
-		for (Entity entity : p.asIterable(FetchOptions.Builder.withChunkSize(CHUNK_SIZE))) {
+		FetchOptions fetchOptions = FetchOptions.Builder.withChunkSize(CHUNK_SIZE);
+		if(queryLimit > 0){
+			fetchOptions = fetchOptions.limit(queryLimit);
+		}
+		for (Entity entity : p.asIterable(fetchOptions)) {
 			entities.add(entity);
 		}
 		return createModels(entities);
@@ -299,9 +305,9 @@ public class BaseDaoImpl<T extends BaseEntity>
 		getDao().getDaoStat().incQueryCalls();
 		query.setKeysOnly();
 		PreparedQuery p = getDatastore().prepare(query);
-		int count = 0;
-		for (Entity entity : p.asIterable(FetchOptions.Builder.withChunkSize(CHUNK_SIZE))) count++;
-		return count;
+//		int count = 0;
+//		for (Entity entity : p.asIterable(FetchOptions.Builder.withChunkSize(CHUNK_SIZE))) count++;
+		return p.count(FetchOptions.Builder.withChunkSize(CHUNK_SIZE));
 	}
 
 	@Override
