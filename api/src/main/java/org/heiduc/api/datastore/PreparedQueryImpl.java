@@ -2,17 +2,14 @@ package org.heiduc.api.datastore;
 
 import static org.heiduc.api.datastore.FetchOptions.Builder.withDefaults;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.beanutils.PropertyUtils;
-import org.bson.types.Binary;
 import org.heiduc.api.datastore.Query.FilterOperator;
 import org.heiduc.api.datastore.Query.FilterPredicate;
+import org.heiduc.api.datastore.Query.SortPredicate;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -23,11 +20,11 @@ import com.mongodb.DBObject;
 
 public class PreparedQueryImpl implements PreparedQuery {
 
-	private DB db;
+	private DB database;
 	private final Query query;
 	
-	public PreparedQueryImpl(DB db , Query query) {
-		this.db = db;
+	public PreparedQueryImpl(DB database , Query query) {
+		this.database = database;
 		this.query = query;
 	}
 
@@ -54,9 +51,20 @@ public class PreparedQueryImpl implements PreparedQuery {
 	@Override
 	public Iterator<Entity> asIterator(FetchOptions fetchOptions) {
 		Collection<Entity> list = new ArrayList<Entity>();
-		DBCollection collection = db.getCollection(query.getKind());
+		DBCollection collection = database.getCollection(query.getKind());
 		DBCursor cursor = collection.find(createDBObject());
-		while(cursor.hasNext()){
+		//排序
+		DBObject orderBy = orderBy();
+		if(orderBy != null){
+			cursor.sort(orderBy);
+		}
+		//限制返回行数
+		if(fetchOptions.getLimit() != null && fetchOptions.getLimit() > 0){
+			cursor = cursor.limit(fetchOptions.getLimit());
+		}
+		
+		while(cursor.hasNext() ){
+			
 			DBObject dbo = cursor.next();
 			try{
 				Long.valueOf(dbo.get("_id").toString());
@@ -66,36 +74,32 @@ public class PreparedQueryImpl implements PreparedQuery {
 			
 			Entity entity = new Entity(new Key(query.getKind(),null,Long.valueOf(dbo.get("_id").toString())));
 			entity.getPropertyMap().putAll(dbo.toMap());
-			/*Iterator it = dbo.toMap().entrySet().iterator();   
-		    while (it.hasNext()) {   
-		        Map.Entry entry = (Map.Entry) it.next();   
-		        Object _key = entry.getKey();   
-		        Object _value = entry.getValue();
-		        if (_value instanceof byte[]) {
-		        	System.out.println("_value = "+dbo.get(_key.toString()));
-		        	_value = new Blob((byte[])_value);
-				}
-		        if(_value != null){
-		        	System.out.println("key = "+_key+"\t value="+_value+"\t type="+_value.getClass().getSimpleName());
-		        }
-		        entity.getPropertyMap().put(_key, _value);
-//		        System.out.println("key = "+_key+"\t value="+_value);
-		    }*/ 
-			/*for (String k :  dbo.keySet()) {
-				
-			}*/
-			/*try {
-				PropertyUtils.copyProperties(entity.getPropertyMap(), dbo.);
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (NoSuchMethodException e) {
-				e.printStackTrace();
-			}*/
+			
 			list.add(entity);
 		}
 		return list.iterator();
+	}
+	
+	@Override
+	public int count(FetchOptions fetchOptions){
+		DBCollection collection = database.getCollection(query.getKind());
+		collection.find(createDBObject());
+		return Integer.valueOf(collection.count()+"");
+	}
+	
+	
+	private DBObject orderBy(){
+		List<SortPredicate> sortPredicates = query.getSortPredicates();
+		if(sortPredicates.size() == 0){
+			return null;
+		}
+		
+		BasicDBObject orderBy = new BasicDBObject();
+		//-1 表示倒序
+		for (SortPredicate sortPredicate : sortPredicates) {
+			orderBy.put(sortPredicate.getPropertyName(), sortPredicate.getDirection() == Query.SortDirection.DESC ? -1 : "");
+		}
+		return orderBy;
 	}
 	
 	

@@ -12,8 +12,8 @@ import java.util.Map;
 public class Query implements Serializable {
 
 	private final String kind;
-	private final List sortPredicates;
-	private final List filterPredicates;
+	private final List<SortPredicate> sortPredicates;
+	private final List<FilterPredicate> filterPredicates;
 	private Key ancestor;
 	private boolean keysOnly;
 	private transient String fullTextSearch;
@@ -23,11 +23,10 @@ public class Query implements Serializable {
 	}
 
 	public Query(String kind) {
-		this(kind, null, ((List) (new ArrayList())),
-				((List) (new ArrayList())), false, null);
+		this(kind, null, ((List<SortPredicate>) (new ArrayList<SortPredicate>())), ((List<FilterPredicate>) (new ArrayList<FilterPredicate>())), false, null);
 	}
 
-	Query(String kind, Key ancestor, List sortPreds, List filterPreds,
+	Query(String kind, Key ancestor, List<SortPredicate> sortPreds, List<FilterPredicate> filterPreds,
 			boolean keysOnly, String fullTextSearch) {
 		this.kind = kind;
 		this.ancestor = ancestor;
@@ -66,6 +65,22 @@ public class Query implements Serializable {
 			return shortName;
 		}
 	}
+	
+	public Query addSort(String propertyName)
+	  {
+	    return addSort(propertyName, SortDirection.ASC);
+	  }
+
+	  public Query addSort(String propertyName, SortDirection direction)
+	  {
+	    this.sortPredicates.add(new SortPredicate(propertyName, direction));
+	    return this;
+	  }
+
+	  public List<SortPredicate> getSortPredicates()
+	  {
+	    return Collections.unmodifiableList(this.sortPredicates);
+	  }
 
 	public Query addFilter(String propertyName, FilterOperator operator,
 			Object value) {
@@ -73,6 +88,77 @@ public class Query implements Serializable {
 				.add(new FilterPredicate(propertyName, operator, value));
 		return this;
 	}
+	
+	
+	public static final class SortPredicate
+    implements Serializable
+  {
+    static final long serialVersionUID = -623786024456258081L;
+    private final String propertyName;
+    private final Query.SortDirection direction;
+
+    public SortPredicate(String propertyName, Query.SortDirection direction)
+    {
+      if (propertyName == null) {
+        throw new NullPointerException("Property name was null");
+      }
+
+      if (direction == null) {
+        throw new NullPointerException("Direction was null");
+      }
+
+      this.propertyName = propertyName;
+      this.direction = direction;
+    }
+
+    public SortPredicate reverse()
+    {
+      return new SortPredicate(this.propertyName, this.direction == Query.SortDirection.ASC ? Query.SortDirection.DESC : Query.SortDirection.ASC);
+    }
+
+    public String getPropertyName()
+    {
+      return this.propertyName;
+    }
+
+    public Query.SortDirection getDirection()
+    {
+      return this.direction;
+    }
+
+    public boolean equals(Object o)
+    {
+      if (this == o) {
+        return true;
+      }
+      if ((o == null) || (getClass() != o.getClass())) {
+        return false;
+      }
+
+      SortPredicate that = (SortPredicate)o;
+
+      if (this.direction != that.direction) {
+        return false;
+      }
+      if (!this.propertyName.equals(that.propertyName)) {
+        return false;
+      }
+
+      return true;
+    }
+
+    public int hashCode()
+    {
+      int result = this.propertyName.hashCode();
+      result = 31 * result + this.direction.hashCode();
+      return result;
+    }
+
+    public String toString()
+    {
+      return this.propertyName + (this.direction == Query.SortDirection.DESC ? " DESC" : "");
+    }
+  }
 
 	public static final class FilterPredicate implements Serializable {
 
@@ -155,5 +241,10 @@ public class Query implements Serializable {
         /**/
 		return filterPredicates;
     }
+	
+	public static enum SortDirection
+	  {
+	    ASC, DESC;
+	  }
 
 }

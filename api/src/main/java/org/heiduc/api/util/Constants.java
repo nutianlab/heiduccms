@@ -15,9 +15,13 @@ public class Constants {
 	 * 数据库配置
 	 */
 	public static String DATABASE_NAME ="";
+	@Deprecated
 	public static int DATABASE_PORT =27017;
+	@Deprecated
 	public static String DATABASE_USER_NAME ="";
+	@Deprecated
 	public static String DATABASE_USER_PASSWORD ="";
+	@Deprecated
 	public static String DATABASE_HOST ="";
 	public static String DATABASE_URI ="";
 	
@@ -33,10 +37,6 @@ public class Constants {
 		try {
 			prorperties.load(Constants.class.getClassLoader().getResourceAsStream("config.properties"));
 			DATABASE_NAME = (String) prorperties.get("heiduc.database.name");
-			DATABASE_PORT = Integer.parseInt((String) prorperties.get("heiduc.database.port")) ;
-			DATABASE_USER_NAME = (String) prorperties.get("heiduc.database.username");
-			DATABASE_USER_PASSWORD = (String) prorperties.get("heiduc.database.paasword");
-			DATABASE_HOST = (String) prorperties.get("heiduc.database.host");
 			DATABASE_URI = (String) prorperties.get("heiduc.database.uri");
 			TASKQUEUE_SERVER = (String) prorperties.get("heiduc.taskqueue.server");
 		} catch (FileNotFoundException e) {
