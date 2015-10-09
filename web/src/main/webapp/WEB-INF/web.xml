@@ -99,6 +99,10 @@
   <servlet>
     <servlet-name>Authorize</servlet-name>
     <servlet-class>org.heiduc.oauth2.servlet.AuthorizeServlet</servlet-class>
+    <init-param>
+        <param-name>authorizeURL</param-name>
+        <param-value>/oauth2/login</param-value>
+    </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>Authorize</servlet-name>
