@@ -2,10 +2,12 @@ package org.heiduc.oauth2.servlet;
 
 import java.io.IOException;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.oltu.oauth2.as.issuer.MD5Generator;
 import org.apache.oltu.oauth2.as.issuer.OAuthIssuerImpl;
 import org.apache.oltu.oauth2.as.request.OAuthAuthzRequest;
@@ -26,7 +28,9 @@ public class AuthorizeServlet extends AbstractServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private static String AUTHORIZE_URL = "/";
 
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 	        throws ServletException, IOException
 	    {
@@ -53,7 +57,7 @@ public class AuthorizeServlet extends AbstractServlet {
 		      }
 
 		      if (request.getMethod().equalsIgnoreCase("get")) {
-		        response.sendRedirect("/oauth2/login");
+		        response.sendRedirect(AUTHORIZE_URL);
 		        return;
 		      }
 
@@ -67,7 +71,7 @@ public class AuthorizeServlet extends AbstractServlet {
 		        		.setErrorDescription("username or password INVALID")
 		        		.buildJSONMessage();
 
-		        response.sendRedirect("/oauth2/login?error_code=4001");
+		        response.sendRedirect(AUTHORIZE_URL+"?error_code=4001");
 		        return;
 		      }
 
@@ -127,5 +131,13 @@ public class AuthorizeServlet extends AbstractServlet {
 		      e.printStackTrace();
 		    }
 		  }
+
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		String authorizeURL = config.getInitParameter("authorizeURL");
+		if (!StringUtils.isEmpty(authorizeURL)) {
+			AUTHORIZE_URL = authorizeURL;
+		}
+	}
 	
 }
