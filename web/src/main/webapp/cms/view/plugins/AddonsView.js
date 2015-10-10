@@ -21,7 +21,7 @@ function(){
 			//	$('#addons').html(data);
 			//},'html');
 			$('#addons').load(configURL);
-		}, addonsId);
+		}, addonsId.split("/")[0]);
 	}
 	
 	return Backbone.View.extend({
