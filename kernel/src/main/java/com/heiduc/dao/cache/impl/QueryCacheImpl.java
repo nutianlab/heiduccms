@@ -27,8 +27,11 @@ import com.heiduc.utils.EntityUtil;
 
 public class QueryCacheImpl implements QueryCache, Serializable {
 
-	protected static final Log logger = LogFactory.getLog(
-			QueryCacheImpl.class);
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	protected static final Log logger = LogFactory.getLog(QueryCacheImpl.class);
 
 	private static DaoStat getDaoStat() {
 		return HeiducContext.getInstance().getBusiness().getDao().getDaoStat();
@@ -53,8 +56,12 @@ public class QueryCacheImpl implements QueryCache, Serializable {
 	}
 	
 	private String getQueryKey(Class clazz, String query, Object[] params) {
+		return getQueryKey(clazz,query,0,params);
+	}
+	
+	private String getQueryKey(Class clazz, String query, int queryLimit, Object[] params) {
 		StringBuffer result = new StringBuffer(clazz.getName());
-		result.append(query);
+		result.append(query).append(queryLimit);
 		if (params != null) {
 			for (Object param : params) {
 				result.append(param != null ? param.toString() : "null"); 
@@ -72,10 +79,14 @@ public class QueryCacheImpl implements QueryCache, Serializable {
 	}
 	
 	@Override
-	public List<BaseEntity> getQuery(Class clazz, String query, 
-			Object[] params) {
+	public List<BaseEntity> getQuery(Class clazz, String query, Object[] params) {
+		return getQuery(clazz,query,0,params); 
+	}
+	
+	@Override
+	public List<BaseEntity> getQuery(Class clazz, String query, int queryLimit, Object[] params) {
 		try {
-			CacheItem item = (CacheItem)getCache().get(getQueryKey(clazz, query, 
+			CacheItem item = (CacheItem)getCache().get(getQueryKey(clazz, query, queryLimit,
 					params));
 			if (item != null) {
 				Date globalResetDate = getCache().getResetDate();
@@ -92,7 +103,7 @@ public class QueryCacheImpl implements QueryCache, Serializable {
 		catch (Exception e) {
 			logger.error(ExceptionUtils.getStackTrace(e));
 		}
-		return null; 
+		return null;
 	}
 
 	private List<BaseEntity> getCachedQueryResult(Class clazz, CacheItem item) {
@@ -135,9 +146,13 @@ public class QueryCacheImpl implements QueryCache, Serializable {
 	}
 
 	@Override
-	public void putQuery(Class clazz, String query, Object[] params, 
-			List<BaseEntity> list) {
-		String key = getQueryKey(clazz, query, params);
+	public void putQuery(Class clazz, String query, Object[] params, List<BaseEntity> list) {
+		putQuery(clazz,query,params,0,list);
+	}
+	
+	@Override
+	public void putQuery(Class clazz, String query, Object[] params, int queryLimit, List<BaseEntity> list) {
+		String key = getQueryKey(clazz, query, queryLimit,params);
 		List<Long> ids = new ArrayList<Long>();
 		for (BaseEntity entity : list) {
 			ids.add(entity.getId());
@@ -150,5 +165,7 @@ public class QueryCacheImpl implements QueryCache, Serializable {
 	public void removeQueries(Class clazz) {
 		getCache().put(getClassResetdateKey(clazz), new Date());
 	}
+
+	
 
 }
