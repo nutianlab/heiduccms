@@ -5,9 +5,6 @@
         <dependent-module archiveName="heiduc-kernel-1.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/heiduc-kernel/heiduc-kernel">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="heiduc-api-1.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/heiduc-api/heiduc-api">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <property name="context-root" value="heiduccms"/>
         <property name="java-output-path" value="/heiduc-web/target/classes"/>
     </wb-module>
