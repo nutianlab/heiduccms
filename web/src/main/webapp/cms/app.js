@@ -97,7 +97,7 @@ function(LoginView, PagesView, IndexView,
 			'plugins/form/:id':	'pluginsFormEdit',
 			'plugins/seo-urls':	'pluginsSeoUrls',
 			'plugin/:id':		'plugin',
-			'addons/:id':       'pluginsAddons',
+			'addons/*path':       'pluginsAddons',
 			
 			'templates':		'templates',
 			'template':			'createTemplate',
