@@ -104,4 +104,5 @@ public interface Dao {
 	Oauth2Dao getOauth2Dao();
 	void setOauth2Dao(final Oauth2Dao bean);
 
+	TokenDao getTokenDao();
 }

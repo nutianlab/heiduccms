@@ -25,7 +25,25 @@ public class UserEntity extends BaseEntityImpl {
 	private boolean disabled;
 	private String timezone;
 	private String salt;
+	private String nickName;
+	private String avatar;
 	
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
+
 	public UserEntity() {
 		role = UserRole.USER;
 		disabled = false;
@@ -44,6 +62,8 @@ public class UserEntity extends BaseEntityImpl {
 		disabled = getBooleanProperty(entity, "disabled", false);
 		timezone = getStringProperty(entity, "timezone");
 		salt = getStringProperty(entity, "salt");
+		nickName = getStringProperty(entity, "nickName");
+		avatar = getStringProperty(entity, "avatar");
 	}
 	
 	@Override
@@ -57,8 +77,21 @@ public class UserEntity extends BaseEntityImpl {
 		setProperty(entity, "disabled", disabled, false);
 		setProperty(entity, "timezone", timezone, false);
 		setProperty(entity, "salt", salt, false);
+		setProperty(entity, "nickName", nickName, false);
+		setProperty(entity, "avatar", avatar, false);
 	}
 
+	public UserEntity(String aName, String aPassword,
+			String anEmail, UserRole aRole,String aNickName,String anAvatar) {
+		this();
+		name = aName;
+		password = aPassword;
+		email = anEmail;
+		role = aRole;
+		nickName = aNickName;
+		avatar = anAvatar;
+	}
+	
 	public UserEntity(String aName, String aPassword,
 			String anEmail, UserRole aRole) {
 		this();

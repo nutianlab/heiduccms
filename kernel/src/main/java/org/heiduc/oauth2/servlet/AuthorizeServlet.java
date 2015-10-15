@@ -98,9 +98,9 @@ public class AuthorizeServlet extends AbstractServlet {
 		        return;
 		      }
 		      //授权类型 token
-		      else if (responseType.equals(ResponseType.TOKEN.toString())) {
+		      else if (responseType.equals(ResponseType.TOKEN.toString())) {//TODO 对比AccessTokenServlet 的password
 		        accessToken = oauthIssuerImpl.accessToken();
-		        getBusiness().getOauth2Business().addAccessToken(accessToken, username);
+		        //getBusiness().getOauth2Business().addAccessToken(accessToken, username);
 
 		        oresponse = OAuthASResponse.authorizationResponse(request, HttpServletResponse.SC_FOUND)
 		        		.setAccessToken(accessToken)
