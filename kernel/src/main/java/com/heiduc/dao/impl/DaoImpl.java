@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 
 
+
 import com.heiduc.common.HeiducContext;
 import com.heiduc.dao.CommentDao;
 import com.heiduc.dao.ConfigDao;
@@ -36,6 +37,7 @@ import com.heiduc.dao.StructureDao;
 import com.heiduc.dao.StructureTemplateDao;
 import com.heiduc.dao.TagDao;
 import com.heiduc.dao.TemplateDao;
+import com.heiduc.dao.TokenDao;
 import com.heiduc.dao.UserDao;
 import com.heiduc.dao.UserGroupDao;
 import com.heiduc.dao.cache.EntityCache;
@@ -79,7 +81,8 @@ public class DaoImpl implements Dao, Serializable {
 	private PageAttributeDao pageAttributeDao;
 	private DaoStat daoStat;
 	private Oauth2Dao oauth2Dao;
-
+	private TokenDao tokenDao;
+	
 	@Override
 	public SystemService getSystemService() {
 		return HeiducContext.getInstance().getBusiness().getSystemService();
@@ -443,6 +446,14 @@ public class DaoImpl implements Dao, Serializable {
 	@Override
 	public void setOauth2Dao(Oauth2Dao bean) {
 		oauth2Dao = bean;
+	}
+
+	@Override
+	public TokenDao getTokenDao() {
+		if (tokenDao == null) {
+			tokenDao = new TokenDaoImpl();
+		}
+		return tokenDao;
 	}
 
 }
