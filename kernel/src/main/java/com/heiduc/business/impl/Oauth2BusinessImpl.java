@@ -3,9 +3,11 @@ package com.heiduc.business.impl;
 import org.apache.commons.lang.StringUtils;
 
 
+
 import com.heiduc.business.Oauth2Business;
 import com.heiduc.common.BCrypt;
 import com.heiduc.entity.Oauth2ClientEntity;
+import com.heiduc.entity.TokenEntity;
 import com.heiduc.entity.UserEntity;
 
 public class Oauth2BusinessImpl extends AbstractBusinessImpl 
@@ -34,6 +36,12 @@ implements Oauth2Business {
 		return getSystemService().getCache().get(refreshToken) != null;
 
 	}
+	
+	@Override
+	public boolean checkAccessToken(String accessToken) {
+		
+		return getDao().getTokenDao().checkAccessToken(accessToken);
+	}
 
 	@Override
 	public String getUsernameByAuthCode(String authCode) {
@@ -42,10 +50,27 @@ implements Oauth2Business {
 	}
 
 	@Override
-	public void addAccessToken(String accessToken, String username) {
-		getSystemService().getCache().put(accessToken, username);
+	public void addAccessToken(TokenEntity token) {
+		TokenEntity entity = getDao().getTokenDao().get(token);
+		if (entity == null) {
+			entity = token;
+		}
+		entity.setAccessToken(token.getAccessToken());
+		entity.setRefreshToken(token.getRefreshToken());
+		getDao().getTokenDao().save(entity);
+		getSystemService().getCache().put(token.getAccessToken()+token.getClientId(), token.getUserName());
 	}
 
+	/*@Override
+	public void addRefreshToken(TokenEntity token) {
+		getSystemService().getCache().put(token.getRefreshToken()+token.getClientId(), token.getUserName());
+	}*/
+	
+	@Override
+	public String getUsernameByRefreshToken(String refreshToken) {
+		return (String)getSystemService().getCache().getAndRemove(refreshToken);
+	}
+	
 	@Override
 	public boolean login(String username, String password) {
 		UserEntity user = getDao().getUserDao().getByName(username);
@@ -76,17 +101,6 @@ implements Oauth2Business {
 	public long getExpireIn() {
 		 return 3600L;
 	}
-
-	@Override
-	public void addRefreshToken(String refreshToken, String username) {
-		getSystemService().getCache().put(refreshToken, username);
-
-		
-	}
-
-	@Override
-	public String getUsernameByRefreshToken(String refreshToken) {
-		return (String)getSystemService().getCache().getAndRemove(refreshToken);
-	}
+	
 
 }
