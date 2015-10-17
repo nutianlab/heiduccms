@@ -1,13 +1,11 @@
 package org.heiduc.oauth2.servlet;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.oltu.oauth2.as.issuer.MD5Generator;
 import org.apache.oltu.oauth2.as.issuer.OAuthIssuer;
 import org.apache.oltu.oauth2.as.issuer.OAuthIssuerImpl;
@@ -20,17 +18,8 @@ import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.apache.oltu.oauth2.common.message.types.TokenType;
-import org.heiduc.oauth2.handler.AuthenticationHandler;
-import org.heiduc.oauth2.handler.Credentials;
 
-import cn.ubunta.oauth.UbuntaAuthenticationHandler;
-
-import com.heiduc.common.BCrypt;
 import com.heiduc.entity.TokenEntity;
-import com.heiduc.entity.UserEntity;
-import com.heiduc.enums.UserRole;
-import com.heiduc.i18n.Messages;
-import com.heiduc.service.ServiceResponse;
 import com.heiduc.servlet.AbstractServlet;
 
 public class AccessTokenServlet extends AbstractServlet {
@@ -140,7 +129,7 @@ public class AccessTokenServlet extends AbstractServlet {
 		      String refreshToken = oauthIssuerImpl.refreshToken();
 
 		      TokenEntity token = new TokenEntity();
-		      token.setUserName(oauthRequest.getUsername());
+		      token.setUserName(username);
 		      token.setAccessToken(accessToken);
 		      token.setRefreshToken(refreshToken);
 		      token.setClientId(oauthRequest.getClientId());
