@@ -118,7 +118,7 @@ public class PreparedQueryImpl implements PreparedQuery {
 			BasicDBObject dbo = (BasicDBObject)doc.get(filterPredicate.getPropertyName());
 			if(dbo == null)
 				dbo = new BasicDBObject();
-			
+			//{$regex:'^(?!.*\_default$)'}
 			if(filterPredicate.getOperator().equals(FilterOperator.LESS_THAN)){
 				doc.put(filterPredicate.getPropertyName(), dbo.append(FilterOperator.LESS_THAN.toString(), filterPredicate.getValue()));
 			}else if(filterPredicate.getOperator().equals(FilterOperator.LESS_THAN_OR_EQUAL)){
