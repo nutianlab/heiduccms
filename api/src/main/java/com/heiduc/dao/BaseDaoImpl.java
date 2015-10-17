@@ -26,6 +26,11 @@ import com.heiduc.utils.EntityUtil;
 public class BaseDaoImpl<T extends BaseEntity> 
 		extends AbstractDaoImpl implements BaseDao<T>{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	protected static final Log logger = LogFactory.getLog(
 			BaseDaoImpl.class);
 
@@ -201,8 +206,7 @@ public class BaseDaoImpl<T extends BaseEntity>
 
 	@Override
 	public List<T> select() {
-		List<T> result = (List<T>) getQueryCache().getQuery(clazz, 
-				clazz.getName(), null);
+		List<T> result = (List<T>) getQueryCache().getQuery(clazz, clazz.getName(), null);
 		if (result == null) {
 			Query q = newQuery();
 			result = selectNotCache(q);
@@ -238,8 +242,7 @@ public class BaseDaoImpl<T extends BaseEntity>
 		return select(query, queryId, QUERY_LIMIT, params);
 	}
 
-	protected List<T> select(Query query, String queryId, int queryLimit, 
-			Object[] params) {
+	protected List<T> select(Query query, String queryId, int queryLimit, Object[] params) {
 		List<T> result = (List<T>) getQueryCache().getQuery(clazz, queryId, queryLimit,params);
 		if (result == null) {
 //			getDao().getDaoStat().incQueryCalls();
