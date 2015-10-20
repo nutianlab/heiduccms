@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bson.types.Binary;
 import org.heiduc.api.datastore.Entity;
 
 
@@ -111,11 +112,12 @@ public class EntityUtil {
 		if (p == null) {
 			return null;
 		}
+		if (p instanceof Binary) {
+			return ((Binary) p).getData();
+		}
 //		if (p instanceof Blob) {
 //			return ((Blob) p).getBytes();
 //		}
-//		return p.toString().getBytes();
-//		System.out.println("getBlobProperty is null.");
 		return (byte[])p;
 	}
 

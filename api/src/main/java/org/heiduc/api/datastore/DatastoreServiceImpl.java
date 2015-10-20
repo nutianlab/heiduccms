@@ -1,33 +1,31 @@
 package org.heiduc.api.datastore;
 
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.heiduc.api.util.Constants;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.result.UpdateResult;
 
 public class DatastoreServiceImpl implements DatastoreService {
 
-	private DB database;
+	private MongoDatabase database;
 //	Datastore datastore;
 	private IdWorker idWorker = new IdWorker(1);
 	
 	public DatastoreServiceImpl(){
-		MongoClient mongo = null;
-		try {
-			mongo = new MongoClient(new MongoClientURI(Constants.DATABASE_URI));
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		database = mongo.getDB(Constants.DATABASE_NAME);
+		MongoClient mongo = new MongoClient(new MongoClientURI(Constants.DATABASE_URI));
+		database = mongo.getDatabase(Constants.DATABASE_NAME);
 	}
 
 	@Override
@@ -44,37 +42,14 @@ public class DatastoreServiceImpl implements DatastoreService {
             return result;*/
 		
 		Entity entity = new Entity(key);
-		DBCollection collection = database.getCollection(key.getKind());
+		MongoCollection<Document> collection = database.getCollection(key.getKind());
 		
-		DBCursor cursor = collection.find(new BasicDBObject("_id",key.getId()));
+		FindIterable<Document> documents = collection.find(new BasicDBObject("_id",key.getId()));
 		
-		if(cursor.hasNext()){
-			DBObject dbo = cursor.next();
-			entity.getPropertyMap().putAll(dbo.toMap());
-			/*Iterator it = dbo.toMap().entrySet().iterator();   
-		    while (it.hasNext()) {   
-		        Map.Entry entry = (Map.Entry) it.next();   
-		        Object _key = entry.getKey();   
-		        Object _value = entry.getValue();
-		        if (_value instanceof byte[]) {
-		        	_value = new Blob((byte[])_value);
-				}
-		        if(_value != null){
-		        	System.out.println("key = "+_key+"\t value="+_value+"\t type="+_value.getClass().getSimpleName());
-		        }
-		        entity.getPropertyMap().put(_key, _value);
-//		        System.out.println("key = "+_key+"\t value="+_value);
-		    }*/
-			/*try {
-				PropertyUtils.copyProperties(entity.getPropertyMap(), dbo);
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (NoSuchMethodException e) {
-				e.printStackTrace();
-			}*/
+		for (Document document : documents) {
+			entity.getPropertyMap().putAll(document);
 		}
+		
 		return entity;
 	}
 
@@ -94,9 +69,9 @@ public class DatastoreServiceImpl implements DatastoreService {
 	@Override
 	public void delete(Key key) {
 //		datastore.delete(key);
-		DBCollection collection = database.getCollection(key.getKind());
-//		collection.deleteOne(new BasicDBObject("_id",key.getId()));
-		collection.remove(new BasicDBObject("_id",key.getId()));
+		MongoCollection<Document> collection = database.getCollection(key.getKind());
+		collection.deleteOne(new BasicDBObject("_id",key.getId()));
+//		collection.remove(new BasicDBObject("_id",key.getId()));
 	}
 
 	@Override
@@ -109,16 +84,16 @@ public class DatastoreServiceImpl implements DatastoreService {
 
 	@Override
 	public Key put(Entity entity) {
-		DBCollection collection = database.getCollection(entity.getKey().getKind());
-//		collection.insert((DBObject)JSON.parse(JSON.serialize()));
-		DBObject doc = new BasicDBObject(entity.getPropertyMap());
+		MongoCollection<Document> collection = database.getCollection(entity.getKey().getKind());
+		Document doc = new Document(entity.getPropertyMap());
 		if(entity.getKey().getId() == 0L){//插入
 			long _id = idWorker.nextId();
 			doc.put("_id", _id);
 			entity.getKey().setId(_id);
 		}
-		collection.save(doc);
-		
+		Bson filter = new BasicDBObject("_id",doc.get("_id")) ;
+		collection.replaceOne(filter, doc,new UpdateOptions().upsert(true));
+//		UpdateResult result = collection.updateOne(filter, doc,new UpdateOptions().upsert(true));
 		return entity.getKey();
 	}
 	
