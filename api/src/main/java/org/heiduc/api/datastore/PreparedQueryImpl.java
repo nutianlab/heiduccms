@@ -7,23 +7,24 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.heiduc.api.datastore.Query.FilterOperator;
 import org.heiduc.api.datastore.Query.FilterPredicate;
 import org.heiduc.api.datastore.Query.SortPredicate;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 
 
 public class PreparedQueryImpl implements PreparedQuery {
 
-	private DB database;
+	private MongoDatabase database;
 	private final Query query;
 	
-	public PreparedQueryImpl(DB database , Query query) {
+	public PreparedQueryImpl(MongoDatabase database , Query query) {
 		this.database = database;
 		this.query = query;
 	}
@@ -51,19 +52,30 @@ public class PreparedQueryImpl implements PreparedQuery {
 	@Override
 	public Iterator<Entity> asIterator(FetchOptions fetchOptions) {
 		Collection<Entity> list = new ArrayList<Entity>();
-		DBCollection collection = database.getCollection(query.getKind());
-		DBCursor cursor = collection.find(createDBObject());
+		MongoCollection<Document> collection = database.getCollection(query.getKind());
+		FindIterable<Document> documents = collection.find(createDBObject());
 		//排序
-		DBObject orderBy = orderBy();
+		Bson orderBy = orderBy();
 		if(orderBy != null){
-			cursor.sort(orderBy);
+			documents.sort(orderBy);
 		}
 		//限制返回行数
 		if(fetchOptions.getLimit() != null && fetchOptions.getLimit() > 0){
-			cursor = cursor.limit(fetchOptions.getLimit());
+			documents = documents.limit(fetchOptions.getLimit());
 		}
 		
-		while(cursor.hasNext() ){
+		for (Document document : documents) {
+			try{
+				Long.valueOf(document.get("_id").toString());
+			}catch(Exception e){
+				System.out.println(document.get("_id").toString());
+			}
+			Entity entity = new Entity(new Key(query.getKind(),null,Long.valueOf(document.get("_id").toString())));
+			entity.getPropertyMap().putAll(document);
+			list.add(entity);
+		}
+		
+		/*while(cursor.hasNext() ){
 			
 			DBObject dbo = cursor.next();
 			try{
@@ -76,19 +88,19 @@ public class PreparedQueryImpl implements PreparedQuery {
 			entity.getPropertyMap().putAll(dbo.toMap());
 			
 			list.add(entity);
-		}
+		}*/
 		return list.iterator();
 	}
 	
 	@Override
 	public int count(FetchOptions fetchOptions){
-		DBCollection collection = database.getCollection(query.getKind());
+		MongoCollection<Document> collection = database.getCollection(query.getKind());
 		collection.find(createDBObject());
 		return Integer.valueOf(collection.count()+"");
 	}
 	
 	
-	private DBObject orderBy(){
+	private Bson orderBy(){
 		List<SortPredicate> sortPredicates = query.getSortPredicates();
 		if(sortPredicates.size() == 0){
 			return null;
@@ -103,7 +115,7 @@ public class PreparedQueryImpl implements PreparedQuery {
 	}
 	
 	
-	private DBObject createDBObject(){
+	private Bson createDBObject(){
 		//
 		BasicDBObject doc = new BasicDBObject();
 		
