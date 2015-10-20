@@ -120,8 +120,8 @@ public class SetupBeanImpl implements SetupBean {
 				boolean searchable) {
         String content = loadResource(resource);
 		PageEntity page = new PageEntity(title, url,	templateId);
-		page.setCreateUserEmail("admin@test.com");
-		page.setModUserEmail("admin@test.com");
+		page.setCreateUserEmail("dev@heiduc.com");
+		page.setModUserEmail("dev@heiduc.com");
 		page.setState(PageState.APPROVED);
 		page.setSortIndex(sortIndex);
 		page.setCached(cached);
