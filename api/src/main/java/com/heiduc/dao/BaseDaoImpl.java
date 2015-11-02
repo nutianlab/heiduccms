@@ -243,7 +243,7 @@ public class BaseDaoImpl<T extends BaseEntity>
 		List<T> result = (List<T>) getQueryCache().getQuery(clazz, queryId, queryLimit,params);
 		if (result == null) {
 //			getDao().getDaoStat().incQueryCalls();
-			result = selectNotCache(query);
+			result = selectNotCache(query,queryLimit);
 			getQueryCache().putQuery(clazz, queryId, params, queryLimit,(List<BaseEntity>)result);			
 		}
 		return result;
