@@ -6,30 +6,30 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
+
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
 
 /**
- * Title: <br>
- * Description: HTTP请求代理类<br>
+ * Title: SmartTouch<br>
+ * Description: 车主宝典api请求代理类<br>
  * Copyright: Copyright (c) 2011 <br>
  * Create DateTime: 2011-8-8 下午04:30:39 <br>
  * 
  * @author 谭小波
  */
 public class HttpProxy {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 * 连接超时
@@ -57,68 +57,51 @@ public class HttpProxy {
 	 *            参数映射表
 	 * @return HTTP响应的字符串
 	 */
-	public static String doGet(String reqUrl, Map parameters,
-			String recvEncoding) {
-		HttpURLConnection httpURLConnection = null;
-		String responseContent = null;
+	public static String doGet(String reqUrl, Map<String,String> parameters,String recvEncoding) {
+		String response = null;
 		try {
-			StringBuffer params = new StringBuffer();
-			for (Iterator iter = parameters.entrySet().iterator(); iter
-					.hasNext();) {
-				Entry element = (Entry) iter.next();
-				params.append(element.getKey().toString());
-				params.append("=");
-				params.append(URLEncoder.encode(element.getValue().toString(),
-						requestEncoding));
-				params.append("&");
-			}
+			HttpClient client = new HttpClient();
+			if(parameters != null){
+				StringBuffer params = new StringBuffer();
+				for (Map.Entry<String, String> entry : parameters.entrySet()) {
+					params.append(entry.getKey().toString());
+					params.append("=");
+					params.append(URLEncoder.encode(entry.getValue()+"",HttpProxy.requestEncoding));
+					params.append("&");
+				}
 
-			if (params.length() > 0) {
-				params = params.deleteCharAt(params.length() - 1);
-			}
+				if (params.length() > 0) {
+					params = params.deleteCharAt(params.length() - 1);
+				}
 
-			if(reqUrl.indexOf("?")>-1){
-				reqUrl += "&"+params.toString(); 
-			}else{
-				reqUrl += "?"+params.toString(); 
+				if(reqUrl.indexOf("?")>-1){
+					reqUrl += "&"+params.toString(); 
+				}else{
+					reqUrl += "?"+params.toString(); 
+				}
+			}
+			GetMethod method = new GetMethod(reqUrl);
+			try {
+				client.executeMethod(method);
+			} catch (HttpException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 			
-			System.out.println(params.toString());
-			System.out.println(reqUrl);
-			URL url = new URL(reqUrl);
-			httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setRequestMethod("GET");
-			//System.setProperty("sun.net.client.defaultConnectTimeout", String
-			//		.valueOf(HttpRequestProxy.connectTimeOut));// （单位：毫秒）jdk1.4换成这个,连接超时
-			//System.setProperty("sun.net.client.defaultReadTimeout", String
-			//		.valueOf(HttpRequestProxy.readTimeOut)); // （单位：毫秒）jdk1.4换成这个,读操作超时
-			httpURLConnection.setConnectTimeout(5000);//（单位：毫秒）jdk
-			// 1.5换成这个,连接超时
-			httpURLConnection.setReadTimeout(5000);//（单位：毫秒）jdk 1.5换成这个,读操作超时
-
-			InputStream in = httpURLConnection.getInputStream();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(in,
-					recvEncoding));
-			String tempLine = rd.readLine();
-			StringBuffer temp = new StringBuffer();
-			String crlf = System.getProperty("line.separator");
-			while (tempLine != null) {
-				temp.append(tempLine);
-				temp.append(crlf);
-				tempLine = rd.readLine();
+			try {
+				response = new String(method.getResponseBody(),recvEncoding);
+				//打印返回的信息  
+			    method.releaseConnection();  
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-			responseContent = temp.toString();
-			rd.close();
-			in.close();
-		} catch (IOException e) {
-			// logger.error("网络故障", e);
-		} finally {
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
-		}
-
-		return responseContent;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}  
+		return response;
 	}
 
 	/**
@@ -131,114 +114,22 @@ public class HttpProxy {
 	 * @return HTTP响应的字符串
 	 */
 	public static String doGet(String reqUrl, String recvEncoding) {
-		HttpURLConnection httpURLConnection = null;
-		String responseContent = null;
-		try {
-			URL url = new URL(reqUrl);
-			httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setRequestMethod("GET");
-			//System.setProperty("sun.net.client.defaultConnectTimeout", String
-			//		.valueOf(HttpRequestProxy.connectTimeOut));// （单位：毫秒）jdk1.4换成这个,连接超时
-			//System.setProperty("sun.net.client.defaultReadTimeout", String
-			//		.valueOf(HttpRequestProxy.readTimeOut)); // （单位：毫秒）jdk1.4换成这个,读操作超时
-			httpURLConnection.setConnectTimeout(5000);//（单位：毫秒）jdk
-			// 1.5换成这个,连接超时
-			httpURLConnection.setReadTimeout(5000);//（单位：毫秒）jdk 1.5换成这个,读操作超时
-			InputStream in = httpURLConnection.getInputStream();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(in,
-					recvEncoding));
-			String tempLine = rd.readLine();
-			StringBuffer temp = new StringBuffer();
-			String crlf = System.getProperty("line.separator");
-			while (tempLine != null) {
-				temp.append(tempLine);
-				temp.append(crlf);
-				tempLine = rd.readLine();
-			}
-			responseContent = temp.toString();
-			rd.close();
-			in.close();
-		} catch (IOException e) {
-			// logger.error("网络故障", e);
-		} finally {
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
-		}
-
-		return responseContent;
+		return doGet(reqUrl,null,recvEncoding);
 	}
 
 	/**
 	 * <pre>
-	 * 发送带参数的POST的HTTP请求
+	 * 发送不带参数的GET的HTTP请求
 	 * </pre>
 	 * 
 	 * @param reqUrl
 	 *            HTTP请求URL
-	 * @param parameters
-	 *            参数映射表
 	 * @return HTTP响应的字符串
 	 */
-	public static String doPost(String reqUrl, Map parameters,
-			String recvEncoding) {
-		HttpURLConnection httpURLConnection = null;
-		String responseContent = null;
-		try {
-			StringBuffer params = new StringBuffer();
-			for (Iterator iter = parameters.entrySet().iterator(); iter
-					.hasNext();) {
-				Entry element = (Entry) iter.next();
-				params.append(element.getKey().toString());
-				params.append("=");
-				params.append(URLEncoder.encode(element.getValue().toString(),
-						requestEncoding));
-				params.append("&");
-			}
-
-			if (params.length() > 0) {
-				params = params.deleteCharAt(params.length() - 1);
-			}
-
-			URL url = new URL(reqUrl);
-			httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setRequestMethod("POST");
-			System.setProperty("sun.net.client.defaultConnectTimeout", String
-					.valueOf(connectTimeOut));// （单位：毫秒）jdk1.4换成这个,连接超时
-			System.setProperty("sun.net.client.defaultReadTimeout", String
-					.valueOf(readTimeOut)); // （单位：毫秒）jdk1.4换成这个,读操作超时
-			// httpURLConnection.setConnectTimeout(5000);//（单位：毫秒）jdk
-			// 1.5换成这个,连接超时
-			// httpURLConnection.setReadTimeout(5000);//（单位：毫秒）jdk 1.5换成这个,读操作超时
-			httpURLConnection.setDoOutput(true);
-			byte[] b = params.toString().getBytes();
-			httpURLConnection.getOutputStream().write(b, 0, b.length);
-			httpURLConnection.getOutputStream().flush();
-			httpURLConnection.getOutputStream().close();
-
-			InputStream in = httpURLConnection.getInputStream();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(in,
-					recvEncoding));
-			String tempLine = rd.readLine();
-			StringBuffer tempStr = new StringBuffer();
-	//		String crlf = System.getProperty("line.separator");
-			while (tempLine != null) {
-				tempStr.append(tempLine);
-		//		tempStr.append(crlf);
-				tempLine = rd.readLine();
-			}
-			responseContent = tempStr.toString();
-			rd.close();
-			in.close();
-		} catch (IOException e) {
-			// logger.error("网络故障", e);
-		} finally {
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
-		}
-		return responseContent;
+	public static byte[] doGet(String reqUrl) {
+		return doGet(reqUrl,null,"UTF-8").getBytes();
 	}
+	
 	
 	/**
 	 * <pre>
@@ -251,136 +142,67 @@ public class HttpProxy {
 	 *            参数映射表
 	 * @return HTTP响应的字符串
 	 */
-	public static String doPost(String reqUrl,
-			String recvEncoding) {
-		HttpURLConnection httpURLConnection = null;
-		String responseContent = null;
-		try {
-			//StringBuffer params = new StringBuffer();
-
-			//if (params.length() > 0) {
-			//	params = params.deleteCharAt(params.length() - 1);
-			//}
-			String params = "";
-			if(reqUrl.indexOf("?") > -1){
-				String[] requestParams = reqUrl.split("\\?");
-				reqUrl = requestParams[0];
-				params = requestParams[1];
-			}
-			
-			URL url = new URL(reqUrl);
-			httpURLConnection = (HttpURLConnection) url.openConnection();
-			httpURLConnection.setRequestMethod("POST");
-			//System.setProperty("sun.net.client.defaultConnectTimeout", String
-			//		.valueOf(HttpRequestProxy.connectTimeOut));// （单位：毫秒）jdk1.4换成这个,连接超时
-			//System.setProperty("sun.net.client.defaultReadTimeout", String
-			//		.valueOf(HttpRequestProxy.readTimeOut)); // （单位：毫秒）jdk1.4换成这个,读操作超时
-			// httpURLConnection.setConnectTimeout(5000);//（单位：毫秒）jdk
-			// 1.5换成这个,连接超时
-			httpURLConnection.setReadTimeout(5000);//（单位：毫秒）jdk 1.5换成这个,读操作超时
-			httpURLConnection.setDoOutput(true);
-			
-			if(!"".equals(params)){
-				byte[] b = params.toString().getBytes();
-				httpURLConnection.getOutputStream().write(b, 0, b.length);
-				httpURLConnection.getOutputStream().flush();
-				httpURLConnection.getOutputStream().close();
-			}
-
-			InputStream in = httpURLConnection.getInputStream();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(in,
-					recvEncoding));
-			String tempLine = rd.readLine();
-			StringBuffer tempStr = new StringBuffer();
-		//	String crlf = System.getProperty("line.separator");
-			while (tempLine != null) {
-				tempStr.append(tempLine);
-			//	tempStr.append(crlf);
-				tempLine = rd.readLine();
-			}
-			responseContent = tempStr.toString();
-			rd.close();
-			in.close();
-		} catch (IOException e) {
-			// logger.error("网络故障", e);
-		} finally {
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
-		}
-		return responseContent;
+	public static String doPost(String reqUrl, Map<String, String> parameters, String recvEncoding) {
+		return doPost(reqUrl,null,parameters,recvEncoding);
 	}
 	
-	public static String doPost(Map headers,String reqUrl,String recvEncoding) {
-		HttpURLConnection httpURLConnection = null;
-		String responseContent = null;
+	/**
+	 * <pre>
+	 * 发送带参数的POST的HTTP请求
+	 * </pre>
+	 * 
+	 * @param reqUrl HTTP请求URL
+	 * @return HTTP响应的字符串
+	 */
+	public static String doPost(String reqUrl,String recvEncoding) {
+		return doPost(reqUrl,null,null,recvEncoding);
+	}
+	
+	public static String doPost(String reqUrl,Map<String, String> headers,Map<String, String> parameters,String recvEncoding) {
+		
+		String response = null;
 		try {
 			
+			HttpClient client = new HttpClient();
+			PostMethod  method = new PostMethod(reqUrl);
 			
-			String params = "";
-			if(reqUrl.indexOf("?") > -1){
-				String[] requestParams = reqUrl.split("\\?");
-				reqUrl = requestParams[0];
-				params = requestParams[1];
+			if(headers != null){
+				for (Map.Entry<String, String> entry : headers.entrySet()) {
+					method.addRequestHeader(new Header(entry.getKey(), entry.getValue()));
+				}
 			}
-			
-			URL url = new URL(reqUrl);
-			httpURLConnection = (HttpURLConnection) url.openConnection();
-			
-			for (Iterator iter = headers.entrySet().iterator(); iter
-			.hasNext();) {
-				Entry element = (Entry) iter.next();
-				httpURLConnection.setRequestProperty(element.getKey().toString(), element.getValue().toString());
+			if(parameters != null){
+				NameValuePair[] nameValuePair = new NameValuePair[parameters.size()];
+		        int i = 0;
+		        for (Map.Entry<String, String> entry : parameters.entrySet()) {
+		            nameValuePair[i++] = new NameValuePair(entry.getKey(), entry.getValue());
+		        } 
+		        method.setRequestBody(nameValuePair);
 			}
-			
-			httpURLConnection.setRequestMethod("POST");
-			httpURLConnection.setRequestProperty("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
-			httpURLConnection.setRequestProperty("Accept-Charset", "utf-8");
-			//httpURLConnection.setRequestProperty("contentType", "utf-8");
-			//System.setProperty("sun.net.client.defaultConnectTimeout", String
-			//		.valueOf(HttpRequestProxy.connectTimeOut));// （单位：毫秒）jdk1.4换成这个,连接超时
-			//System.setProperty("sun.net.client.defaultReadTimeout", String
-			//		.valueOf(HttpRequestProxy.readTimeOut)); // （单位：毫秒）jdk1.4换成这个,读操作超时
-			// httpURLConnection.setConnectTimeout(5000);//（单位：毫秒）jdk
-			// 1.5换成这个,连接超时
-			httpURLConnection.setReadTimeout(36000);//（单位：毫秒）jdk 1.5换成这个,读操作超时
-			httpURLConnection.setDoOutput(true);
-			
-			if(!"".equals(params)){
-				byte[] b = params.toString().getBytes("UTF-8");
-				httpURLConnection.getOutputStream().write(b, 0, b.length);
-				httpURLConnection.getOutputStream().flush();
-				httpURLConnection.getOutputStream().close();
-			}
-
-			InputStream in = httpURLConnection.getInputStream();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(in,
-					recvEncoding));
-			String tempLine = rd.readLine();
-			StringBuffer tempStr = new StringBuffer();
-		//	String crlf = System.getProperty("line.separator");
-			while (tempLine != null) {
-				tempStr.append(tempLine);
-			//	tempStr.append(crlf);
-				tempLine = rd.readLine();
-			}
-			responseContent = tempStr.toString();
-			rd.close();
-			in.close();
-		} catch (IOException e) {
 			try {
-				System.out.println("状态码："+httpURLConnection.getResponseCode());
-			} catch (IOException e1) {
-				e1.printStackTrace();
+				client.executeMethod(method);
+			} catch (HttpException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-			e.printStackTrace();
+			try {
+				response = new String(method.getResponseBodyAsString().getBytes(recvEncoding));
+				//打印返回的信息  
+			    method.releaseConnection();  
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}  
+		} catch (Exception e) {
+			System.out.println("网络异常: "+e.getMessage());
 		} finally {
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
+			
 		}
-		return responseContent;
+		return response;
 	}
+	
 
 	/**
 	 * 上传文件
@@ -390,7 +212,7 @@ public class HttpProxy {
 	 * @param recvEncoding
 	 * @return
 	 */
-	public static String doUpload(String reqUrl, Map parameters,Map files,
+	public static String doUpload(String reqUrl, Map<String,String> parameters,Map<String,String> files,
 			String recvEncoding){
 		HttpURLConnection httpURLConnection = null;
 		String responseContent = null;
@@ -406,22 +228,20 @@ public class HttpProxy {
 			
 			httpURLConnection.setRequestProperty("connection", "Keep-Alive");
 			httpURLConnection.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)");
-			httpURLConnection.setRequestProperty("Charsert", requestEncoding);
+			httpURLConnection.setRequestProperty("Charsert", HttpProxy.requestEncoding);
 			httpURLConnection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);
 			OutputStream out = new DataOutputStream(httpURLConnection.getOutputStream());
 			byte[] end_data = ("\r\n--" + BOUNDARY + "--\r\n").getBytes();// 定义最后数据分隔线
 			
 			//
-			for (Iterator iter = parameters.entrySet().iterator(); iter
-					.hasNext();) {
-				Entry element = (Entry) iter.next();
+			for (Map.Entry<String, String> entry : parameters.entrySet()) {
 				StringBuffer sb = new StringBuffer();
 				sb.append("--");
 				sb.append(BOUNDARY);
 				sb.append("\r\n");
-				sb.append("Content-Disposition: form-data;name=\""+element.getKey()+"\"\r\n");
+				sb.append("Content-Disposition: form-data;name=\""+entry.getKey()+"\"\r\n");
 				sb.append("\r\n");
-				sb.append(URLEncoder.encode(element.getValue().toString(), requestEncoding));
+				sb.append(URLEncoder.encode(entry.getValue()+"", HttpProxy.requestEncoding));
 				//sb.append(element.getValue().toString());
 				sb.append("\r\n");
 				
@@ -431,17 +251,14 @@ public class HttpProxy {
 			}
 			
 			//循环文件列表
-			for (Iterator iter = files.entrySet().iterator(); iter
-					.hasNext();) {
-				Entry element = (Entry) iter.next();
-				String fileName = element.getValue().toString();
-				
+			for (Map.Entry<String, String> entry : parameters.entrySet()) {
+				String fileName = entry.getValue()+"";
 				File file = new File(fileName);
 				StringBuffer sb = new StringBuffer();
 				sb.append("--");
 				sb.append(BOUNDARY);
 				sb.append("\r\n");
-				sb.append("Content-Disposition: form-data;name=\""+element.getKey()+"\";filename=\""+ file.getName() + "\"\r\n");
+				sb.append("Content-Disposition: form-data;name=\""+entry.getKey()+"\";filename=\""+ file.getName() + "\"\r\n");
 				sb.append("Content-Type:application/octet-stream\r\n\r\n");
 				
 				byte[] data = sb.toString().getBytes();
@@ -471,8 +288,21 @@ public class HttpProxy {
 			}
 			reader.close();
 			responseContent = sb.toString();
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (IOException e) {
+			System.out.println("网络异常: "+e.getMessage());
+			try {
+				System.out.println("状态码："+httpURLConnection.getResponseCode());
+			} catch (IOException e1) {
+				//e1.printStackTrace();
+			}
+			//e.printStackTrace();
+		}  catch (Exception e) {
+			System.out.println("网络异常: "+e.getMessage());
+			try {
+				System.out.println("状态码："+httpURLConnection.getResponseCode());
+			} catch (IOException e1) {
+				//e1.printStackTrace();
+			}
 		} finally {
 			
 		}
@@ -485,14 +315,14 @@ public class HttpProxy {
 	 * @return 连接超时(毫秒)
 	 */
 	public static int getConnectTimeOut() {
-		return connectTimeOut;
+		return HttpProxy.connectTimeOut;
 	}
 
 	/**
 	 * @return 读取数据超时(毫秒)
 	 */
 	public static int getReadTimeOut() {
-		return readTimeOut;
+		return HttpProxy.readTimeOut;
 	}
 
 	/**
@@ -506,24 +336,24 @@ public class HttpProxy {
 	 * @param connectTimeOut
 	 *            连接超时(毫秒)
 	 */
-	public static void setConnectTimeOut(int timeout) {
-		connectTimeOut = timeout;
+	public static void setConnectTimeOut(int connectTimeOut) {
+		HttpProxy.connectTimeOut = connectTimeOut;
 	}
 
 	/**
 	 * @param readTimeOut
 	 *            读取数据超时(毫秒)
 	 */
-	public static void setReadTimeOut(int timeout) {
-		readTimeOut = timeout;
+	public static void setReadTimeOut(int readTimeOut) {
+		HttpProxy.readTimeOut = readTimeOut;
 	}
 
 	/**
 	 * @param requestEncoding
 	 *            请求编码
 	 */
-	public static void setRequestEncoding(String encoding) {
-		requestEncoding = encoding;
+	public static void setRequestEncoding(String requestEncoding) {
+		HttpProxy.requestEncoding = requestEncoding;
 	}
 
 }
