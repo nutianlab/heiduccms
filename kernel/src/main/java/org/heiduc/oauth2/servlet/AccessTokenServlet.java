@@ -1,6 +1,7 @@
 package org.heiduc.oauth2.servlet;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.apache.oltu.oauth2.common.message.types.TokenType;
 
 import com.heiduc.entity.TokenEntity;
+import com.heiduc.entity.UserEntity;
 import com.heiduc.servlet.AbstractServlet;
 
 public class AccessTokenServlet extends AbstractServlet {
@@ -85,6 +87,7 @@ public class AccessTokenServlet extends AbstractServlet {
 			          resp.getOutputStream().write(response.getBody().getBytes());
 			          resp.getOutputStream().flush();
 			          return;
+		        	
 		        }
 		        username = oauthRequest.getUsername();
 		      }
@@ -137,10 +140,15 @@ public class AccessTokenServlet extends AbstractServlet {
 		      token.setScope("basic");
 		      getBusiness().getOauth2Business().addAccessToken(token);
 
+		      UserEntity user = getDao().getUserDao().getByName(username);
+		      SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		      response = OAuthASResponse.tokenResponse(HttpServletResponse.SC_OK)
 		    		  .setRefreshToken(refreshToken)
 		    		  .setAccessToken(accessToken)
 		    		  .setTokenType(TokenType.BEARER.name())
+		    		  .setExpiresIn(String.valueOf(getBusiness().getOauth2Business().getExpireIn()))
+		    		  .setParam("code", "1")// 登录成功
+		    		  .setParam("nickName",user.getNickName() == null ? "":user.getNickName())
 		    		  .setExpiresIn(String.valueOf(getBusiness().getOauth2Business().getExpireIn())).setParam("code", "1")// 登录成功
 		    		  .setScope("basic")
 		    		  .buildJSONMessage();
