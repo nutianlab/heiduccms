@@ -23,24 +23,15 @@ public class PluginResourceCacheImpl implements PluginResourceCache {
 	
 	private List<String> getPluginResourcesList(String pluginName) {
 		String key = getPluginResourcesListKey(pluginName);
-//		System.out.println("getSystemService().getCache().containsKey(key):"+getSystemService().getCache().containsKey(key));
 		if (!getSystemService().getCache().containsKey(key)) {
-//			System.out.println("put into cache:"+key);
 			getSystemService().getCache().put(key, new ArrayList<String>());
 		}
-//		System.out.println("getSystemService().getCache().containsKey(key):"+getSystemService().getCache().containsKey(key));
 		List<String> list = (List<String>)getSystemService().getCache().get(key);
-//		System.out.println("getPluginResourcesList:"+list);
 		return list;
 	}
 	
 	@Override
 	public boolean contains(String pluginName, String key) {
-		/*System.out.println("=====================================");
-		System.out.println("key:"+key);
-		System.out.println("getPluginResourcesList(pluginName):"+getPluginResourcesList(pluginName));
-		System.out.println("getSystemService().getCache():"+getSystemService().getCache());
-		System.out.println("=====================================");*/
 		return getPluginResourcesList(pluginName).contains(key) 
 			&& getSystemService().getCache().containsKey(key);
 	}
