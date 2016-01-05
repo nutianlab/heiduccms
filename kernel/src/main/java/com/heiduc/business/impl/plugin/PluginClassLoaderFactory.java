@@ -17,8 +17,8 @@ public class PluginClassLoaderFactory {
 
 	private static final Log logger = LogFactory.getLog(PluginClassLoader.class);
 	
-	private Map<String, ClassLoader> classLoaders;
-	private PluginResourceCache cache;
+	private static final Map<String, ClassLoader> classLoaders = new HashMap<String, ClassLoader>();
+	private static final PluginResourceCache cache = new PluginResourceCacheImpl();
 	private static PluginClassLoaderFactory instance;
 	private PluginClassLoaderFactory (){
 		
@@ -28,6 +28,7 @@ public class PluginClassLoaderFactory {
 		if(instance == null){
 			logger.info("PluginClassLoaderFactory instance is null. ");
 			instance = new PluginClassLoaderFactory();
+			logger.info("init instance hashCode : "+instance.hashCode());
 		}
 		return instance;
 	}
@@ -47,9 +48,9 @@ public class PluginClassLoaderFactory {
 	}
 	
 	private Map<String, ClassLoader> getClassLoaders() {
-		if(classLoaders == null){
+		/*if(classLoaders == null){
 			classLoaders = new HashMap<String, ClassLoader>();
-		}
+		}*/
 		return classLoaders;
 	}
 	
@@ -62,14 +63,14 @@ public class PluginClassLoaderFactory {
 	}
 
 	public PluginResourceCache getCache() {
-		if (cache == null) {
+		/*if (cache == null) {
 			cache = new PluginResourceCacheImpl();
-		}
+		}*/
 		return cache;
 	}
 
-	public void setCache(PluginResourceCache cache) {
+	/*public void setCache(PluginResourceCache cache) {
 		this.cache = cache;
-	}
+	}*/
 	
 }

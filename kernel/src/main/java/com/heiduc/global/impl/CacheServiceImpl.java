@@ -60,13 +60,11 @@ public class CacheServiceImpl implements CacheService {
 		
 					// configure the cache
 					MutableConfiguration<String, Object> config = new MutableConfiguration<String, Object>();
-					// uses store by reference
-					config.setStoreByValue(false).setTypes(String.class, Object.class)
+					// uses store by value
+					config.setStoreByValue(true).setTypes(String.class, Object.class)
 							.setExpiryPolicyFactory(
 									AccessedExpiryPolicy.factoryOf(ONE_HOUR))
 							.setStatisticsEnabled(true);
-		
-	//				cacheManager.destroyCache("heiducCache");
 					// create the cache
 					cache = cacheManager.createCache("heiducCache", config);
 				}
@@ -75,7 +73,6 @@ public class CacheServiceImpl implements CacheService {
 			
 
 		} catch (CacheException e) {
-			e.printStackTrace();
 			log.error("Can't init cache manager. " + e.getMessage());
 		}
 		localCache = new HashMap<String, Object>();
@@ -150,7 +147,7 @@ public class CacheServiceImpl implements CacheService {
 		try {
 			result.putAll(cache.getAll(memcacheKeys));
 		} catch (CacheException e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 		return result;
 	}
