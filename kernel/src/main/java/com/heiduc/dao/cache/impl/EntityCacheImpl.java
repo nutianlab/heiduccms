@@ -3,6 +3,7 @@
 package com.heiduc.dao.cache.impl;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -79,6 +80,7 @@ public class EntityCacheImpl implements EntityCache, Serializable {
 							|| item.getTimestamp().after(globalResetDate)) {
 						getDaoStat().incEntityCacheHits();
 						BaseEntity entity = (BaseEntity)item.getData();
+						
 						result.put(entity.getId(), entity);
 					}
 					
@@ -95,6 +97,9 @@ public class EntityCacheImpl implements EntityCache, Serializable {
 	public void putEntity(Class clazz, Object id, Object entity) {
 		String key = getEntityKey(clazz, id);
 		getCache().put(key, new CacheItem(entity));
+		/*if(getEntity(clazz,id) == null){
+			System.out.println("putEntity Class:"+clazz.getClass().getName()+" is null.");
+		}*/
 	}
 
 	@Override

@@ -47,8 +47,8 @@ public class PluginBusinessImpl extends AbstractBusinessImpl
 	private static final long serialVersionUID = 1L;
 	private PluginLoader pluginLoader;
 	private PluginClassLoaderFactory pluginClassLoaderFactory;
-	private static Map<String, PluginEntryPoint> plugins = new HashMap<String, PluginEntryPoint>();
-	private static Map<String, PluginEntity> pluginTimestamps = new HashMap<String, PluginEntity>();
+	private static final Map<String, PluginEntryPoint> plugins = new HashMap<String, PluginEntryPoint>();
+	private static final Map<String, PluginEntity> pluginTimestamps = new HashMap<String, PluginEntity>();
 	
 	public PluginBusinessImpl() {
 		
@@ -190,6 +190,7 @@ public class PluginBusinessImpl extends AbstractBusinessImpl
 	public PluginEntryPoint getEntryPoint(PluginEntity plugin) {
 		if (!plugins.containsKey(plugin.getName()) 
 			|| isNeedRefresh(plugin)) {
+			
 			try {
 				resetPlugin(plugin);
 				ClassLoader pluginClassLoader = getPluginClassLoaderFactory()
@@ -201,7 +202,11 @@ public class PluginBusinessImpl extends AbstractBusinessImpl
 				entryPoint.setBusiness(getBusiness());
 				entryPoint.setFrontService(getFrontService());
 				entryPoint.setBackService(getBackService());
+				
+				entryPoint.refresh();
+				
 				entryPoint.init();
+				
 				plugins.put(plugin.getName(), entryPoint);
 				pluginTimestamps.put(plugin.getName(), plugin);
 				getBusiness().getRewriteUrlBusiness().addRules(

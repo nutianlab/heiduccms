@@ -53,6 +53,10 @@ import com.heiduc.search.impl.SearchEngineImpl;
  */
 public class BusinessImpl implements Business, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private SystemService systemService;
 	private Dao dao;
 	private SearchEngine searchEngine;
@@ -83,6 +87,10 @@ public class BusinessImpl implements Business, Serializable {
 	private Oauth2Business oauth2Business;
 
 	private SetupBean setupBean;
+	
+	public BusinessImpl(){
+		
+	}
 
 	@Override
 	public UserEntity getUser() {
