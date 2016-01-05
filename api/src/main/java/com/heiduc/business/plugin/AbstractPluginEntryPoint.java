@@ -41,6 +41,10 @@ public abstract class AbstractPluginEntryPoint implements PluginEntryPoint {
 	}
 	
 	@Override
+	public void refresh(){
+	}
+	
+	@Override
 	public void uninstall() {
 	}
 

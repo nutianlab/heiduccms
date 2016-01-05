@@ -22,6 +22,8 @@ public interface PluginEntryPoint {
 	 */
 	public void init();
 	
+	public void refresh();
+	
 	/**
 	 * Plugin uninstall callback. Called before uninstall process.
 	 */
