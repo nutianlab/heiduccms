@@ -382,6 +382,25 @@ function(LoginView, PagesView, IndexView,
 			}catch(e){
 				alert(e);
 			}
+		},
+		
+		pluginRouter : {
+			navigate : function (router,options) {
+				hashStrip = /^#*/;
+				var fragment = window.location.hash;
+				var frag = (fragment || '').replace(hashStrip, '');
+				
+				if((router.routes  instanceof Object) && router.routes.hasOwnProperty(frag)) {
+					router.navigate("loader");
+					router.navigate(frag,options);
+					router.route('addons/*path','pluginsAddons',function(id){
+							Heiduc.app.pluginsAddons(id);
+						}
+					);
+				}
+				return router;
+			}
+			
 		}
 		
 		
