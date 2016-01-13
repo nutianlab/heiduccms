@@ -20,16 +20,19 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Title: SmartTouch<br>
- * Description: 车主宝典api请求代理类<br>
+ * Description: api请求代理类<br>
  * Copyright: Copyright (c) 2011 <br>
  * Create DateTime: 2011-8-8 下午04:30:39 <br>
  * 
  * @author 谭小波
  */
 public class HttpProxy {
+	
+	protected static final Logger logger = LoggerFactory.getLogger(HttpProxy.class);
 
 	/**
 	 * 连接超时
@@ -94,12 +97,12 @@ public class HttpProxy {
 				//打印返回的信息  
 			    method.releaseConnection();  
 			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}  
 		return response;
 	}
@@ -191,12 +194,12 @@ public class HttpProxy {
 				//打印返回的信息  
 			    method.releaseConnection();  
 			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}  
 		} catch (Exception e) {
-			System.out.println("网络异常: "+e.getMessage());
+			logger.error(e.getMessage());
 		} finally {
 			
 		}
@@ -217,7 +220,7 @@ public class HttpProxy {
 		HttpURLConnection httpURLConnection = null;
 		String responseContent = null;
 		try {
-			String BOUNDARY = "---------travelbookapi"; // 定义数据分隔线
+			String BOUNDARY = "---------HEIDUC"; // 定义数据分隔线
 			URL url = new URL(reqUrl);
 			httpURLConnection = (HttpURLConnection) url.openConnection();
 			httpURLConnection.setRequestMethod("POST");
@@ -233,7 +236,6 @@ public class HttpProxy {
 			OutputStream out = new DataOutputStream(httpURLConnection.getOutputStream());
 			byte[] end_data = ("\r\n--" + BOUNDARY + "--\r\n").getBytes();// 定义最后数据分隔线
 			
-			//
 			for (Map.Entry<String, String> entry : parameters.entrySet()) {
 				StringBuffer sb = new StringBuffer();
 				sb.append("--");
@@ -242,7 +244,6 @@ public class HttpProxy {
 				sb.append("Content-Disposition: form-data;name=\""+entry.getKey()+"\"\r\n");
 				sb.append("\r\n");
 				sb.append(URLEncoder.encode(entry.getValue()+"", HttpProxy.requestEncoding));
-				//sb.append(element.getValue().toString());
 				sb.append("\r\n");
 				
 				byte[] data = sb.toString().getBytes();
@@ -272,7 +273,6 @@ public class HttpProxy {
 				}
 				out.write("\r\n".getBytes()); //多个文件时，二个文件之间加入这个
 				in.close();
-				System.out.println(sb.toString()+"\r\n");
 			}
 			out.write(end_data);
 			out.flush();
@@ -283,26 +283,18 @@ public class HttpProxy {
 			
 			StringBuffer sb = new StringBuffer();
 			while ((line = reader.readLine()) != null) {
-				//System.out.println(line);
 				sb.append(line);
 			}
 			reader.close();
 			responseContent = sb.toString();
 		} catch (IOException e) {
-			System.out.println("网络异常: "+e.getMessage());
+			logger.error(e.getMessage());
 			try {
-				System.out.println("状态码："+httpURLConnection.getResponseCode());
+				logger.info(httpURLConnection.getResponseCode()+"");
 			} catch (IOException e1) {
-				//e1.printStackTrace();
 			}
-			//e.printStackTrace();
 		}  catch (Exception e) {
-			System.out.println("网络异常: "+e.getMessage());
-			try {
-				System.out.println("状态码："+httpURLConnection.getResponseCode());
-			} catch (IOException e1) {
-				//e1.printStackTrace();
-			}
+			logger.error(e.getMessage());
 		} finally {
 			
 		}
