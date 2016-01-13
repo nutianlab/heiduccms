@@ -7,7 +7,12 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Constants {
+	
+	private  static final Logger logger = LoggerFactory.getLogger(Constants.class);
 	
 	public static String REALPATH = "";
 	
@@ -32,7 +37,6 @@ public class Constants {
 	public static String TASKQUEUE_SERVER = "";
 	
 	static{
-//		String webInfPath = getWebInfPath();
 		Properties prorperties = new Properties();
 		try {
 			prorperties.load(Constants.class.getClassLoader().getResourceAsStream("config.properties"));
@@ -40,9 +44,9 @@ public class Constants {
 			DATABASE_URI = (String) prorperties.get("heiduc.database.uri");
 			TASKQUEUE_SERVER = (String) prorperties.get("heiduc.taskqueue.server");
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 	}
 	
@@ -71,7 +75,7 @@ public class Constants {
         try {  
             path =  URLDecoder.decode(path, "UTF-8");  
         } catch (UnsupportedEncodingException e) {  
-            e.printStackTrace();  
+        	logger.error(e.getMessage());
         }  
           
         return path;  
