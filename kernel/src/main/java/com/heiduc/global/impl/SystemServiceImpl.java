@@ -89,8 +89,7 @@ public class SystemServiceImpl implements SystemService, Serializable {
 	        	velocityEngine = new VelocityEngine(properties);
 	        	velocityEngine.init();
 	        	//TODO  从文件加载配置
-//	        	System.out.println("Velocity.FILE_RESOURCE_LOADER_PATH="+Velocity.FILE_RESOURCE_LOADER_PATH);
-	        	/*velocityEngine = new VelocityEngine("velocity.properties");
+	        	/*velocityEngine = new VelocityEngine("WEB-INF/velocity.properties");
 				velocityEngine.init();*/
 			} catch (Exception e) {
 	            log.error("Can't init velocity engine. " + e.getMessage());
@@ -112,9 +111,9 @@ public class SystemServiceImpl implements SystemService, Serializable {
 			return e.toString();
 		} catch (ResourceNotFoundException e) {
 			return e.toString();
-		} catch (IOException e) {
+		} /*catch (IOException e) {
 			return e.toString();
-		}
+		}*/
 	}
 
 	@Override
