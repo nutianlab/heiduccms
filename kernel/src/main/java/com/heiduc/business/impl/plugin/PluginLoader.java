@@ -1,5 +1,3 @@
-
-
 package com.heiduc.business.impl.plugin;
 
 import java.io.ByteArrayInputStream;
@@ -20,6 +18,8 @@ import org.apache.commons.logging.LogFactory;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.heiduc.business.Business;
 import com.heiduc.common.PluginException;
@@ -34,7 +34,7 @@ import com.heiduc.utils.StrUtil;
 
 public class PluginLoader {
 
-	private static final Log logger = LogFactory.getLog(PluginLoader.class);
+	private static final Logger logger = LoggerFactory.getLogger(PluginLoader.class);
 
 	private static final String HEIDUC_PLUGIN = "WEB-INF/heiduc-plugin.xml";
 	private static final String RESOURCE_LIST = ".resourceList";
@@ -50,9 +50,9 @@ public class PluginLoader {
 	}
 
 	private static class WarItem {
-		public String path;
-		public String filename;
-		public ByteArrayOutputStream data;
+		private String path;
+		private String filename;
+		private ByteArrayOutputStream data;
 
 		public WarItem(String path, ByteArrayOutputStream data) {
 			super();

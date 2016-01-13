@@ -1,5 +1,3 @@
-
-
 package com.heiduc.dao;
 
 import java.util.ArrayList;
@@ -8,8 +6,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.heiduc.api.datastore.DatastoreService;
 import org.heiduc.api.datastore.Entity;
 import org.heiduc.api.datastore.EntityNotFoundException;
@@ -18,6 +14,8 @@ import org.heiduc.api.datastore.Key;
 import org.heiduc.api.datastore.KeyFactory;
 import org.heiduc.api.datastore.PreparedQuery;
 import org.heiduc.api.datastore.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.heiduc.common.HeiducContext;
 import com.heiduc.entity.BaseEntity;
@@ -31,8 +29,7 @@ public class BaseDaoImpl<T extends BaseEntity>
 	 */
 	private static final long serialVersionUID = 1L;
 
-	protected static final Log logger = LogFactory.getLog(
-			BaseDaoImpl.class);
+	protected static final Logger logger = LoggerFactory.getLogger(BaseDaoImpl.class);
 
 	private static int QUERY_LIMIT = 100000;
 	private static int CHUNK_SIZE = 1000;
@@ -87,7 +84,7 @@ public class BaseDaoImpl<T extends BaseEntity>
 	@Override
 	public List<T> getById(List<Long> ids) {
 		if (ids == null) {
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		}
 		List<Key> keys = new ArrayList<Key>();
 		List<T> result = new ArrayList<T>();
@@ -118,7 +115,7 @@ public class BaseDaoImpl<T extends BaseEntity>
 			return model;
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			return null;
 		}
 	}
@@ -245,7 +242,6 @@ public class BaseDaoImpl<T extends BaseEntity>
 	protected List<T> select(Query query, String queryId, int queryLimit, Object[] params) {
 		List<T> result = (List<T>) getQueryCache().getQuery(clazz, queryId, queryLimit,params);
 		if (result == null) {
-//			getDao().getDaoStat().incQueryCalls();
 			result = selectNotCache(query,queryLimit);
 			getQueryCache().putQuery(clazz, queryId, params, queryLimit,(List<BaseEntity>)result);			
 		}
@@ -308,8 +304,6 @@ public class BaseDaoImpl<T extends BaseEntity>
 		getDao().getDaoStat().incQueryCalls();
 		query.setKeysOnly();
 		PreparedQuery p = getDatastore().prepare(query);
-//		int count = 0;
-//		for (Entity entity : p.asIterable(FetchOptions.Builder.withChunkSize(CHUNK_SIZE))) count++;
 		return p.count(FetchOptions.Builder.withChunkSize(CHUNK_SIZE));
 	}
 
