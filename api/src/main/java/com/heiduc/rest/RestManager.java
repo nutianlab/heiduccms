@@ -25,10 +25,10 @@ public class RestManager extends Application {
 		return classes;
 	}
 
-	@Override
+	/*@Override
 	public Map<String, Object> getProperties() {
 		return super.getProperties();
-	}
+	}*/
 
 	@Override
 	public Set<Object> getSingletons() {

@@ -25,7 +25,7 @@ import com.heiduc.global.CacheService;
 import com.heiduc.global.SystemService;
 import com.heiduc.utils.EntityUtil;
 
-public class QueryCacheImpl implements QueryCache, Serializable {
+public class QueryCacheImpl<T extends BaseEntity> implements QueryCache<T>, Serializable {
 
 	/**
 	 * 
@@ -79,12 +79,12 @@ public class QueryCacheImpl implements QueryCache, Serializable {
 	}
 	
 	@Override
-	public List<BaseEntity> getQuery(Class clazz, String query, Object[] params) {
+	public List<T> getQuery(Class clazz, String query, Object[] params) {
 		return getQuery(clazz,query,0,params); 
 	}
 	
 	@Override
-	public List<BaseEntity> getQuery(Class clazz, String query, int queryLimit, Object[] params) {
+	public List<T> getQuery(Class clazz, String query, int queryLimit, Object[] params) {
 		try {
 			CacheItem item = (CacheItem)getCache().get(getQueryKey(clazz, query, queryLimit,
 					params));
@@ -106,10 +106,10 @@ public class QueryCacheImpl implements QueryCache, Serializable {
 		return null;
 	}
 
-	private List<BaseEntity> getCachedQueryResult(Class clazz, CacheItem item) {
+	private List<T> getCachedQueryResult(Class clazz, CacheItem item) {
 		getDaoStat().incQueryCacheHits();
 		List<Long> ids = (List<Long>)item.getData();
-		Map<Long, BaseEntity> cached = getEntityCache().getEntities(clazz, ids);
+		Map<Long, T> cached = getEntityCache().getEntities(clazz, ids);
 		List<Key> toLoadKeys = new ArrayList<Key>();
 		for (Long id : cached.keySet()) {
 			if (cached.get(id) == null) {
@@ -121,20 +121,20 @@ public class QueryCacheImpl implements QueryCache, Serializable {
 			}
 		}
 		cached.putAll(loadEntities(clazz, toLoadKeys));
-		List<BaseEntity> result = new ArrayList<BaseEntity>();
+		List<T> result = new ArrayList<T>();
 		for (Long id : ids) {
 			result.add(cached.get(id));
 		}
 		return result;
 	}
 	
-	private Map<Long, BaseEntity> loadEntities(Class clazz, List<Key> keys) {
-		Map<Long, BaseEntity> result = new HashMap<Long, BaseEntity>();
+	private Map<Long, T> loadEntities(Class clazz, List<Key> keys) {
+		Map<Long, T> result = new HashMap<Long, T>();
 		try {
 			getDaoStat().incGetCalls();
 			Map<Key, Entity> loaded = getSystemService().getDatastore().get(keys);
 			for (Key key : loaded.keySet()) {
-				BaseEntity model = (BaseEntity)clazz.newInstance();
+				T model = (T)clazz.newInstance();
 				model.load(loaded.get(key));
 				result.put(model.getId(), model);
 			}
@@ -146,12 +146,12 @@ public class QueryCacheImpl implements QueryCache, Serializable {
 	}
 
 	@Override
-	public void putQuery(Class clazz, String query, Object[] params, List<BaseEntity> list) {
+	public void putQuery(Class clazz, String query, Object[] params, List<T> list) {
 		putQuery(clazz,query,params,0,list);
 	}
 	
 	@Override
-	public void putQuery(Class clazz, String query, Object[] params, int queryLimit, List<BaseEntity> list) {
+	public void putQuery(Class clazz, String query, Object[] params, int queryLimit, List<T> list) {
 		String key = getQueryKey(clazz, query, queryLimit,params);
 		List<Long> ids = new ArrayList<Long>();
 		for (BaseEntity entity : list) {

@@ -240,10 +240,10 @@ public class BaseDaoImpl<T extends BaseEntity>
 	}
 
 	protected List<T> select(Query query, String queryId, int queryLimit, Object[] params) {
-		List<T> result = (List<T>) getQueryCache().getQuery(clazz, queryId, queryLimit,params);
+		List<T> result = getQueryCache().getQuery(clazz, queryId, queryLimit,params);
 		if (result == null) {
 			result = selectNotCache(query,queryLimit);
-			getQueryCache().putQuery(clazz, queryId, params, queryLimit,(List<BaseEntity>)result);			
+			getQueryCache().putQuery(clazz, queryId, params, queryLimit,result);			
 		}
 		return result;
 	}

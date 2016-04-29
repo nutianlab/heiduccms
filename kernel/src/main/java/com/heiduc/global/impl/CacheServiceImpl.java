@@ -22,6 +22,7 @@ import javax.cache.expiry.AccessedExpiryPolicy;
 import javax.cache.integration.CompletionListener;
 import javax.cache.processor.EntryProcessor;
 import javax.cache.processor.EntryProcessorException;
+import javax.cache.processor.EntryProcessorResult;
 import javax.cache.spi.CachingProvider;
 
 import org.apache.commons.logging.Log;
@@ -31,18 +32,20 @@ import com.heiduc.global.CacheService;
 import com.heiduc.utils.ArrayUtil;
 import com.heiduc.utils.StrUtil;
 
-public class CacheServiceImpl implements CacheService {
+public final class CacheServiceImpl implements CacheService<String,Object> {
 
 	private static final Log log = LogFactory.getLog(CacheServiceImpl.class);
 
 	private static final long LOCAL_CACHE_TTL = 5000;
 	private static final String RESET_DATE_KEY = "cacheResetDate";
 
-	private Cache cache;
+	private Cache<String, Object> cache;
 	private Map<String, Object> localCache;
 	private long localCacheTime;
 	private int localHits;
 	private int cacheHits;
+	
+	public static int CACHE_SIZE_LIMIT = 1000000;
 
 	public CacheServiceImpl() {
 		try {
@@ -55,13 +58,13 @@ public class CacheServiceImpl implements CacheService {
 			synchronized(this) {  
 				cache = Caching.getCache("heiducCache",String.class, Object.class);
 				if(cache == null){
-					CachingProvider cachingProvider = Caching.getCachingProvider();
+					CachingProvider cachingProvider = Caching.getCachingProvider(CacheServiceImpl.class.getClassLoader());
 					CacheManager cacheManager = cachingProvider.getCacheManager();
 		
 					// configure the cache
 					MutableConfiguration<String, Object> config = new MutableConfiguration<String, Object>();
 					// uses store by value
-					config.setStoreByValue(true).setTypes(String.class, Object.class)
+					config.setStoreByValue(false).setTypes(String.class, Object.class)
 							.setExpiryPolicyFactory(
 									AccessedExpiryPolicy.factoryOf(ONE_HOUR))
 							.setStatisticsEnabled(true);
@@ -80,22 +83,7 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
-	public void clear() {
-		localCache.clear();
-		cache.clear();
-		put(RESET_DATE_KEY, new Date());
-	}
-
-	@Override
-	public boolean containsKey(Object key) {
-		if (localCache.containsKey(key)) {
-			return true;
-		}
-		return cache.containsKey(key);
-	}
-
-	@Override
-	public Object get(Object key) {
+	public Object get(String key) {
 		try {
 			if (localCache.containsKey(key)) {
 				localHits++;
@@ -112,31 +100,10 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
-	public void putAll(Map map) {
-		localCache.putAll(map);
-		try {
-			cache.putAll(map);
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
-	}
-
-	@Override
-	public void close() {
-		cache.close();
-		
-	}
-
-	@Override
-	public void deregisterCacheEntryListener(CacheEntryListenerConfiguration cacheEntryListenerConfiguration) {
-		cache.deregisterCacheEntryListener(cacheEntryListenerConfiguration);
-	}
-
-	@Override
-	public Map getAll(Set keys) {
-		Map result = new HashMap();
-		Set memcacheKeys = new HashSet();
-		for (Object key : keys) {
+	public Map<String, Object> getAll(Set<? extends String> keys) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		Set<String> memcacheKeys = new HashSet<String>();
+		for (String key : keys) {
 			if (localCache.containsKey(key)) {
 				result.put(key, localCache.get(key));
 			}
@@ -153,91 +120,54 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
-	public Object getAndPut(Object key, Object value) {
-		localCache.remove(key);
-		return cache.getAndPut(key, value);
+	public boolean containsKey(String key) {
+		if (localCache.containsKey(key)) {
+			return true;
+		}
+		return cache.containsKey(key);
 	}
 
 	@Override
-	public Object getAndRemove(Object key) {
-		localCache.remove(key);
-		return cache.getAndRemove(key);
-	}
-
-	@Override
-	public Object getAndReplace(Object key, Object value) {
-		localCache.remove(key);
-		return cache.getAndReplace(key, value);
-	}
-
-	@Override
-	public CacheManager getCacheManager() {
-		return cache.getCacheManager();
-	}
-
-	@Override
-	public Configuration getConfiguration(Class clazz) {
-		return cache.getConfiguration(clazz);
-	}
-
-	@Override
-	public String getName() {
-		return cache.getName();
-	}
-
-	@Override
-	public Object invoke(Object key, EntryProcessor entryProcessor, Object... arguments)
-			throws EntryProcessorException {
-		return cache.invoke(key, entryProcessor, arguments);
-	}
-
-	@Override
-	public Map invokeAll(Set keys, EntryProcessor entryProcessor, Object... arguments) {
-		return cache.invokeAll(keys, entryProcessor, arguments);
-	}
-
-	@Override
-	public boolean isClosed() {
-		return cache.isClosed();
-	}
-
-	@Override
-	public Iterator iterator() {
-		return cache.iterator();
-	}
-
-	@Override
-	public void loadAll(Set keys, boolean replaceExistingValues, CompletionListener completionListener) {
+	public void loadAll(Set<? extends String> keys, boolean replaceExistingValues, CompletionListener completionListener) {
 		localCache.clear();
 		cache.loadAll(keys, replaceExistingValues, completionListener);
-		
 	}
 
 	@Override
-	public void put(Object key, Object value) {
-		localCache.put((String)key, value);
+	public void put(String key, Object value) {
+		localCache.put(key, value);
 		try {
 			cache.put(key, value);
 		}
 		catch (Exception e) {
 			log.error(e.getMessage());
 		}
-		
 	}
 
 	@Override
-	public boolean putIfAbsent(Object key, Object value) {
+	public Object getAndPut(String key, Object value) {
+		localCache.remove(key);
+		return cache.getAndPut(key, value);
+	}
+
+	@Override
+	public void putAll(Map<? extends String, ? extends Object> map) {
+		localCache.putAll(map);
+		try {
+			cache.putAll(map);
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error(e.getMessage());
+		}
+	}
+
+	@Override
+	public boolean putIfAbsent(String key, Object value) {
 		return cache.putIfAbsent(key, value);
 	}
 
 	@Override
-	public void registerCacheEntryListener(CacheEntryListenerConfiguration cacheEntryListenerConfiguration) {
-		cache.registerCacheEntryListener(cacheEntryListenerConfiguration);
-		
-	}
-
-	@Override
-	public boolean remove(Object key) {
+	public boolean remove(String key) {
 		localCache.remove(key);
 		try {
 			return cache.remove(key);
@@ -249,9 +179,45 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
-	public boolean remove(Object key, Object oldValue) {
+	public boolean remove(String key, Object oldValue) {
 		localCache.remove(key);
 		return cache.remove(key,oldValue);
+	}
+
+	@Override
+	public Object getAndRemove(String key) {
+		localCache.remove(key);
+		return cache.getAndRemove(key);
+	}
+
+	@Override
+	public boolean replace(String key, Object oldValue, Object newValue) {
+		if (localCache.containsKey(key) && oldValue.equals(localCache.get(key))) {
+			localCache.put(key, newValue);
+		}
+		return cache.replace(key, oldValue, newValue);
+	}
+
+	@Override
+	public boolean replace(String key, Object value) {
+		localCache.put(key, value);
+		return cache.replace(key, value);
+	}
+
+	@Override
+	public Object getAndReplace(String key, Object value) {
+		localCache.remove(key);
+		return cache.getAndReplace(key, value);
+	}
+
+	@Override
+	public void removeAll(Set<? extends String> keys) {
+		for (String key : keys) {
+			if (localCache.containsKey(key)) {
+				localCache.remove(key);
+			}
+		}
+		cache.removeAll(keys);
 	}
 
 	@Override
@@ -261,34 +227,68 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
-	public void removeAll(Set keys) {
-		for (Object key : keys) {
-			if (localCache.containsKey(key)) {
-				localCache.remove(key);
-			}
-		}
-		cache.removeAll(keys);
+	public void clear() {
+		localCache.clear();
+		cache.clear();
+		put(RESET_DATE_KEY, new Date());
 	}
 
 	@Override
-	public boolean replace(Object key, Object value) {
-		localCache.put(key+"", value);
-		return cache.replace(key, value);
+	public <C extends Configuration<String, Object>> C getConfiguration(Class<C> clazz) {
+		return cache.getConfiguration(clazz);
 	}
 
 	@Override
-	public boolean replace(Object key, Object oldValue, Object newValue) {
-		if (localCache.containsKey(key) && oldValue.equals(localCache.get(key))) {
-			localCache.put(key+"", newValue);
-		}
-		return cache.replace(key, oldValue, newValue);
+	public <T> T invoke(String key, EntryProcessor<String, Object, T> entryProcessor, Object... arguments) throws EntryProcessorException {
+		log.debug("cacheService invoke......");
+		return cache.invoke(key, entryProcessor, arguments);
 	}
 
 	@Override
-	public Object unwrap(Class clazz) {
+	public <T> Map<String, EntryProcessorResult<T>> invokeAll(Set<? extends String> keys, EntryProcessor<String, Object, T> entryProcessor, Object... arguments) {
+		return cache.invokeAll(keys, entryProcessor, arguments);
+	}
+
+	@Override
+	public String getName() {
+		return cache.getName();
+	}
+
+	@Override
+	public CacheManager getCacheManager() {
+		return cache.getCacheManager();
+	}
+
+	@Override
+	public void close() {
+		cache.close();
+	}
+
+	@Override
+	public boolean isClosed() {
+		return cache.isClosed();
+	}
+
+	@Override
+	public <T> T unwrap(Class<T> clazz) {
 		return cache.unwrap(clazz);
 	}
-	
+
+	@Override
+	public void registerCacheEntryListener(CacheEntryListenerConfiguration<String, Object> cacheEntryListenerConfiguration) {
+		cache.deregisterCacheEntryListener(cacheEntryListenerConfiguration);
+	}
+
+	@Override
+	public void deregisterCacheEntryListener(CacheEntryListenerConfiguration<String, Object> cacheEntryListenerConfiguration) {
+		cache.deregisterCacheEntryListener(cacheEntryListenerConfiguration);
+	}
+
+	@Override
+	public Iterator<javax.cache.Cache.Entry<String, Object>> iterator() {
+		return cache.iterator();
+	}
+
 	@Override
 	public void resetLocalCache() {
 		if (System.currentTimeMillis() - localCacheTime > LOCAL_CACHE_TTL) {
@@ -296,41 +296,21 @@ public class CacheServiceImpl implements CacheService {
 			localCacheTime = System.currentTimeMillis();
 		}
 	}
-	
+
 	@Override
 	public int getLocalHits() {
 		return localHits;
 	}
 
+	@Override
 	public int getCacheHits() {
 		return cacheHits;
 	}
 
 	@Override
-	public Cache getMemcache() {
+	public Cache<String, Object> getMemcache() {
 		return cache;
 	}
-
-	@Override
-	public byte[] getBlob(String key) {
-		String chunkList = (String) get(key);
-		if (chunkList != null) {
-			List<byte[]> data = new ArrayList<byte[]>();
-			int size = 0;
-			for (String chunkKey : StrUtil.fromCSV(chunkList)) {
-				byte[] chunk = (byte[]) get(chunkKey);
-				if (chunk == null) {
-					return null;
-				}
-				data.add(chunk);
-				size += chunk.length;
-			}
-			return ArrayUtil.packChunks(data);
-		}
-		return null;
-	}
-
-	public static int CACHE_SIZE_LIMIT = 1000000;
 
 	@Override
 	public void putBlob(String key, byte[] data) {
@@ -347,8 +327,31 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
+	public byte[] getBlob(String key) {
+		String chunkList = (String) get(key);
+		if (chunkList != null) {
+			List<byte[]> data = new ArrayList<byte[]>();
+//			int size = 0;
+			for (String chunkKey : StrUtil.fromCSV(chunkList)) {
+				byte[] chunk = (byte[]) get(chunkKey);
+				if (chunk == null) {
+					return null;
+				}
+				data.add(chunk);
+//				size += chunk.length;
+			}
+			return ArrayUtil.packChunks(data);
+		}
+		return null;
+	}
+
+	@Override
 	public Date getResetDate() {
 		return (Date) get(RESET_DATE_KEY);
 	}
+
+	
+
+	
 
 }

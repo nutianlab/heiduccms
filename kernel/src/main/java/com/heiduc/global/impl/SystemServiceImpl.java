@@ -71,6 +71,7 @@ public class SystemServiceImpl implements SystemService, Serializable {
 	@Override
 	public CacheService getCache() {
 		if (cache == null) {
+			log.info("CacheService init. ");
 			cache = new CacheServiceImpl();
 		}
 		return cache;

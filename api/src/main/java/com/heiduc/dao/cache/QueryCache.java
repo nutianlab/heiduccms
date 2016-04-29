@@ -11,16 +11,16 @@ import com.heiduc.entity.BaseEntity;
  * @author Alexander Oleynik
  *
  */
-public interface QueryCache {
+public interface QueryCache<T extends BaseEntity> {
 
-	void putQuery(Class clazz, String query, Object[] params, List<BaseEntity> list);
+	void putQuery(Class clazz, String query, Object[] params, List<T> list);
 
-	List<BaseEntity> getQuery(Class clazz, String query, Object[] params);
+	List<T> getQuery(Class clazz, String query, Object[] params);
 	
 	void removeQueries(Class clazz);
 
-	List<BaseEntity> getQuery(Class clazz, String queryId, int queryLimit, Object[] params);
+	List<T> getQuery(Class clazz, String queryId, int queryLimit, Object[] params);
 
-	void putQuery(Class clazz, String queryId, Object[] params, int queryLimit, List<BaseEntity> result);
+	void putQuery(Class clazz, String queryId, Object[] params, int queryLimit, List<T> result);
 	
 }
