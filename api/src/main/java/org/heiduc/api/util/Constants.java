@@ -44,7 +44,7 @@ public class Constants {
 			DATABASE_URI = (String) prorperties.get("heiduc.database.uri");
 			TASKQUEUE_SERVER = (String) prorperties.get("heiduc.taskqueue.server");
 		} catch (FileNotFoundException e) {
-			logger.error(e.getMessage());
+			logger.error("config.properties File Not Found ", e);
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 		}

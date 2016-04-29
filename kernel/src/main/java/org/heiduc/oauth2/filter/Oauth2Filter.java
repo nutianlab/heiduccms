@@ -32,6 +32,7 @@ public class Oauth2Filter extends AbstractFilter implements Filter {
 	        throws IOException, ServletException
 	    {
 	        HttpServletResponse res = (HttpServletResponse)response;
+	        HttpServletRequest req = (HttpServletRequest)request;
 	        try
 	        {
 	            OAuthAccessResourceRequest oauthRequest = new OAuthAccessResourceRequest((HttpServletRequest)request, new ParameterStyle[] {
@@ -51,16 +52,18 @@ public class Oauth2Filter extends AbstractFilter implements Filter {
 	        }
 	        catch(OAuthProblemException e)
 	        {
-	            e.printStackTrace();
+	            //e.printStackTrace();
+	            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "OAuthProblemException[uri="+req.getRequestURI()+"]", e);
 	        }
 	        catch(OAuthSystemException e)
 	        {
-	            e.printStackTrace();
-	            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "error trying to access oauth server", e);
+	            //e.printStackTrace();
+	            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "error trying to access oauth server[uri="+req.getRequestURI()+"]", e);
 	        }
 	        catch(Exception e)
 	        {
-	            e.printStackTrace();
+	            //e.printStackTrace();
+	            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "error trying to access oauth server[uri="+req.getRequestURI()+"]", e);
 	        }
 	        OAuthResponse oauthResponse = null;
 	    	try {
@@ -69,6 +72,7 @@ public class Oauth2Filter extends AbstractFilter implements Filter {
 						 		  .setErrorDescription("accessToken INVALID").setParam("code", "20101") // 认证失败
 						 		  .buildJSONMessage();
 			} catch (OAuthSystemException e) {
+				Logger.getLogger(getClass().getName()).log(Level.SEVERE, "OAuthSystemException [uri="+req.getRequestURI()+"]", e);
 			}
 	    	
 	    	res.setStatus(oauthResponse.getResponseStatus());
