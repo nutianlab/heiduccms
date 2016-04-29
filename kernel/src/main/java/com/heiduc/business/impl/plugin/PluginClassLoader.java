@@ -5,9 +5,9 @@ package com.heiduc.business.impl.plugin;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.velocity.exception.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.heiduc.business.plugin.PluginResourceCache;
 import com.heiduc.dao.Dao;
@@ -16,7 +16,7 @@ import com.heiduc.global.SystemService;
 
 public class PluginClassLoader extends ClassLoader {
 
-	private static final Log logger = LogFactory.getLog(PluginClassLoader.class);
+	private static final Logger logger = LoggerFactory.getLogger(PluginClassLoader.class);
 	
 	private SystemService systemService;
 	private Dao dao;
@@ -37,8 +37,8 @@ public class PluginClassLoader extends ClassLoader {
 	}
 
 	@Override
-	public Class findClass(String name) throws ClassNotFoundException {
-		Class cls = findLoadedClass(name);
+	public Class<?> findClass(String name) throws ClassNotFoundException {
+		Class<?> cls = findLoadedClass(name);
 		if (cls != null) {
 			return cls;
 		}
@@ -50,6 +50,7 @@ public class PluginClassLoader extends ClassLoader {
 			return defineClass(name, b, 0, b.length);
 		}
 		catch (SecurityException e) {
+			logger.error(e.getMessage());
 			return super.loadClass(name);
 		}
 	}
