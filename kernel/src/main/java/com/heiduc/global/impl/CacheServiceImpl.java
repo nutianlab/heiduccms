@@ -58,7 +58,7 @@ public final class CacheServiceImpl implements CacheService<String,Object> {
 			synchronized(this) {  
 				cache = Caching.getCache("heiducCache",String.class, Object.class);
 				if(cache == null){
-					CachingProvider cachingProvider = Caching.getCachingProvider(CacheServiceImpl.class.getClassLoader());
+					CachingProvider cachingProvider = Caching.getCachingProvider();
 					CacheManager cacheManager = cachingProvider.getCacheManager();
 		
 					// configure the cache

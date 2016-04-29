@@ -202,8 +202,9 @@ public class PluginBusinessImpl extends AbstractBusinessImpl
 				entryPoint.setBusiness(getBusiness());
 				entryPoint.setFrontService(getFrontService());
 				entryPoint.setBackService(getBackService());
-				
-				entryPoint.refresh();
+				if(isNeedRefresh(plugin)){
+					entryPoint.refresh();
+				}
 				
 				entryPoint.init();
 				
