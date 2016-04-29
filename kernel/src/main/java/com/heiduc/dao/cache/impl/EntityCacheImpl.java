@@ -27,7 +27,7 @@ import com.heiduc.global.SystemService;
  * @author Alexander Oleynik
  *
  */
-public class EntityCacheImpl implements EntityCache, Serializable {
+public class EntityCacheImpl<T extends BaseEntity> implements EntityCache<T>, Serializable {
 
 	protected static final Log logger = LogFactory.getLog(
 			EntityCacheImpl.class);
@@ -63,10 +63,10 @@ public class EntityCacheImpl implements EntityCache, Serializable {
 	}
 
 	@Override
-	public Map<Long, BaseEntity> getEntities(Class clazz, List<Long> ids) {
+	public Map<Long, T> getEntities(Class clazz, List<Long> ids) {
 //		List<String> keys = new ArrayList<String>(); 
 		Set<String> keys = new HashSet<String>(); 
-		Map<Long, BaseEntity> result = new HashMap<Long, BaseEntity>();
+		Map<Long, T> result = new HashMap<Long, T>();
 		for (Long id : ids) {
 			keys.add(getEntityKey(clazz, id));
 			result.put(id, null);
@@ -81,7 +81,7 @@ public class EntityCacheImpl implements EntityCache, Serializable {
 						getDaoStat().incEntityCacheHits();
 						BaseEntity entity = (BaseEntity)item.getData();
 						
-						result.put(entity.getId(), entity);
+						result.put(entity.getId(), (T)entity);
 					}
 					
 				}
@@ -103,9 +103,10 @@ public class EntityCacheImpl implements EntityCache, Serializable {
 	}
 
 	@Override
-	public void putEntities(Class clazz, List<BaseEntity> list) {
+	public void putEntities(Class clazz, List<T> list) {
 		Map<String, CacheItem> map = new HashMap<String, CacheItem>(); 
 		for (BaseEntity entity : list) {
+			logger.debug(entity.getClass().getName());
 			map.put(getEntityKey(clazz, entity.getId()), new CacheItem(entity));
 		}
 		getCache().putAll(map);

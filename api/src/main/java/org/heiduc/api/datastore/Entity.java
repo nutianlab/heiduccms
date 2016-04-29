@@ -1,10 +1,12 @@
 package org.heiduc.api.datastore;
 
 import java.io.Serializable;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class Entity implements Serializable, Cloneable {
 
@@ -13,11 +15,11 @@ public class Entity implements Serializable, Cloneable {
 	 */
 	private static final long serialVersionUID = 3146926183481472170L;
 	private final Key key;
-	private final Map propertyMap;
+	private final Map<String,Object> propertyMap;
 
 	public Entity(Key key) {
 		this.key = key;
-		propertyMap = new HashMap();
+		propertyMap = new HashMap<String,Object>();
 	}
 
 	public Entity(String kind) {
@@ -65,10 +67,10 @@ public class Entity implements Serializable, Cloneable {
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append((new StringBuilder()).append("<Entity [").append(key).append("]:\n").toString());
-		java.util.Map.Entry entry;
-		for (Iterator i$ = propertyMap.entrySet().iterator(); i$.hasNext(); buffer.append((new StringBuilder()).append("\t").append((String) entry.getKey()).append(" = ").append(entry.getValue())
+		Entry<String,Object> entry;
+		for (Iterator<Entry<String, Object>>  i$ = propertyMap.entrySet().iterator(); i$.hasNext(); buffer.append((new StringBuilder()).append("\t").append((String) entry.getKey()).append(" = ").append(entry.getValue())
 				.append("\n").toString()))
-			entry = (java.util.Map.Entry) i$.next();
+			entry = (Entry<String,Object>) i$.next();
 
 		buffer.append(">\n");
 		return buffer.toString();
@@ -79,24 +81,24 @@ public class Entity implements Serializable, Cloneable {
 		// return propertyMap.get(propertyName);
 	}
 
-	public Map getProperties() {
-		Map properties = new HashMap(propertyMap.size());
-		java.util.Map.Entry entry;
-		for (Iterator i$ = propertyMap.entrySet().iterator(); i$.hasNext(); properties.put(entry.getKey(), unwrapValue(entry.getValue())))
-			entry = (java.util.Map.Entry) i$.next();
+	public Map<String,Object> getProperties() {
+		Map<String,Object> properties = new HashMap<String,Object>(propertyMap.size());
+		Entry<String,Object> entry;
+		for (Iterator<Entry<String,Object>> i$ = propertyMap.entrySet().iterator(); i$.hasNext(); properties.put(entry.getKey(), unwrapValue(entry.getValue())))
+			entry = (Entry<String,Object>) i$.next();
 
 		return Collections.unmodifiableMap(properties);
 	}
 
-	static Object unwrapValue(Object obj) {
+	static Object unwrapValue(Object object) {
 		/*
 		 * if (obj instanceof UnindexedValue) return ((UnindexedValue)
 		 * obj).getValue(); else
 		 */
-		return obj;
+		return object;
 	}
 
-	Map getPropertyMap() {
+	Map<String,Object> getPropertyMap() {
 		return propertyMap;
 	}
 

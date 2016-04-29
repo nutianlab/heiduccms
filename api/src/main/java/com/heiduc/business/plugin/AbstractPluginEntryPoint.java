@@ -1,15 +1,10 @@
-
-
 package com.heiduc.business.plugin;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import javax.servlet.http.HttpServlet;
 
 import org.jboss.resteasy.spi.Registry;
@@ -17,7 +12,6 @@ import org.jboss.resteasy.spi.Registry;
 import com.heiduc.business.Business;
 import com.heiduc.common.HeiducContext;
 import com.heiduc.dao.Dao;
-import com.heiduc.rest.RestManager;
 import com.heiduc.service.BackService;
 import com.heiduc.service.FrontService;
 import com.heiduc.service.plugin.PluginServiceManager;
@@ -129,7 +123,7 @@ public abstract class AbstractPluginEntryPoint implements PluginEntryPoint {
 
 	@Override
 	public Map<String,String> getRewriteRules() {
-		return Collections.EMPTY_MAP;
+		return Collections.emptyMap();
 	}
 	
 	@Override

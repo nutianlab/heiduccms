@@ -14,7 +14,7 @@ import javax.cache.Cache;
  * @author Alexander Oleynik
  *
  */
-public interface CacheService extends Cache {
+public interface CacheService<K, V> extends Cache<K, V> {
 
 	public static final int MEMCACHE_LIMIT = 1048000;
 
@@ -24,7 +24,7 @@ public interface CacheService extends Cache {
 
 	int getCacheHits();
 	
-	Cache getMemcache();
+	Cache<K, V> getMemcache();
 	
 	/**
 	 * Save in cache big object. Big object can have size more than 1 MB. 
