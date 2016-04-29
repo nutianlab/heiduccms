@@ -217,30 +217,28 @@
     <servlet-name>AtmosphereServlet</servlet-name>
     <url-pattern>/_ah/channel/*</url-pattern>
   </servlet-mapping>
-  <!-- -->
-  <servlet>
-      <servlet-name>Resteasy</servlet-name>
-      <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
-   </servlet>
-   <servlet-mapping>
-      <servlet-name>Resteasy</servlet-name>
-      <url-pattern>/ws/*</url-pattern>
-   </servlet-mapping>
-  <!--  -->
+
+   <!-- Resteasy -->
+   <filter>
+      <filter-name>Resteasy</filter-name>
+      <filter-class>
+          org.jboss.resteasy.plugins.server.servlet.FilterDispatcher
+      </filter-class>
+  </filter>
+  <filter-mapping>
+        <filter-name>Resteasy</filter-name>
+        <url-pattern>/ws/*</url-pattern>
+    </filter-mapping>
   <listener>
      <listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
   </listener>
-  
   <context-param>
      <param-name>resteasy.servlet.mapping.prefix</param-name>
      <param-value>/ws</param-value>
   </context-param>
-  <!-- 
-  <context-param>
-     <param-name>javax.ws.rs.Application</param-name>
-     <param-value>com.heiduc.rest.RestManager</param-value>
-  </context-param>
-   -->
+  
+   
+   
   <listener>
 	<display-name>scheduler manager</display-name>
 	<listener-class>com.heiduc.listener.SchedulerContextListener</listener-class>
