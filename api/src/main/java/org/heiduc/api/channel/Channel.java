@@ -66,7 +66,7 @@ import org.slf4j.LoggerFactory;
 //				TrackMessageSizeInterceptor.class,
 				AtmosphereResourceLifecycleInterceptor.class,
 				
-				BroadcastOnPostAtmosphereInterceptor.class,
+				BroadcastOnPostAtmosphereInterceptor.class
 				
 //				SuspendTrackerInterceptor.class
 		},
