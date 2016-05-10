@@ -55,11 +55,11 @@ public class QueryCacheImpl<T extends BaseEntity> implements QueryCache<T>, Seri
 		return entityCache;
 	}
 	
-	private String getQueryKey(Class clazz, String query, Object[] params) {
+	private String getQueryKey(Class<?> clazz, String query, Object[] params) {
 		return getQueryKey(clazz,query,0,params);
 	}
 	
-	private String getQueryKey(Class clazz, String query, int queryLimit, Object[] params) {
+	private String getQueryKey(Class<?> clazz, String query, int queryLimit, Object[] params) {
 		StringBuffer result = new StringBuffer(clazz.getName());
 		result.append(query).append(queryLimit);
 		if (params != null) {
@@ -70,21 +70,21 @@ public class QueryCacheImpl<T extends BaseEntity> implements QueryCache<T>, Seri
 		return result.toString();
 	}
 
-	private String getClassResetdateKey(Class clazz) {
+	private String getClassResetdateKey(Class<?> clazz) {
 		return "classResetDate:" + clazz.getName();
 	}
 	
-	private Date getClassResetDate(Class clazz) {
+	private Date getClassResetDate(Class<?> clazz) {
 		return (Date)getCache().get(getClassResetdateKey(clazz));
 	}
 	
 	@Override
-	public List<T> getQuery(Class clazz, String query, Object[] params) {
+	public List<T> getQuery(Class<?> clazz, String query, Object[] params) {
 		return getQuery(clazz,query,0,params); 
 	}
 	
 	@Override
-	public List<T> getQuery(Class clazz, String query, int queryLimit, Object[] params) {
+	public List<T> getQuery(Class<?> clazz, String query, int queryLimit, Object[] params) {
 		try {
 			CacheItem item = (CacheItem)getCache().get(getQueryKey(clazz, query, queryLimit,
 					params));
@@ -106,7 +106,7 @@ public class QueryCacheImpl<T extends BaseEntity> implements QueryCache<T>, Seri
 		return null;
 	}
 
-	private List<T> getCachedQueryResult(Class clazz, CacheItem item) {
+	private List<T> getCachedQueryResult(Class<?> clazz, CacheItem item) {
 		getDaoStat().incQueryCacheHits();
 		List<Long> ids = (List<Long>)item.getData();
 		Map<Long, T> cached = getEntityCache().getEntities(clazz, ids);
@@ -128,7 +128,7 @@ public class QueryCacheImpl<T extends BaseEntity> implements QueryCache<T>, Seri
 		return result;
 	}
 	
-	private Map<Long, T> loadEntities(Class clazz, List<Key> keys) {
+	private Map<Long, T> loadEntities(Class<?> clazz, List<Key> keys) {
 		Map<Long, T> result = new HashMap<Long, T>();
 		try {
 			getDaoStat().incGetCalls();
@@ -146,12 +146,12 @@ public class QueryCacheImpl<T extends BaseEntity> implements QueryCache<T>, Seri
 	}
 
 	@Override
-	public void putQuery(Class clazz, String query, Object[] params, List<T> list) {
+	public void putQuery(Class<?> clazz, String query, Object[] params, List<T> list) {
 		putQuery(clazz,query,params,0,list);
 	}
 	
 	@Override
-	public void putQuery(Class clazz, String query, Object[] params, int queryLimit, List<T> list) {
+	public void putQuery(Class<?> clazz, String query, Object[] params, int queryLimit, List<T> list) {
 		String key = getQueryKey(clazz, query, queryLimit,params);
 		List<Long> ids = new ArrayList<Long>();
 		for (BaseEntity entity : list) {
