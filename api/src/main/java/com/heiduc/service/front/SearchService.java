@@ -4,6 +4,7 @@ package com.heiduc.service.front;
 
 import java.util.List;
 
+import com.heiduc.entity.PageEntity;
 import com.heiduc.search.SearchResult;
 import com.heiduc.service.AbstractService;
 
@@ -22,5 +23,8 @@ public interface SearchService extends AbstractService {
 			int count, int textSize);
 
 	SearchResult searchFilter(List<String> sections, String query);
+	
+	List<PageEntity> searchFilter(List<String> sections, String query, int start, 
+			int count); 
 
 }

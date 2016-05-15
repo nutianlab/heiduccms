@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -113,5 +115,17 @@ public class StreamUtil {
 			logger.info(cnfe.getMessage());
 		}
 		return object;
+	}
+	
+	/**
+	 * Converting exception stacktrace in String
+	 * @param e excception
+	 * @return String
+	 */
+	public static String getStackTrace(Exception e){
+		StringWriter stringWriter = new StringWriter();
+		PrintWriter printWriter = new PrintWriter(stringWriter);
+		e.printStackTrace(printWriter);
+		return stringWriter.toString();
 	}
 }

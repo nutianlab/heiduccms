@@ -7,7 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServlet;
 
-import org.jboss.resteasy.spi.Registry;
+//import org.jboss.resteasy.spi.Registry;
 
 
 import com.heiduc.business.Business;
@@ -78,5 +78,5 @@ public interface PluginEntryPoint {
 	 * @return
 	 */
 
-	Registry getRegistry();
+//	Registry getRegistry();
 }

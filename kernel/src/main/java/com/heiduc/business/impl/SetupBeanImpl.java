@@ -4,21 +4,16 @@ package com.heiduc.business.impl;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.heiduc.business.Business;
 import com.heiduc.business.SetupBean;
 import com.heiduc.business.mq.MessageQueue;
-import com.heiduc.business.mq.Topic;
 import com.heiduc.business.mq.message.ImportMessage;
-import com.heiduc.business.mq.message.SimpleMessage;
 import com.heiduc.common.BCrypt;
 import com.heiduc.common.HeiducContext;
-import com.heiduc.common.Session;
 import com.heiduc.dao.Dao;
 import com.heiduc.entity.ConfigEntity;
 import com.heiduc.entity.FileEntity;
@@ -44,9 +39,14 @@ public class SetupBeanImpl implements SetupBean {
 	
 	private GroupEntity guests;
 	
+	public void init() {
+		log.info("init...");
+		initUsers();
+	}
+	
 	public void setup() {
 		log.info("setup...");
-		clearCache();
+//		clearCache();
 		initGroups();
 		initUsers();
 		initTemplates();
@@ -189,8 +189,8 @@ public class SetupBeanImpl implements SetupBean {
 			"com/heiduc/resources/html/comments.html";
 	
 	private void initConfigs() {
-		ConfigEntity config = getBusiness().getConfigBusiness().getConfig();
-		if (config.getId() == null || config.getId() == 0) {
+		ConfigEntity config = getDao().getConfigDao().getConfig();
+		if (config.getId() == null || config.getId() == 0L) {
 	        config.setVersion(VERSION);
 			config.setGoogleAnalyticsId("");
 	        config.setSiteEmail("");

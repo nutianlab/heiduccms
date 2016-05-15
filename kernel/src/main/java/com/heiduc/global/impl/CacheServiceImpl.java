@@ -39,11 +39,11 @@ public final class CacheServiceImpl implements CacheService<String,Object> {
 	private static final long LOCAL_CACHE_TTL = 5000;
 	private static final String RESET_DATE_KEY = "cacheResetDate";
 
-	private Cache<String, Object> cache;
-	private Map<String, Object> localCache;
-	private long localCacheTime;
-	private int localHits;
-	private int cacheHits;
+	private static Cache<String, Object> cache;
+	private static Map<String, Object> localCache;
+	private static long localCacheTime;
+	private static int localHits;
+	private static int cacheHits;
 	
 	public static int CACHE_SIZE_LIMIT = 1000000;
 
@@ -58,7 +58,7 @@ public final class CacheServiceImpl implements CacheService<String,Object> {
 			synchronized(this) {  
 				cache = Caching.getCache("heiducCache",String.class, Object.class);
 				if(cache == null){
-					CachingProvider cachingProvider = Caching.getCachingProvider();
+					CachingProvider cachingProvider = Caching.getCachingProvider(Thread.currentThread().getContextClassLoader());
 					CacheManager cacheManager = cachingProvider.getCacheManager();
 		
 					// configure the cache

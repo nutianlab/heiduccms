@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-
 import com.heiduc.business.Business;
 import com.heiduc.business.page.impl.StructurePageRenderDecorator;
 import com.heiduc.business.vo.StructureFieldVO;
@@ -22,6 +21,8 @@ import com.heiduc.entity.UserEntity;
 import com.heiduc.entity.helper.PageHelper;
 import com.heiduc.enums.UserRole;
 import com.heiduc.i18n.Messages;
+import com.heiduc.search.SearchResultFilter;
+import com.heiduc.service.front.impl.SectionSearchFilter;
 import com.heiduc.service.vo.CommentVO;
 import com.heiduc.service.vo.FileVO;
 import com.heiduc.service.vo.UserVO;
@@ -207,17 +208,29 @@ public class VelocityServiceImpl extends AbstractServiceBeanImpl
 	@Override
 	public String renderStructureContent(String path,
 			String structureTemplateName) {
+		
 		PageEntity page = getBusiness().getPageBusiness().getByUrl(path);
+		StructureTemplateEntity template = null;
+		
 		if (page != null) {
 			if (!page.isStructured()) {
 				return Messages.get("page.not_structural");
 			}
-			StructureTemplateEntity template = getDao()
-					.getStructureTemplateDao().getByName(structureTemplateName);
+			List <StructureTemplateEntity> result = getDao()
+					.getStructureTemplateDao().selectByStructure(page.getStructureId());
+			
+			for (StructureTemplateEntity temp : result) {
+				if (temp.getName().equals(structureTemplateName)) {
+					template = temp;
+					break;
+				}
+			}
+			
 			if (template == null) {
 				return Messages.get("structureTemplate.not_found",
 						structureTemplateName);
 			}
+			
 			return getBusiness().getPageBusiness()
 				.createStructuredPageRenderDecorator(page, 
 						getBusiness().getLanguage(),
@@ -321,6 +334,26 @@ public class VelocityServiceImpl extends AbstractServiceBeanImpl
 	public List<CommentVO> getRecentComments(int limit) {
 		// TODO add security check
 		return CommentVO.create(getDao().getCommentDao().getRecent(limit));
+	}
+	
+	@Override
+	public List<PageEntity> searchFilter(List<String> sections, String query, int start, 
+			int count) {
+		
+		logger.info("into searchFilter");
+		String language = getBusiness().getLanguage();
+		SearchResultFilter filter = null;
+		if (sections != null) filter = new SectionSearchFilter(sections);
+		
+		List<PageEntity> pages = getBusiness().getSearchEngine().search(
+				filter,
+				query.toLowerCase(), 
+				start, 
+				count, 
+				language);
+		
+		logger.info("out of searchFilter");
+		return pages;
 	}
 	
 }

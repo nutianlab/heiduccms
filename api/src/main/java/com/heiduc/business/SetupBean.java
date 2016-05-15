@@ -13,7 +13,12 @@ public interface SetupBean {
 	public static final String FULLVERSION = "1.0.01";
 
 	/**
-	 * Initial setup with default site.
+	 * setup with init user admin@test.com
+	 */
+	public void init(); 
+	
+	/**
+	 * setup with default site.
 	 */
 	void setup();
 	

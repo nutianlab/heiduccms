@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServlet;
 
-import org.jboss.resteasy.spi.Registry;
+//import org.jboss.resteasy.spi.Registry;
 
 import com.heiduc.business.Business;
 import com.heiduc.common.HeiducContext;
@@ -126,8 +126,8 @@ public abstract class AbstractPluginEntryPoint implements PluginEntryPoint {
 		return Collections.emptyMap();
 	}
 	
-	@Override
+/*	@Override
 	public Registry getRegistry() {
 		return (Registry)HeiducContext.getInstance().getRequest().getServletContext().getAttribute(Registry.class.getName());
-	}
+	}*/
 }
