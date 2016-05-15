@@ -6,6 +6,8 @@ import java.util.Map;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.heiduc.api.util.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
@@ -13,13 +15,17 @@ import com.mongodb.MongoClientURI;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.FindOneAndReplaceOptions;
 import com.mongodb.client.model.UpdateOptions;
 
 public class DatastoreServiceImpl implements DatastoreService {
-
+	
 	private MongoDatabase database;
 	private static final IdWorker idWorker = new IdWorker(1);
 	private static final MongoClient mongo = new MongoClient(new MongoClientURI(Constants.DATABASE_URI));
+	
+	private  static final Logger logger = LoggerFactory.getLogger(DatastoreServiceFactory.class);
+
 	
 	public DatastoreServiceImpl(){
 		database = mongo.getDatabase(Constants.DATABASE_NAME);
@@ -71,14 +77,15 @@ public class DatastoreServiceImpl implements DatastoreService {
 	public Key put(Entity entity) {
 		MongoCollection<Document> collection = database.getCollection(entity.getKey().getKind());
 		Document doc = new Document(entity.getPropertyMap());
-		if(entity.getKey().getId() == 0L){//插入
-			long _id = idWorker.nextId();
-			doc.put("_id", _id);
-			entity.getKey().setId(_id);
-		}
+		logger.info(entity.getKey().getKind());
+		long _id = entity.getKey().getId() == 0L ? idWorker.nextId() : entity.getKey().getId();
+		doc.put("_id", _id);
+		entity.getKey().setId(_id);
 		Bson filter = new BasicDBObject("_id",doc.get("_id")) ;
-		collection.replaceOne(filter, doc,new UpdateOptions().upsert(true));
+		collection.findOneAndReplace(filter, doc,new FindOneAndReplaceOptions().upsert(true));
 		return entity.getKey();
 	}
+	
+	
 
 }
