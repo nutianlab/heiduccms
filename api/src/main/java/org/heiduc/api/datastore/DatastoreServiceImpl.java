@@ -16,7 +16,6 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.FindOneAndReplaceOptions;
-import com.mongodb.client.model.UpdateOptions;
 
 public class DatastoreServiceImpl implements DatastoreService {
 	
