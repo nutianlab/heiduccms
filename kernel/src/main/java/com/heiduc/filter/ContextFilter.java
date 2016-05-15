@@ -34,12 +34,12 @@ public class ContextFilter extends AbstractFilter implements Filter {
     
     public void doFilter(ServletRequest request, ServletResponse response, 
     		FilterChain chain) throws IOException, ServletException {
-    	String path = ((HttpServletRequest)request).getServletPath(); 
-//    	System.out.println("request path : "+path);
+//    	String path = ((HttpServletRequest)request).getServletPath(); 
     	HeiducContext ctx = HeiducContext.getInstance();
     	ctx.setRequest((HttpServletRequest)request);
     	ctx.setResponse((HttpServletResponse)response);
     	ctx.setConfig(null);
+    	LOGGER.info("config was set null.");
     	if (ctx.getMessageQueue() == null) {
         	ctx.setMessageQueue(new MessageQueueImpl());
     	}

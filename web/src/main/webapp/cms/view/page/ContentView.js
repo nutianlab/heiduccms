@@ -391,7 +391,7 @@ function(contentHtml, ctx, version, breadcrumbs) {
 			$.each(ctx.pageRequest.structureFields.list, function(i, field) {
 				h += '<div><div class="label">' + field.title + ':</div>';
 				if (field.type == 'TEXT') {
-					h += '<input id="field' + field.name + '" size="30"/>';
+					h += '<input id="field' + field.name + '" size="80"/>';
 				}
 				if (field.type == 'TEXTAREA') {
 					h += '<textarea cols="80" rows="20" id="field' + field.name + '"></textarea>';
@@ -400,7 +400,7 @@ function(contentHtml, ctx, version, breadcrumbs) {
 					h += '<input id="field' + field.name + '" class="datepicker" size="8" />';
 				}
 				if (field.type == 'RESOURCE') {
-					h += '<input id="field' + field.name + '" size="60"/> '
+					h += '<input id="field' + field.name + '" size="80"/> '
 						+ '<a class="browse" data-name="field' + field.name + '">' 
 						+ messages('browse') + '</a>'
 						+ ' <a class="upload" data-name="field' + field.name + '">' 
@@ -411,6 +411,8 @@ function(contentHtml, ctx, version, breadcrumbs) {
 			$('#page-content').html(h);
 			$('#page-content .browse').click(function() {
 				browseResources($(this).attr('data-name'));
+				browseId = $(this).attr('data-name');
+				window.open('fileBrowser.html?mode=page');
 			});
 			$('#page-content .upload').click(function() {
 				uploadResources($(this).attr('data-name'));

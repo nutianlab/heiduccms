@@ -39,7 +39,7 @@ public class SiteFilter extends AbstractFilter implements Filter {
 		"/cms",
 		"/static",
 		"/file",
-		"/setup",
+		"/init",
 		"/update",
 		"/json-rpc",
 		"/favicon.ico",
@@ -105,7 +105,7 @@ public class SiteFilter extends AbstractFilter implements Filter {
         }
     	try {
     		if (getDao().getGroupDao().getGuestsGroup() == null) {
-    			httpResponse.sendRedirect("/setup");
+    			httpResponse.sendRedirect("/init");
     			return;
     		}
     		PageEntity page = getPage(url, httpRequest);

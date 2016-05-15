@@ -2,7 +2,9 @@
 
 package com.heiduc.search.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,12 +21,14 @@ import com.heiduc.common.HeiducContext;
 import com.heiduc.dao.Dao;
 import com.heiduc.entity.LanguageEntity;
 import com.heiduc.entity.PageEntity;
+import com.heiduc.entity.helper.PageHelper;
 import com.heiduc.search.Hit;
 import com.heiduc.search.SearchEngine;
 import com.heiduc.search.SearchIndex;
 import com.heiduc.search.SearchResult;
 import com.heiduc.search.SearchResultFilter;
 import com.heiduc.utils.ListUtil;
+import com.heiduc.utils.StreamUtil;
 
 /**
  *  
@@ -53,7 +57,11 @@ public class SearchEngineImpl implements SearchEngine {
 	public void reindex() {
 		for (LanguageEntity language : getDao().getLanguageDao().select()) {
 			getSearchIndex(language.getCode()).clear();
-			getSearchIndex(language.getCode()).saveIndex();
+			try {
+				getSearchIndex(language.getCode()).saveIndex();
+			} catch (IOException e) {
+				logger.error(StreamUtil.getStackTrace(e));
+			}
 		}
 		getBusiness().getMessageQueue().publish(new IndexMessage());
 	}
@@ -84,9 +92,46 @@ public class SearchEngineImpl implements SearchEngine {
 		result.setHits(ListUtil.slice(hits, startIndex, count));
 		return result;
 	}
+	
+	@Override
+	public List<PageEntity> search(SearchResultFilter filter, String query, 
+			int start, int count, String language) {
+		// Search in language index first for all results
+		
+		logger.info("into engine.search : language = " + language);
+		
+		List<PageEntity> pages = getSearchIndex(language).search(filter, query);
+		
+		// Search in all other languages for all results
+		for (LanguageEntity lang : getDao().getLanguageDao().select()) {
+			if (!lang.getCode().equals(language)) {
+				
+				logger.info("Searching in " + lang.getCode());
+				
+				pages.addAll(getSearchIndex(lang.getCode()).search(filter, query));
+			}
+		}
+		
+		Collections.sort(pages, PageHelper.PUBLISH_DATE);
+		
+		logger.info("Number of pages = " + pages.size());
+		
+		int startIndex = start < pages.size() ? start : pages.size();
+		int endIndex = startIndex + count;
+		if (count == -1) {
+			endIndex = pages.size();
+		}
+		if (endIndex > pages.size()) {
+			endIndex = pages.size();
+		}
+				
+		logger.info("out of engine.search");
+		return ListUtil.slice(pages, startIndex, count);
+
+	}
 
 	@Override
-	public void updateIndex(Long pageId) {
+	public void updateIndex(Long pageId) throws IOException {
 		for (LanguageEntity language : getDao().getLanguageDao().select()) {
 			getSearchIndex(language.getCode()).updateIndex(pageId);
 		}
@@ -100,7 +145,7 @@ public class SearchEngineImpl implements SearchEngine {
 	}
 
 	@Override
-	public void saveIndex() {
+	public void saveIndex() throws IOException {
 		for (LanguageEntity language : getDao().getLanguageDao().select()) {
 			getSearchIndex(language.getCode()).saveIndex();
 		}

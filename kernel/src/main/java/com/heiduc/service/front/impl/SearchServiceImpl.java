@@ -2,12 +2,10 @@
 
 package com.heiduc.service.front.impl;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-
+import com.heiduc.entity.PageEntity;
 import com.heiduc.search.Hit;
 import com.heiduc.search.SearchResult;
 import com.heiduc.service.front.SearchService;
@@ -58,6 +56,22 @@ public class SearchServiceImpl extends AbstractServiceImpl
 	@Override
 	public SearchResult searchFilter(List<String> sections, String query) {
 		return searchFilter(sections, query, 0, -1, DEFAULT_TEXT_SIZE);
+	}
+	
+	@Override
+	public List<PageEntity> searchFilter(List<String> sections, String text, int start, 
+			int count) {
+		
+		logger.info("into searchFilter");
+		String query = text.toLowerCase();
+		String language = getBusiness().getLanguage();
+		
+		List<PageEntity> pages = getBusiness().getSearchEngine().search(
+				new SectionSearchFilter(sections),
+				query, start, count, language);
+		
+		logger.info("out of searchFilter");
+		return pages;
 	}
 	
 }

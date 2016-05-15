@@ -48,25 +48,44 @@
 			<artifactId>cache-ri-impl</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-		
+		<!-- 
 		<dependency>
-			<groupId>javax.json</groupId>
-			<artifactId>javax.json-api</artifactId>
-			<version>1.0</version>
+		    <groupId>io.restx</groupId>
+		    <artifactId>restx-core</artifactId>
+		    <version>0.34.1</version>
 		</dependency>
+		<dependency>
+		    <groupId>io.restx</groupId>
+		    <artifactId>restx-core-annotation-processor</artifactId>
+		    <version>0.34.1</version>
+		</dependency>
+		-->
+		<!-- jersey2
+		<dependency>
+			<groupId>org.glassfish.jersey.containers</groupId>
+			<artifactId>jersey-container-servlet-core</artifactId>
+			<version>2.22.2</version>
+		</dependency>
+		 -->
 		<!-- resteasy -->
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
 			<version>3.0.16.Final</version>
 		</dependency>
-		<!-- 
+		<dependency>
+			<groupId>javax.json</groupId>
+			<artifactId>javax.json-api</artifactId>
+			<version>1.0</version>
+		</dependency>
+		
+		<!-- -->
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-json-p-provider</artifactId>
-			<version>3.0.13.Final</version>
+			<version>3.0.16.Final</version>
 		</dependency>
-		 -->
+		
 
 		<dependency>
 			<groupId>concurrent</groupId>
@@ -77,7 +96,7 @@
 		<dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongo-java-driver</artifactId>
-			<version>3.1.0</version>
+			<version>3.2.2</version>
 		</dependency>
 
 		<!-- 
