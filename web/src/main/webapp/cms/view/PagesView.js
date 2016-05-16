@@ -24,6 +24,10 @@ define(['text!template/pages.html',
 	function loadTree() {
 		Heiduc.jsonrpc.pageService.getTree(function(r) {
 			root = r;
+			if(r == null){
+				Heiduc.error(messages('content_not_found'));
+				return;
+			}
 			if (invertOrder) {
 				invertChildrenOrder(r);
 			}
