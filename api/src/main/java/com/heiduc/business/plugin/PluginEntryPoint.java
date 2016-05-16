@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServlet;
 //import org.jboss.resteasy.spi.Registry;
 
 
+
+import org.jboss.resteasy.spi.Registry;
+
 import com.heiduc.business.Business;
 import com.heiduc.service.BackService;
 import com.heiduc.service.FrontService;
@@ -72,11 +75,11 @@ public interface PluginEntryPoint {
 	String getBundleName();
 	
 	Map<String,String> getRewriteRules();
-	
+
 	/**
 	 * restful
 	 * @return
 	 */
 
-//	Registry getRegistry();
+	Registry getRegistry();
 }
