@@ -76,7 +76,9 @@ public class PageServiceImpl extends AbstractServiceImpl
 				}
 			}
 		}
-		sortTree(root);
+		if(root != null){
+			sortTree(root);
+		}
 		return root;
 	}
 
