@@ -14,9 +14,13 @@ import com.heiduc.service.impl.AbstractServiceImpl;
 public class ChannelApiServiceImpl extends AbstractServiceImpl 
 		implements ChannelApiService {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Override
 	public String createToken(String clientId) {
-		System.out.println("==========clientId=========="+clientId);
 		return ChannelServiceFactory.getChannelService().createChannel(clientId);
 	}
 
