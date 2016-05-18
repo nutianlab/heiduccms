@@ -82,7 +82,7 @@ Heiduc.PageSearchComponent = function(div) {
 	} 
 	
 	function onChannelError(error) {
-		Heiduc.error(error.code + ' ' + error.description);
+		Heiduc.error('WebSocket ' + messages('error'));
 	} 
 	
 	function onChannelClose() {	
