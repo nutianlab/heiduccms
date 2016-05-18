@@ -2,7 +2,8 @@ package org.heiduc.api.channel;
 
 import java.io.IOException;
 
-import org.atmosphere.cache.UUIDBroadcasterCache;
+import javax.inject.Inject;
+
 import org.atmosphere.client.TrackMessageSizeFilter;
 import org.atmosphere.config.service.Disconnect;
 import org.atmosphere.config.service.Heartbeat;
@@ -12,7 +13,7 @@ import org.atmosphere.config.service.Ready;
 import org.atmosphere.config.service.Singleton;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.AtmosphereResourceEvent;
-import org.atmosphere.cpr.DefaultBroadcaster;
+import org.atmosphere.cpr.BroadcasterFactory;
 import org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor;
 import org.atmosphere.interceptor.BroadcastOnPostAtmosphereInterceptor;
 import org.atmosphere.interceptor.CacheHeadersInterceptor;
@@ -73,14 +74,16 @@ import org.slf4j.LoggerFactory;
 		/*listeners={
 				
 		},*/
-		broadcasterCache=UUIDBroadcasterCache.class,
-		broadcaster = DefaultBroadcaster.class,
+//		broadcasterCache=UUIDBroadcasterCache.class,
+//		broadcaster = DefaultBroadcaster.class,
 		path="/_ah/channel/{clientId}"
 		)
 public class Channel {
 
 	private final Logger logger = LoggerFactory.getLogger(Channel.class);
 	
+	@Inject
+	private BroadcasterFactory broadcasterFactory;
 	
 	@Heartbeat
     public void onHeartbeat(final AtmosphereResourceEvent event) {
@@ -89,6 +92,7 @@ public class Channel {
 	
 	@Ready
     public void onReady(final AtmosphereResource r) {
+		ChannelServiceFactory.getChannelService().setBroadcasterFactory(broadcasterFactory);
         logger.info("Browser {} connected.", r.uuid());
         
         
