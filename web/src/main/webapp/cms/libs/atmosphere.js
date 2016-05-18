@@ -27,6 +27,9 @@
     if (typeof define === "function" && define.amd) {
         // AMD
         define(factory);
+    } else if(typeof exports !== 'undefined') {
+        // CommonJS
+        module.exports = factory();
     } else {
         // Browser globals, Window
         root.atmosphere = factory();
@@ -35,8 +38,7 @@
 
     "use strict";
 
-    var version = "2.2.11-javascript",
-        atmosphere = {},
+    var atmosphere = {},
         guid,
         offline = false,
         requests = [],
@@ -45,7 +47,7 @@
         hasOwn = Object.prototype.hasOwnProperty;
 
     atmosphere = {
-
+        version: "2.3.2-javascript",
         onError: function (response) {
         },
         onClose: function (response) {
@@ -184,6 +186,7 @@
                 readResponsesHeaders: false,
                 maxReconnectOnClose: 5,
                 enableProtocol: true,
+                disableDisconnect: false,
                 pollingInterval: 0,
                 heartbeat: {
                     client: null,
@@ -192,6 +195,7 @@
                 ackInterval: 0,
                 closeAsync: false,
                 reconnectOnServerError: true,
+                handleOnlineOffline: true,
                 onError: function (response) {
                 },
                 onClose: function (response) {
@@ -300,7 +304,7 @@
              * @type {string}
              * @private
              */
-            var _heartbeatPadding = ' ';
+            var _heartbeatPadding = 'X';
 
             /**
              * {boolean} If request is currently aborted.
@@ -342,6 +346,14 @@
 
             /** Key for connection sharing */
             var _sharingKey;
+
+            /**
+             * {boolean} If window beforeUnload event has been called.
+             * Flag will be reset after 5000 ms
+             *
+             * @private
+             */
+            var _beforeUnloadState = false;
 
             // Automatic call to subscribe
             _subscribe(options);
@@ -415,7 +427,7 @@
              * @private
              */
             function _disconnect() {
-                if (_request.enableProtocol && !_request.firstMessage) {
+                if (_request.enableProtocol && !_request.disableDisconnect && !_request.firstMessage) {
                     var query = "X-Atmosphere-Transport=close&X-Atmosphere-tracking-id=" + _request.uuid;
 
                     atmosphere.util.each(_request.headers, function (name, value) {
@@ -455,9 +467,8 @@
              * @private
              */
             function _close() {
-                if (_canLog('debug')) {
-                    atmosphere.util.debug("Closing");
-                }
+                _debug("Closing (AtmosphereRequest._close() called)");
+
                 _abortingConnection = true;
                 if (_request.reconnectId) {
                     clearTimeout(_request.reconnectId);
@@ -488,7 +499,7 @@
                 if (_request.heartbeatTimer) {
                     clearTimeout(_request.heartbeatTimer);
                 }
-                
+
                 // https://github.com/Atmosphere/atmosphere/issues/1860#issuecomment-74707226
                 if(_request.reconnectId) {
                     clearTimeout(_request.reconnectId);
@@ -509,6 +520,7 @@
                 }
                 if (_websocket != null) {
                     if (_websocket.canSendMessage) {
+                        _debug("invoking .close() on WebSocket object");
                         _websocket.close();
                     }
                     _websocket = null;
@@ -1279,7 +1291,7 @@
                     _debug("sse.onmessage");
                     _timeout(_request);
 
-                    if (!_request.enableXDR && message.origin && message.origin !== window.location.protocol + "//" + window.location.host) {
+                    if (!_request.enableXDR && window.location.host && message.origin && message.origin !== window.location.protocol + "//" + window.location.host) {
                         atmosphere.util.log(_request.logLevel, ["Origin was not " + window.location.protocol + "//" + window.location.host]);
                         return;
                     }
@@ -1355,8 +1367,7 @@
 
                 var location = _buildWebSocketUrl(_request.url);
                 if (_canLog('debug')) {
-                    atmosphere.util.debug("Invoking executeWebSocket");
-                    atmosphere.util.debug("Using URL: " + location);
+                    atmosphere.util.debug("Invoking executeWebSocket, using URL: " + location);
                 }
 
                 if (webSocketOpened && !_request.reconnect) {
@@ -1501,11 +1512,16 @@
                     }
 
                     if (_canLog('warn')) {
-                        atmosphere.util.warn("Websocket closed, reason: " + reason);
-                        atmosphere.util.warn("Websocket closed, wasClean: " + message.wasClean);
+                        atmosphere.util.warn("Websocket closed, reason: " + reason + ' - wasClean: ' + message.wasClean);
                     }
 
-                    if (_response.closedByClientTimeout || offline) {
+                    if (_response.closedByClientTimeout || (_request.handleOnlineOffline && offline)) {
+                        // IFF online/offline events are handled and we happen to be offline, we stop all reconnect attempts and
+                        // resume them in the "online" event (if we get here in that case, something else went wrong as the
+                        // offline handler should stop any reconnect attempt).
+                        //
+                        // On the other hand, if we DO NOT handle online/offline events, we continue as before with reconnecting
+                        // even if we are offline. Failing to do so would stop all reconnect attemps forever.
                         if (_request.reconnectId) {
                             clearTimeout(_request.reconnectId);
                             delete _request.reconnectId;
@@ -1520,7 +1536,7 @@
                     if (_abortingConnection) {
                         atmosphere.util.log(_request.logLevel, ["Websocket closed normally"]);
                     } else if (!webSocketOpened) {
-                        _reconnectWithFallbackTransport("Websocket failed. Downgrading to Comet and resending");
+                        _reconnectWithFallbackTransport("Websocket failed on first connection attempt. Downgrading to " + _request.fallbackTransport + " and resending");
 
                     } else if (_request.reconnect && _response.transport === 'websocket' ) {
                         _clearState();
@@ -1538,7 +1554,7 @@
                                 _executeWebSocket(true);
                             }
                         } else {
-                            atmosphere.util.log(_request.logLevel, ["Websocket reconnect maximum try reached " + _request.requestCount]);
+                            atmosphere.util.log(_request.logLevel, ["Websocket reconnect maximum try reached " + _requestCount]);
                             if (_canLog('warn')) {
                                 atmosphere.util.warn("Websocket error, reason: " + message.reason);
                             }
@@ -1767,7 +1783,7 @@
 
                 url += (url.indexOf('?') !== -1) ? '&' : '?';
                 url += "X-Atmosphere-tracking-id=" + rq.uuid;
-                url += "&X-Atmosphere-Framework=" + version;
+                url += "&X-Atmosphere-Framework=" + atmosphere.version;
                 url += "&X-Atmosphere-Transport=" + rq.transport;
 
                 if (rq.trackMessageLength) {
@@ -1867,14 +1883,28 @@
                     }
                 }
 
-                var reconnectF = function (force) {
+                var reconnectFExec = function (force) {
                     rq.lastIndex = 0;
-                    if (force || (rq.reconnect && _requestCount++ < rq.maxReconnectOnClose)) {
+                    _requestCount++; // Increase also when forcing reconnect as _open checks _requestCount
+                    if (force || (rq.reconnect && _requestCount <= rq.maxReconnectOnClose)) {
+                        var delay = force ? 0 : request.reconnectInterval; // Reconnect immediately if the server resumed the connection (timeout)
                         _response.ffTryingReconnect = true;
                         _open('re-connecting', request.transport, request);
-                        _reconnect(ajaxRequest, rq, request.reconnectInterval);
+                        _reconnect(ajaxRequest, rq, delay);
                     } else {
                         _onError(0, "maxReconnectOnClose reached");
+                    }
+                };
+
+                var reconnectF = function (force){
+                    if(atmosphere._beforeUnloadState){
+                        // ATMOSPHERE-JAVASCRIPT-143: Delay reconnect to avoid reconnect attempts before an actual unload (we don't know if an unload will happen, yet)
+                        atmosphere.util.debug(new Date() + " Atmosphere: reconnectF: execution delayed due to _beforeUnloadState flag");
+                        setTimeout(function () {
+                            reconnectFExec(force);
+                        }, 5000);
+                    }else {
+                        reconnectFExec(force);
                     }
                 };
 
@@ -1928,6 +1958,7 @@
                     ajaxRequest.onreadystatechange = function () {
                         _debug("ajaxRequest.onreadystatechange, new state: " + ajaxRequest.readyState);
                         if (_abortingConnection) {
+                            _debug("onreadystatechange has been ignored due to _abortingConnection flag");
                             return;
                         }
 
@@ -2146,7 +2177,7 @@
                 }
 
                 if (!_request.dropHeaders) {
-                    ajaxRequest.setRequestHeader("X-Atmosphere-Framework", version);
+                    ajaxRequest.setRequestHeader("X-Atmosphere-Framework", atmosphere.version);
                     ajaxRequest.setRequestHeader("X-Atmosphere-Transport", request.transport);
 
                     if (request.heartbeat !== null && request.heartbeat.server !== null) {
@@ -2171,7 +2202,7 @@
                 }
             }
 
-            function _reconnect(ajaxRequest, request, reconnectInterval) {
+            function _reconnect(ajaxRequest, request, delay) {
 
                 if (_response.closedByClientTimeout) {
                     return;
@@ -2191,11 +2222,11 @@
                         delete request.reconnectId;
                     }
 
-                    if (reconnectInterval > 0) {
+                    if (delay > 0) {
                         // For whatever reason, never cancel a reconnect timeout as it is mandatory to reconnect.
                         _request.reconnectId = setTimeout(function () {
                             _executeRequest(request);
-                        }, reconnectInterval);
+                        }, delay);
                     } else {
                         _executeRequest(request);
                     }
@@ -2673,7 +2704,7 @@
                     };
                     _clearState();
 
-                    _reconnectWithFallbackTransport("Websocket failed. Downgrading to Comet and resending " + message);
+                    _reconnectWithFallbackTransport("Websocket failed. Downgrading to " + _request.fallbackTransport + " and resending " + message);
                     _pushAjaxMessage(message);
                 }
             }
@@ -2735,7 +2766,8 @@
                             f.onmessage(response);
                         break;
                     case "error":
-                        _debug("Firing onError");
+                        var dbgReasonPhrase = (typeof(response.reasonPhrase) != 'undefined') ? response.reasonPhrase : 'n/a';
+                        _debug("Firing onError, reasonPhrase: " + dbgReasonPhrase);
                         if (typeof (f.onError) !== 'undefined')
                             f.onError(response);
 
@@ -2782,7 +2814,7 @@
                         var closed = typeof (_request.closed) !== 'undefined' ? _request.closed : false;
 
                         if (!closed) {
-                            _debug("Firing onClose");
+                            _debug("Firing onClose (" + response.state + " case)");
                             if (typeof (f.onClose) !== 'undefined') {
                                 f.onClose(response);
                             }
@@ -2791,7 +2823,7 @@
                                 f.onclose(response);
                             }
                         } else {
-                            _debug("Closed but not firing onClose");
+                            _debug("Request already closed, not firing onClose (" + response.state + " case)");
                         }
                         _request.closed = true;
                         break;
@@ -3037,7 +3069,7 @@
         },
 
         isBinary: function (data) {
-            // True if data is an instance of Blob, ArrayBuffer or ArrayBufferView 
+            // True if data is an instance of Blob, ArrayBuffer or ArrayBufferView
             return /^\[object\s(?:Blob|ArrayBuffer|.+Array)\]$/.test(Object.prototype.toString.call(data));
         },
 
@@ -3046,6 +3078,10 @@
         },
 
         getAbsoluteURL: function (url) {
+            if (typeof (document.createElement) === 'undefined') {
+                // assuming the url to be already absolute when DOM is not supported
+                return url;
+            }
             var div = document.createElement("div");
 
             // Uses an innerHTML property to obtain an absolute URL
@@ -3342,10 +3378,11 @@
                 return true;
             }
 
-            // Force Android to use CORS as some version like 2.2.3 fail otherwise
+            // Force older Android versions to use CORS as some version like 2.2.3 fail otherwise
             var ua = navigator.userAgent.toLowerCase();
-            var isAndroid = ua.indexOf("android") > -1;
-            if (isAndroid) {
+            var androidVersionMatches = ua.match(/.+android ([0-9]{1,2})/i),
+                majorVersion = parseInt((androidVersionMatches && androidVersionMatches[0]) || -1, 10);
+            if (!isNaN(majorVersion) && majorVersion > -1 && majorVersion < 3) {
                 return true;
             }
             return false;
@@ -3387,12 +3424,19 @@
     })();
 
     atmosphere.util.on(window, "unload", function (event) {
-    	atmosphere.util.debug(new Date() + " Atmosphere: " + "unload event");
+        atmosphere.util.debug(new Date() + " Atmosphere: " + "unload event");
         atmosphere.unsubscribe();
     });
 
     atmosphere.util.on(window, "beforeunload", function (event) {
         atmosphere.util.debug(new Date() + " Atmosphere: " + "beforeunload event");
+
+        // ATMOSPHERE-JAVASCRIPT-143: Delay reconnect to avoid reconnect attempts before an actual unload (we don't know if an unload will happen, yet)
+        atmosphere._beforeUnloadState = true;
+        setTimeout(function () {
+            atmosphere.util.debug(new Date() + " Atmosphere: " + "beforeunload event timeout reached. Reset _beforeUnloadState flag");
+            atmosphere._beforeUnloadState = false;
+        }, 5000);
     });
 
     // Pressing ESC key in Firefox kills the connection
@@ -3407,26 +3451,32 @@
     });
 
     atmosphere.util.on(window, "offline", function () {
+        atmosphere.util.debug(new Date() + " Atmosphere: offline event");
         offline = true;
         if (requests.length > 0) {
             var requestsClone = [].concat(requests);
             for (var i = 0; i < requestsClone.length; i++) {
                 var rq = requestsClone[i];
-                rq.close();
-                clearTimeout(rq.response.request.id);
+                if(rq.request.handleOnlineOffline) {
+                    rq.close();
+                    clearTimeout(rq.response.request.id);
 
-                if (rq.heartbeatTimer) {
-                    clearTimeout(rq.heartbeatTimer);
+                    if (rq.heartbeatTimer) {
+                        clearTimeout(rq.heartbeatTimer);
+                    }
                 }
             }
         }
     });
 
     atmosphere.util.on(window, "online", function () {
+        atmosphere.util.debug(new Date() + " Atmosphere: online event");
         if (requests.length > 0) {
             for (var i = 0; i < requests.length; i++) {
-                requests[i].init();
-                requests[i].execute();
+                if(requests[i].request.handleOnlineOffline) {
+                    requests[i].init();
+                    requests[i].execute();
+                }
             }
         }
         offline = false;
