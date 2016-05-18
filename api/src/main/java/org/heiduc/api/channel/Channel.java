@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import javax.inject.Inject;
 
-import org.atmosphere.client.TrackMessageSizeFilter;
 import org.atmosphere.config.service.Disconnect;
 import org.atmosphere.config.service.Heartbeat;
 import org.atmosphere.config.service.ManagedService;
@@ -14,68 +13,11 @@ import org.atmosphere.config.service.Singleton;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.AtmosphereResourceEvent;
 import org.atmosphere.cpr.BroadcasterFactory;
-import org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor;
-import org.atmosphere.interceptor.BroadcastOnPostAtmosphereInterceptor;
-import org.atmosphere.interceptor.CacheHeadersInterceptor;
-import org.atmosphere.interceptor.HeartbeatInterceptor;
-import org.atmosphere.interceptor.JavaScriptProtocol;
-import org.atmosphere.interceptor.OnDisconnectInterceptor;
-import org.atmosphere.interceptor.PaddingAtmosphereInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 @Singleton
-
 @ManagedService(
-		atmosphereConfig = 
-		{
-//			"org.atmosphere.websocket.WebSocketProtocol=org.atmosphere.websocket.protocol.StreamingHttpProtocol",
-			"org.atmosphere.websocket.DefaultWebSocketProcessor=org.atmosphere.config.managed.ManagedAtmosphereHandler",
-//			"org.atmosphere.cpr.AtmosphereInterceptor.disableDefaults=true",
-			"org.atmosphere.interceptor.HeartbeatInterceptor.heartbeatFrequencyInSeconds=60",
-//			"org.atmosphere.cpr.AtmosphereInterceptor=org.atmosphere.interceptor.JavaScriptProtocol,org.atmosphere.interceptor.OnDisconnectInterceptor",
-//			"org.atmosphere.interceptor.HeartbeatInterceptor.paddingChar=X",
-			"org.atmosphere.cpr.broadcaster.maxProcessingThreads=10",
-			"org.atmosphere.cpr.broadcaster.maxAsyncWriteThreads=10"
-		},
-		broadcastFilters={TrackMessageSizeFilter.class},
-		interceptors = 
-			{
-				
-		 		// OnDisconnect
-	            OnDisconnectInterceptor.class,
-	            // WebSocket and suspend
-//	            WebSocketMessageSuspendInterceptor.class,
-	            // ADD Tracking ID Handshake
-	            JavaScriptProtocol.class,
-	            // ADD JSONP support
-	            //JSONPAtmosphereInterceptor.class,
-	            // Add SSE support
-	            //SSEAtmosphereInterceptor.class,
-	            // Heartbeat
-	            HeartbeatInterceptor.class,
-	            // Android 2.3.x streaming support
-	            //AndroidAtmosphereInterceptor.class,
-	            // WebKit & IE Padding
-	            PaddingAtmosphereInterceptor.class,
-	            // Default Interceptor
-	            CacheHeadersInterceptor.class,
-	            // Add CORS support
-	            //CorsInterceptor.class,
-	            
-//				TrackMessageSizeInterceptor.class,
-				AtmosphereResourceLifecycleInterceptor.class,
-				
-				BroadcastOnPostAtmosphereInterceptor.class
-				
-//				SuspendTrackerInterceptor.class
-		},
-		/*listeners={
-				
-		},*/
-//		broadcasterCache=UUIDBroadcasterCache.class,
-//		broadcaster = DefaultBroadcaster.class,
 		path="/_ah/channel/{clientId}"
 		)
 public class Channel {
