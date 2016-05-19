@@ -21,7 +21,7 @@ import com.heiduc.service.impl.BackServiceImpl;
 import com.heiduc.service.impl.FrontServiceImpl;
 
 /**
- * Vosao context creation and request injection.
+ * Context creation and request injection.
  * 
  * @author Alexander Oleynik
  *
@@ -39,7 +39,6 @@ public class ContextFilter extends AbstractFilter implements Filter {
     	ctx.setRequest((HttpServletRequest)request);
     	ctx.setResponse((HttpServletResponse)response);
     	ctx.setConfig(null);
-    	LOGGER.info("config was set null.");
     	if (ctx.getMessageQueue() == null) {
         	ctx.setMessageQueue(new MessageQueueImpl());
     	}
