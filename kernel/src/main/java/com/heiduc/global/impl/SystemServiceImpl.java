@@ -82,16 +82,9 @@ public class SystemServiceImpl implements SystemService, Serializable {
 		if (velocityEngine == null) {
 	        try {
 	        	Properties properties = new Properties();
-	        	properties.setProperty("velocimacro.permissions.allow.inline.to.replace.global", "true");
-	        	properties.setProperty("velocimacro.permissions.allowInline", "true");
-	        	properties.setProperty("velocimacro.context.localscope", "true");
-	        	properties.setProperty("input.encoding", "UTF-8");
-	        	properties.setProperty("output.encoding", "UTF-8");
+	        	properties.load(this.getClass().getResourceAsStream("/velocity.properties"));
 	        	velocityEngine = new VelocityEngine(properties);
 	        	velocityEngine.init();
-	        	//TODO  从文件加载配置
-	        	/*velocityEngine = new VelocityEngine("WEB-INF/velocity.properties");
-				velocityEngine.init();*/
 			} catch (Exception e) {
 	            log.error("Can't init velocity engine. " + e.getMessage());
 			}
