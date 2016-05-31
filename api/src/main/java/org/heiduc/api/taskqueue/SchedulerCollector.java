@@ -1,13 +1,13 @@
 package org.heiduc.api.taskqueue;
 
-import org.heiduc.api.util.Constants;
-import org.heiduc.api.util.HttpProxy;
-
 import it.sauronsoftware.cron4j.SchedulingPattern;
 import it.sauronsoftware.cron4j.Task;
 import it.sauronsoftware.cron4j.TaskCollector;
 import it.sauronsoftware.cron4j.TaskExecutionContext;
 import it.sauronsoftware.cron4j.TaskTable;
+
+import org.heiduc.api.http.HttpRequest;
+import org.heiduc.api.util.Constants;
 
 public class SchedulerCollector implements TaskCollector{
 
@@ -24,8 +24,7 @@ public class SchedulerCollector implements TaskCollector{
 		
 			@Override
 			public void execute(TaskExecutionContext context) throws RuntimeException {
-				
-				HttpProxy.doPost(Constants.TASKQUEUE_SERVER+"/_ah/cron/plugin", "UTF-8");
+				HttpRequest.get(Constants.TASKQUEUE_SERVER+"/_ah/cron/plugin");
 		
 			}
 		
@@ -37,9 +36,7 @@ public class SchedulerCollector implements TaskCollector{
 		
 			@Override
 			public void execute(TaskExecutionContext context) throws RuntimeException {
-				
-				HttpProxy.doPost(Constants.TASKQUEUE_SERVER+"/_ah/cron/page_publish", "UTF-8");
-		
+				HttpRequest.get(Constants.TASKQUEUE_SERVER+"/_ah/cron/page_publish");
 			}
 		
 		});
