@@ -1,11 +1,10 @@
 package org.heiduc.api.taskqueue;
 
-import java.net.URLDecoder;
 import java.util.List;
 
+import org.heiduc.api.http.HttpRequest;
 import org.heiduc.api.taskqueue.TaskOptions.Param;
 import org.heiduc.api.util.Constants;
-import org.heiduc.api.util.HttpProxy;
 
 
 public class TaskThread implements Runnable {
@@ -40,7 +39,7 @@ public class TaskThread implements Runnable {
 //			HttpResponse response = client.sendData(HTTP_METHOD.POST, sb.toString());
 //			String data = response.getData();
 //			String data = 
-			HttpProxy.doPost(url+"?"+sb.toString(), "UTF-8");
+			HttpRequest.post(url+"?"+sb.toString());
 //			System.out.println("data"+data);
 		} catch (Exception e) {
 			e.printStackTrace();
