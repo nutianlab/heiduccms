@@ -145,6 +145,11 @@
 			<type>jar</type>
 			</dependency>
 		-->
+        <dependency>
+    	    <groupId>commons-logging</groupId>
+		    <artifactId>commons-logging</artifactId>
+		    <version>1.2</version>
+		</dependency>
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
@@ -205,12 +210,18 @@
 			<version>9.2</version>
 			</dependency-->
 
-		<!-- json -->
+		<!-- jsonrpc -->
 
-		<dependency>
+    	<dependency>
 			<groupId>org.jabsorb</groupId>
 			<artifactId>jabsorb</artifactId>
 			<version>1.3.2</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>jcl104-over-slf4j</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
         <!--
 		<dependency>
@@ -308,6 +319,23 @@
 		    <groupId>com.colobu</groupId>
 		    <artifactId>fastjson-jaxrs-json-provider</artifactId>
 		    <version>0.3.1</version>
+		</dependency>
+        
+        <!-- logging -->
+    	<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-api</artifactId>
+		    <version>1.7.21</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-jdk14</artifactId>
+		    <version>1.7.21</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>jcl-over-slf4j</artifactId>
+		    <version>1.7.21</version>
 		</dependency>
 		
 	</dependencies>
