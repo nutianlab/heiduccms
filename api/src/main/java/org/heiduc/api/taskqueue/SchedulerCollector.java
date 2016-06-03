@@ -24,7 +24,7 @@ public class SchedulerCollector implements TaskCollector{
 		
 			@Override
 			public void execute(TaskExecutionContext context) throws RuntimeException {
-				HttpRequest.get(Constants.TASKQUEUE_SERVER+"/_ah/cron/plugin");
+				HttpRequest.get(Constants.TASKQUEUE_SERVER+"/_ah/cron/plugin").body();
 		
 			}
 		
@@ -36,7 +36,7 @@ public class SchedulerCollector implements TaskCollector{
 		
 			@Override
 			public void execute(TaskExecutionContext context) throws RuntimeException {
-				HttpRequest.get(Constants.TASKQUEUE_SERVER+"/_ah/cron/page_publish");
+				HttpRequest.get(Constants.TASKQUEUE_SERVER+"/_ah/cron/page_publish").body();
 			}
 		
 		});
