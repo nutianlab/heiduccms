@@ -66,10 +66,6 @@
 			<url>http://repository.apache.org/snapshots</url>
 		</repository>
 		<repository>
-			<id>mvnsearch</id>
-			<url>http://www.mvnsearch.org/maven2</url>
-		</repository>
-		<repository>
 			<id>ow2</id>
 			<name>Ow2 Repository</name>
 			<url>http://repository.ow2.org/nexus/content/repositories/ow2-legacy</url>
