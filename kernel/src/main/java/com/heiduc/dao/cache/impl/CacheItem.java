@@ -3,19 +3,17 @@ package com.heiduc.dao.cache.impl;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.heiduc.utils.StreamUtil;
-
 public class CacheItem implements Serializable {
 
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = -4547202076142074670L;
-	private byte[] data;
+	private Object data;
 	private Date timestamp;
 	
 	public Object getData() {
-		return StreamUtil.toObject(data);
+		return data;
 	}
 
 	public Date getTimestamp() {
@@ -24,7 +22,7 @@ public class CacheItem implements Serializable {
 	
 	public CacheItem(Object data) {
 		super();
-		this.data = StreamUtil.toBytes(data);
+		this.data = data;
 		this.timestamp = new Date();
 	}
 
