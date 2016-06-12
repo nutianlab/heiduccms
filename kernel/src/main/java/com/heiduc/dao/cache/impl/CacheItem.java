@@ -1,21 +1,21 @@
-
-
 package com.heiduc.dao.cache.impl;
 
 import java.io.Serializable;
 import java.util.Date;
 
+import com.heiduc.utils.StreamUtil;
+
 public class CacheItem implements Serializable {
 
-	/**
+    /**
 	 * 
 	 */
 	private static final long serialVersionUID = -4547202076142074670L;
-	private Object data;
+	private byte[] data;
 	private Date timestamp;
 	
 	public Object getData() {
-		return data;
+		return StreamUtil.toObject(data);
 	}
 
 	public Date getTimestamp() {
@@ -24,8 +24,7 @@ public class CacheItem implements Serializable {
 	
 	public CacheItem(Object data) {
 		super();
-//		if(data instanceof Serializable)
-		this.data = data;
+		this.data = StreamUtil.toBytes(data);
 		this.timestamp = new Date();
 	}
 
