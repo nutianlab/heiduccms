@@ -69,6 +69,11 @@ public class PluginClassLoader extends ClassLoader {
 		return new ByteArrayInputStream(b);
 	}
 	
+	@Override
+	public String toString() {
+		return this.pluginName;
+	}
+
 	private byte[] findPluginResource(String name) {
 		if (!getCache().contains(pluginName, name)) {
 			byte[] data = loadPluginResource(name);
