@@ -16,6 +16,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.WeakHashMap;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
@@ -55,10 +56,8 @@ public class SystemServiceImpl implements SystemService, Serializable {
 	private static final long serialVersionUID = -8332141730408353027L;
 
 	private static final Log log = LogFactory.getLog(SystemServiceImpl.class);
-	
-	private Map<String,CacheService> caches = new HashMap<String, CacheService>();
+	private static final Map<String,CacheService> caches = new WeakHashMap<String, CacheService>();
 
-	private CacheService cache;
 	private VelocityEngine velocityEngine;
 	private TransformerFactory xsltFactory;
 	private Map<String, Transformer> transformers;
