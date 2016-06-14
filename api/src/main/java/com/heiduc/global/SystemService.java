@@ -21,6 +21,8 @@ public interface SystemService {
 	
 	CacheService getCache();
 	
+	CacheService getCache(Class<?> clazz);
+	
 	FileCache getFileCache();
 	
 	PageCache getPageCache();

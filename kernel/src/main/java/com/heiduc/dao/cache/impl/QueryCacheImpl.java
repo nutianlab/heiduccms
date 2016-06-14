@@ -47,8 +47,8 @@ public class QueryCacheImpl<T extends BaseEntity> implements QueryCache<T>, Seri
 		return HeiducContext.getInstance().getBusiness().getSystemService();
 	}
 
-	private CacheService getCache() {
-		return getSystemService().getCache();
+	private CacheService getCache(Class<?> clazz) {
+		return getSystemService().getCache(clazz);
 	}
 
 	private EntityCache getEntityCache() {
@@ -75,7 +75,7 @@ public class QueryCacheImpl<T extends BaseEntity> implements QueryCache<T>, Seri
 	}
 	
 	private Date getClassResetDate(Class<?> clazz) {
-		return (Date)getCache().get(getClassResetdateKey(clazz));
+		return (Date)getCache(clazz).get(getClassResetdateKey(clazz));
 	}
 	
 	@Override
@@ -86,10 +86,10 @@ public class QueryCacheImpl<T extends BaseEntity> implements QueryCache<T>, Seri
 	@Override
 	public List<T> getQuery(Class<?> clazz, String query, int queryLimit, Object[] params) {
 		try {
-			CacheItem item = (CacheItem)getCache().get(getQueryKey(clazz, query, queryLimit,
+			CacheItem item = (CacheItem)getCache(clazz).get(getQueryKey(clazz, query, queryLimit,
 					params));
 			if (item != null) {
-				Date globalResetDate = getCache().getResetDate();
+				Date globalResetDate = getCache(clazz).getResetDate();
 				if (globalResetDate == null 
 						|| item.getTimestamp().after(globalResetDate)) {
 					Date classResetDate = getClassResetDate(clazz);
@@ -157,13 +157,13 @@ public class QueryCacheImpl<T extends BaseEntity> implements QueryCache<T>, Seri
 		for (BaseEntity entity : list) {
 			ids.add(entity.getId());
 		}
-		getCache().put(key, new CacheItem(ids));
+		getCache(clazz).put(key, new CacheItem(ids));
 		getEntityCache().putEntities(clazz, list);
 	}
 
 	@Override
 	public void removeQueries(Class clazz) {
-		getCache().put(getClassResetdateKey(clazz), new Date());
+		getCache(clazz).put(getClassResetdateKey(clazz), new Date());
 	}
 
 	

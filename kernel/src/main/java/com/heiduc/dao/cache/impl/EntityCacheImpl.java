@@ -46,9 +46,9 @@ public class EntityCacheImpl<T extends BaseEntity> implements EntityCache<T>, Se
 	@Override
 	public Object getEntity(Class clazz, Object id) {
 		try {
-			CacheItem item = (CacheItem)getCache().get(getEntityKey(clazz, id));
+			CacheItem item = (CacheItem)getCache(clazz).get(getEntityKey(clazz, id));
 			if (item != null) {
-				Date globalResetDate = getCache().getResetDate();
+				Date globalResetDate = getCache(clazz).getResetDate();
 				if (globalResetDate == null 
 						|| item.getTimestamp().after(globalResetDate)) {
 					getDaoStat().incEntityCacheHits();
@@ -72,10 +72,10 @@ public class EntityCacheImpl<T extends BaseEntity> implements EntityCache<T>, Se
 			result.put(id, null);
 		}
 		try {
-			Map items = getCache().getAll(keys);
+			Map items = getCache(clazz).getAll(keys);
 			for (CacheItem item : (Collection<CacheItem>)items.values()) {
 				if (item != null) {
-					Date globalResetDate = getCache().getResetDate();
+					Date globalResetDate = getCache(clazz).getResetDate();
 					if (globalResetDate == null 
 							|| item.getTimestamp().after(globalResetDate)) {
 						getDaoStat().incEntityCacheHits();
@@ -96,7 +96,7 @@ public class EntityCacheImpl<T extends BaseEntity> implements EntityCache<T>, Se
 	@Override
 	public void putEntity(Class clazz, Object id, Object entity) {
 		String key = getEntityKey(clazz, id);
-		getCache().put(key, new CacheItem(entity));
+		getCache(clazz).put(key, new CacheItem(entity));
 		/*if(getEntity(clazz,id) == null){
 			System.out.println("putEntity Class:"+clazz.getClass().getName()+" is null.");
 		}*/
@@ -109,20 +109,20 @@ public class EntityCacheImpl<T extends BaseEntity> implements EntityCache<T>, Se
 			logger.debug(entity.getClass().getName());
 			map.put(getEntityKey(clazz, entity.getId()), new CacheItem(entity));
 		}
-		getCache().putAll(map);
+		getCache(clazz).putAll(map);
 	}
 
 	@Override
 	public void removeEntity(Class clazz, Object id) {
-		getCache().remove(getEntityKey(clazz, id));
+		getCache(clazz).remove(getEntityKey(clazz, id));
 	}
 
 	public SystemService getSystemService() {
 		return HeiducContext.getInstance().getBusiness().getSystemService();
 	}
 
-	private CacheService getCache() {
-		return getSystemService().getCache();
+	private CacheService getCache(Class<?> clazz) {
+		return getSystemService().getCache(clazz);
 	}
 
 }
