@@ -27,7 +27,7 @@ public class TaskThread implements Runnable {
 			for (Param param : params) {
 				map.put(param.getURLEncodedName(), param.getURLEncodedValue());
 			}
-			HttpRequest.post(url,map,false).body();
+			HttpRequest.post(url).form(map, HttpRequest.CHARSET_UTF8).body();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
