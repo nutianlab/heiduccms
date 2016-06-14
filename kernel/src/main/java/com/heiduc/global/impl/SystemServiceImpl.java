@@ -85,7 +85,7 @@ public class SystemServiceImpl implements SystemService, Serializable {
 	public CacheService getCache(Class<?> clazz) {
 		String cacheName = HEIDUC_CACHE_NAME;
 		if(clazz.getClassLoader() instanceof PluginClassLoader){
-			cacheName = clazz.getClassLoader().toString();
+			cacheName = "Plugin_".concat(clazz.getClassLoader().toString()).concat("Cache");
 		}
 		
 		
