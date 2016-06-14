@@ -39,6 +39,7 @@ import org.heiduc.api.taskqueue.Queue;
 import org.heiduc.api.taskqueue.QueueFactory;
 
 import com.heiduc.bliki.HeiducWikiModel;
+import com.heiduc.business.impl.plugin.PluginClassLoader;
 import com.heiduc.common.HeiducContext;
 import com.heiduc.entity.PageEntity;
 import com.heiduc.global.CacheService;
@@ -54,6 +55,8 @@ public class SystemServiceImpl implements SystemService, Serializable {
 	private static final long serialVersionUID = -8332141730408353027L;
 
 	private static final Log log = LogFactory.getLog(SystemServiceImpl.class);
+	
+	private Map<String,CacheService> caches = new HashMap<String, CacheService>();
 
 	private CacheService cache;
 	private VelocityEngine velocityEngine;
@@ -64,17 +67,33 @@ public class SystemServiceImpl implements SystemService, Serializable {
 	private PageCache pageCache;
 	private ScriptEngine scriptEngine;
 	
+	
+	private static final String HEIDUC_CACHE_NAME = "HeiducCoreCache";
+	
+	
+	
 	public SystemServiceImpl() {
 		transformers = new HashMap<String, Transformer>();
 	}
 	
 	@Override
 	public CacheService getCache() {
-		if (cache == null) {
-			log.info("CacheService init. ");
-			cache = new CacheServiceImpl();
+		return getCache(this.getClass());
+	}
+	
+	@Override
+	public CacheService getCache(Class<?> clazz) {
+		String cacheName = HEIDUC_CACHE_NAME;
+		if(clazz.getClassLoader() instanceof PluginClassLoader){
+			cacheName = clazz.getClassLoader().toString();
 		}
-		return cache;
+		
+		
+		if (!caches.containsKey(cacheName)) {
+			log.info("CacheService ["+cacheName+"] init. ");
+			caches.put(cacheName, new CacheServiceImpl(cacheName,clazz.getClassLoader()));
+		}
+		return caches.get(cacheName);
 	}
 
 	@Override
