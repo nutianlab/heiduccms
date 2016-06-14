@@ -39,15 +39,15 @@ public final class CacheServiceImpl implements CacheService<String,Object> {
 	private static final long LOCAL_CACHE_TTL = 5000;
 	private static final String RESET_DATE_KEY = "cacheResetDate";
 
-	private static Cache<String, Object> cache;
-	private static Map<String, Object> localCache;
-	private static long localCacheTime;
-	private static int localHits;
-	private static int cacheHits;
+	private Cache<String, Object> cache;
+	private Map<String, Object> localCache;
+	private long localCacheTime;
+	private int localHits;
+	private int cacheHits;
 	
 	public static int CACHE_SIZE_LIMIT = 1000000;
 
-	public CacheServiceImpl() {
+	public CacheServiceImpl(String cacheName,ClassLoader classloader) {
 		try {
 			/*
 			 * cache = CacheManager.getInstance().getCacheFactory().createCache(
@@ -56,20 +56,20 @@ public final class CacheServiceImpl implements CacheService<String,Object> {
 
 			// resolve a cache manager
 			synchronized(this) {  
-				cache = Caching.getCache("heiducCache",String.class, Object.class);
+				cache = Caching.getCache(cacheName,String.class, Object.class);
 				if(cache == null){
-					CachingProvider cachingProvider = Caching.getCachingProvider(Thread.currentThread().getContextClassLoader());
-					CacheManager cacheManager = cachingProvider.getCacheManager();
+					CachingProvider cachingProvider = Caching.getCachingProvider();
+					CacheManager cacheManager = cachingProvider.getCacheManager(null,classloader);
 		
 					// configure the cache
 					MutableConfiguration<String, Object> config = new MutableConfiguration<String, Object>();
 					// uses store by value
-					config.setStoreByValue(false).setTypes(String.class, Object.class)
+					config.setStoreByValue(true).setTypes(String.class, Object.class)
 							.setExpiryPolicyFactory(
 									AccessedExpiryPolicy.factoryOf(ONE_HOUR))
 							.setStatisticsEnabled(true);
 					// create the cache
-					cache = cacheManager.createCache("heiducCache", config);
+					cache = cacheManager.createCache(cacheName, config);
 				}
 			
 			}
@@ -349,9 +349,5 @@ public final class CacheServiceImpl implements CacheService<String,Object> {
 	public Date getResetDate() {
 		return (Date) get(RESET_DATE_KEY);
 	}
-
-	
-
-	
 
 }
