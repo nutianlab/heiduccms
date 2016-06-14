@@ -124,9 +124,9 @@ public class SystemServiceImpl implements SystemService, Serializable {
 			return e.toString();
 		} catch (ResourceNotFoundException e) {
 			return e.toString();
-		} /*catch (IOException e) {
+		} catch (IOException e) {
 			return e.toString();
-		}*/
+		}
 	}
 
 	@Override
