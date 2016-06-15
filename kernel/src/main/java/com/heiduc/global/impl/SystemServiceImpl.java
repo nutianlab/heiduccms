@@ -123,7 +123,7 @@ public class SystemServiceImpl implements SystemService, Serializable {
 			return e.toString();
 		} catch (ResourceNotFoundException e) {
 			return e.toString();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			return e.toString();
 		}
 	}
