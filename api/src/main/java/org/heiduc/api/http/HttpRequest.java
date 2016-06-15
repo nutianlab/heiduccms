@@ -3152,10 +3152,10 @@ public class HttpRequest {
       openOutput();
       if (!first)
         output.write('&');
-      output.write(URLEncoder.encode(name.toString(), charset));
+      output.write(name.toString());
       output.write('=');
       if (value != null)
-        output.write(URLEncoder.encode(value.toString(), charset));
+        output.write(value.toString());
     } catch (IOException e) {
       throw new HttpRequestException(e);
     }
