@@ -94,13 +94,13 @@ Heiduc.errorMessages = function(widget, errors) {
 
 Heiduc.showServiceMessages = function(r) {
 	if (r.result == 'success') {
-		Heiduc.info(r.message);
+		//Heiduc.info(r.message);
 		if (r.messages.list.length > 0) {
 			$.each(r.messages.list, function(n,value) { Heiduc.info(value) });
 		}
 	}
 	else {
-		Heiduc.error(r.message);
+		//Heiduc.error(r.message);
 		if (r.messages.list.length > 0) {
 			$.each(r.messages.list, function(n,value) { Heiduc.error(value) });
 		}
@@ -173,6 +173,9 @@ Heiduc.initChannel = function(onOpened, onMessage, onError, onClose) {
 	}, Heiduc.clientId);
 	*/
 	var cometd = atmosphere;
+	if(Heiduc.socket != null){
+		cometd.unsubscribe();
+	}
 	//var request = new atmosphere.AtmosphereRequest();
 	var transport = 'websocket';
 	var request = { url: "/_ah/channel/"+Heiduc.clientId,
