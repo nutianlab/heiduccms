@@ -1,5 +1,3 @@
-
-
 package com.heiduc.dao.impl;
 
 import java.util.List;
@@ -12,6 +10,9 @@ import com.heiduc.entity.ConfigEntity;
 public class ConfigDaoImpl extends BaseDaoImpl<ConfigEntity> 
 		implements ConfigDao {
 
+
+    private static final long serialVersionUID = 1L;
+    
 	public ConfigDaoImpl() {
 		super(ConfigEntity.class);
 	}
@@ -22,7 +23,7 @@ public class ConfigDaoImpl extends BaseDaoImpl<ConfigEntity>
 		if (list.size() > 0) {
 			return list.get(0);
 		}
-		logger.error("Config for site was not found!");
+		logger.warn("Config for site was not found!");
 		return new ConfigEntity();
 	}
 
