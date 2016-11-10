@@ -22,40 +22,61 @@ public class PluginResourceCacheImpl implements PluginResourceCache {
 	}
 	
 	private List<String> getPluginResourcesList(String pluginName) {
+		List<String> resourceList = new ArrayList<String>();
+		
 		String key = getPluginResourcesListKey(pluginName);
-		if (!getSystemService().getCache().containsKey(key)) {
-			getSystemService().getCache().put(key, new ArrayList<String>());
+		ClassLoader classloader = getClassLoader(pluginName);
+		if (!getSystemService().getCache(classloader).containsKey(key)) {
+			getSystemService().getCache(classloader).put(key, resourceList);
+		}else{
+			resourceList = (List<String>)getSystemService().getCache(classloader).get(key);
 		}
-		List<String> list = (List<String>)getSystemService().getCache().get(key);
-		return list;
+		return resourceList;
 	}
 	
 	@Override
 	public boolean contains(String pluginName, String key) {
+		ClassLoader classloader = getClassLoader(pluginName);
 		return getPluginResourcesList(pluginName).contains(key) 
-			&& getSystemService().getCache().containsKey(key);
+			&& getSystemService().getCache(classloader).containsKey(key);
 	}
 	
 	@Override
 	public byte[] get(String pluginName, String key) {
+		ClassLoader classloader = getClassLoader(pluginName);
 		if (contains(pluginName, key)) {
-			return (byte[])getSystemService().getCache().get(key);
+			return (byte[])getSystemService().getCache(classloader).get(key);
 		}
 		return null;
 	}
 	
 	@Override
 	public void put(String pluginName, String key, byte[] data) {
+		ClassLoader classloader = getClassLoader(pluginName);
 		List<String> list = getPluginResourcesList(pluginName);
 		list.add(key);
-		getSystemService().getCache().put(getPluginResourcesListKey(pluginName), 
-				list);
-		getSystemService().getCache().put(key, data);
+		getSystemService().getCache(classloader).put(getPluginResourcesListKey(pluginName), list);
+		getSystemService().getCache(classloader).put(key, data);
 	}
 	
 	@Override
 	public void reset(String pluginName) {
-		getSystemService().getCache().remove(getPluginResourcesListKey(pluginName));
+		ClassLoader classloader = getClassLoader(pluginName);
+		if(getSystemService().getCache(classloader) != null){
+			getSystemService().getCache(classloader).clear();
+		}
+		/*String resourceKey = getPluginResourcesListKey(pluginName);
+		
+		List<String> resourceList = (List<String>) getSystemService().getCache().get(resourceKey);
+		if(null != resourceList){
+			Set<String> resourceSet = new HashSet<String>(resourceList);
+			getSystemService().getCache().removeAll(resourceSet);//移除插件资源文件内容
+		}
+		getSystemService().getCache().remove(resourceKey);//移除资源文件名列表
+*/	}
+	
+	private static ClassLoader getClassLoader(String pluginName){
+		return PluginClassLoaderFactory.getInstance().getClassLoader(pluginName);
 	}
 
 }
