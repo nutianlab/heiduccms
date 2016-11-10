@@ -23,6 +23,8 @@ public interface SystemService {
 	
 	CacheService getCache(Class<?> clazz);
 	
+	CacheService getCache(ClassLoader classloader);
+	
 	FileCache getFileCache();
 	
 	PageCache getPageCache();
@@ -63,5 +65,5 @@ public interface SystemService {
 	String renderWiki(String template, PageEntity page);
 	
 	String renderPHP(String template, PageEntity page);
-	
+
 }

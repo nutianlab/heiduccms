@@ -94,6 +94,22 @@ public class SystemServiceImpl implements SystemService, Serializable {
 		}
 		return caches.get(cacheName);
 	}
+	
+	@Override
+	public CacheService getCache(ClassLoader classloader) {
+		String cacheName = "";
+		if(!(classloader instanceof PluginClassLoader)){
+			log.error("Only support PluginClassLoader instance.");
+			return null;
+		}
+		cacheName = "Plugin_".concat(classloader.toString()).concat("Cache");
+		
+		if (!caches.containsKey(cacheName)) {
+			log.info("CacheService ["+cacheName+"] init. ");
+			caches.put(cacheName, new CacheServiceImpl(cacheName,classloader));
+		}
+		return caches.get(cacheName);
+	}
 
 	@Override
 	public VelocityEngine getVelocityEngine() {

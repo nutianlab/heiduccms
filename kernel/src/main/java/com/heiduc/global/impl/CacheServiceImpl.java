@@ -46,6 +46,8 @@ public final class CacheServiceImpl implements CacheService<String,Object> {
 	private int cacheHits;
 	
 	public static int CACHE_SIZE_LIMIT = 1000000;
+	
+	private static final boolean DISABLE = false;
 
 	public CacheServiceImpl(String cacheName,ClassLoader classloader) {
 		try {
@@ -135,6 +137,11 @@ public final class CacheServiceImpl implements CacheService<String,Object> {
 
 	@Override
 	public void put(String key, Object value) {
+		
+		if(DISABLE){
+			return;
+		}
+		
 		localCache.put(key, value);
 		try {
 			cache.put(key, value);
@@ -152,6 +159,9 @@ public final class CacheServiceImpl implements CacheService<String,Object> {
 
 	@Override
 	public void putAll(Map<? extends String, ? extends Object> map) {
+		if(DISABLE){
+			return;
+		}
 		localCache.putAll(map);
 		try {
 			cache.putAll(map);
@@ -163,6 +173,9 @@ public final class CacheServiceImpl implements CacheService<String,Object> {
 
 	@Override
 	public boolean putIfAbsent(String key, Object value) {
+		if(DISABLE){
+			return true;
+		}
 		return cache.putIfAbsent(key, value);
 	}
 
@@ -192,6 +205,9 @@ public final class CacheServiceImpl implements CacheService<String,Object> {
 
 	@Override
 	public boolean replace(String key, Object oldValue, Object newValue) {
+		if(DISABLE){
+			return true;
+		}
 		if (localCache.containsKey(key) && oldValue.equals(localCache.get(key))) {
 			localCache.put(key, newValue);
 		}
@@ -200,12 +216,18 @@ public final class CacheServiceImpl implements CacheService<String,Object> {
 
 	@Override
 	public boolean replace(String key, Object value) {
+		if(DISABLE){
+			return true;
+		}
 		localCache.put(key, value);
 		return cache.replace(key, value);
 	}
 
 	@Override
 	public Object getAndReplace(String key, Object value) {
+		if(DISABLE){
+			return value;
+		}
 		localCache.remove(key);
 		return cache.getAndReplace(key, value);
 	}
@@ -349,5 +371,9 @@ public final class CacheServiceImpl implements CacheService<String,Object> {
 	public Date getResetDate() {
 		return (Date) get(RESET_DATE_KEY);
 	}
+
+	
+
+	
 
 }

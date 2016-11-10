@@ -3,10 +3,7 @@
 package com.heiduc.business.impl.plugin;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.util.Enumeration;
 
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
@@ -41,11 +38,11 @@ public class PluginClassLoader extends ClassLoader {
 
 	@Override
 	public Class<?> findClass(String name) throws ClassNotFoundException {
-		logger.info("PluginClassLoader findClass:"+name);
 		Class<?> cls = findLoadedClass(name);
 		if (cls != null) {
 			return cls;
 		}
+		logger.info("PluginClassLoader findClass:"+name);
 		try {
 			byte[] b = findPluginResource(name);
 			if (b == null) {
@@ -75,8 +72,10 @@ public class PluginClassLoader extends ClassLoader {
 	}
 
 	private byte[] findPluginResource(String name) {
+		byte[] data = getCache().get(pluginName, name);
+		
 		if (!getCache().contains(pluginName, name)) {
-			byte[] data = loadPluginResource(name);
+			data = loadPluginResource(name);
 			if (data != null) {
 				getCache().put(pluginName, name, data);
 			}
@@ -84,7 +83,7 @@ public class PluginClassLoader extends ClassLoader {
 				return null;
 			}
 		}
-		return getCache().get(pluginName, name);
+		return data;
 	}
 
 	private byte[] loadPluginResource(String name) {
