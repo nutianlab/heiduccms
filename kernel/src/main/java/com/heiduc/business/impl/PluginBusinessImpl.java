@@ -50,6 +50,8 @@ public class PluginBusinessImpl extends AbstractBusinessImpl
 	private static final Map<String, PluginEntryPoint> plugins = new HashMap<String, PluginEntryPoint>();
 	private static final Map<String, PluginEntity> pluginTimestamps = new HashMap<String, PluginEntity>();
 	
+	private static byte[] lock = new byte[0];
+	
 	public PluginBusinessImpl() {
 		
 	}
@@ -188,37 +190,36 @@ public class PluginBusinessImpl extends AbstractBusinessImpl
 	
 	@Override
 	public PluginEntryPoint getEntryPoint(PluginEntity plugin) {
-		if (!plugins.containsKey(plugin.getName()) 
-			|| isNeedRefresh(plugin)) {
-			
-			try {
-				resetPlugin(plugin);
-				ClassLoader pluginClassLoader = getPluginClassLoaderFactory()
-					.getClassLoader(plugin.getName());
-				Class entryPointClass = pluginClassLoader
-					.loadClass(plugin.getEntryPointClass());
-				PluginEntryPoint entryPoint = (PluginEntryPoint)entryPointClass
-					.newInstance();
-				entryPoint.setBusiness(getBusiness());
-				entryPoint.setFrontService(getFrontService());
-				entryPoint.setBackService(getBackService());
-				if(isNeedRefresh(plugin)){
-					entryPoint.refresh();
+		synchronized (lock) {
+			if (!plugins.containsKey(plugin.getName()) 
+					|| isNeedRefresh(plugin)) {
+					
+					try {
+						resetPlugin(plugin);
+						ClassLoader pluginClassLoader = getPluginClassLoaderFactory()
+							.getClassLoader(plugin.getName());
+						Class entryPointClass = pluginClassLoader
+							.loadClass(plugin.getEntryPointClass());
+						PluginEntryPoint entryPoint = (PluginEntryPoint)entryPointClass
+							.newInstance();
+						entryPoint.setBusiness(getBusiness());
+						entryPoint.setFrontService(getFrontService());
+						entryPoint.setBackService(getBackService());
+						
+						entryPoint.init();
+						
+						plugins.put(plugin.getName(), entryPoint);
+						pluginTimestamps.put(plugin.getName(), plugin);
+						getBusiness().getRewriteUrlBusiness().addRules(
+								entryPoint.getRewriteRules());
+					}
+					catch (ClassNotFoundException e) {
+						LOGGER.error("Class not found " + e.getMessage());
+					}
+					catch (Exception e) {
+						LOGGER.error(e.getMessage());
+					}
 				}
-				
-				entryPoint.init();
-				
-				plugins.put(plugin.getName(), entryPoint);
-				pluginTimestamps.put(plugin.getName(), plugin);
-				getBusiness().getRewriteUrlBusiness().addRules(
-						entryPoint.getRewriteRules());
-			}
-			catch (ClassNotFoundException e) {
-				LOGGER.error("Class not found " + e.getMessage());
-			}
-			catch (Exception e) {
-				LOGGER.error(e.getMessage());
-			}
 		}
 		return plugins.get(plugin.getName());
 	}
