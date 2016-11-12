@@ -233,6 +233,9 @@ public class PluginLoader {
 	}
 
 	public void uninstall(PluginEntity plugin) {
+		
+		getBusiness().getPluginBusiness().getEntryPoint(plugin).uninstall();
+		
 		removePluginResources(plugin);
 		removePluginFileCache(plugin);
 		getBusiness().getFolderBusiness().recursiveRemove(
