@@ -50,7 +50,7 @@ public class PluginBusinessImpl extends AbstractBusinessImpl
 	private static final Map<String, PluginEntryPoint> plugins = new HashMap<String, PluginEntryPoint>();
 	private static final Map<String, PluginEntity> pluginTimestamps = new HashMap<String, PluginEntity>();
 	
-	private static byte[] lock = new byte[0];
+	private static final byte[] lock = new byte[0];
 	
 	public PluginBusinessImpl() {
 		
