@@ -8,10 +8,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.heiduc.api.datastore.Query;
 import org.heiduc.api.datastore.Query.FilterOperator;
+import org.heiduc.api.datastore.Query.SortDirection;
 
 import com.heiduc.common.HeiducContext;
 import com.heiduc.dao.BaseDaoImpl;
@@ -21,6 +23,7 @@ import com.heiduc.dao.PageDao;
 import com.heiduc.entity.ContentEntity;
 import com.heiduc.entity.PageEntity;
 import com.heiduc.entity.helper.PageHelper;
+import com.heiduc.enums.PageState;
 
 /**
  * @author Alexander Oleynik
@@ -74,6 +77,19 @@ public class PageDaoImpl extends BaseDaoImpl<PageEntity>
 		q.addFilter("publishDate", FilterOperator.LESS_THAN, endDate);
 		return select(q, "selectAllChildrenDate", params(parentUrl, startDate,
 				endDate));
+	}
+	
+	public List<PageEntity> selectChildren(final String parentUrl,
+			Date publishDate, int limit) {
+		Query q = newQuery();
+		q.addFilter("parentUrl", FilterOperator.EQUAL, parentUrl);
+		q.addFilter("publishDate", FilterOperator.LESS_THAN, publishDate);
+		Pattern p = Pattern.compile("^(?!.*\\/_default$)",Pattern.CASE_INSENSITIVE);
+		q.addSort("publishDate", SortDirection.DESC);
+		q.addFilter("friendlyURL", FilterOperator.EQUAL, p);
+		q.addFilter("state", FilterOperator.EQUAL, PageState.APPROVED.name());//这里只获取发布状态的资讯
+
+		return select(q, "selectChildren",limit,params(parentUrl,publishDate));
 	}
 
 	@Override
