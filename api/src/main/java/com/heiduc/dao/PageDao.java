@@ -87,4 +87,6 @@ public interface PageDao extends BaseDao<PageEntity> {
 
 	List<PageEntity> getCurrentHourUnpublishedPages();
 	
+	List<PageEntity> selectChildren(final String parentUrl,Date publishDate, int limit);
+	
 }
