@@ -9,9 +9,9 @@ public class Credentials implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String userName;
+	private String username;
 	private String password;
-	private String nickName;
+	private String nickname;
 	private String avatar;
 	private String email;
 	
@@ -27,25 +27,25 @@ public class Credentials implements Serializable {
 		super();
 	}
 	
-	public Credentials(String userName, String password) {
+	public Credentials(String username, String password) {
 		super();
-		this.userName = userName;
+		this.username = username;
 		this.password = password;
 	}
-	public Credentials(String userName, String password, String nickName,
+	public Credentials(String username, String password, String nickname,
 			String avatar,String email) {
 		super();
-		this.userName = userName;
+		this.username = username;
 		this.password = password;
-		this.nickName = nickName;
+		this.nickname = nickname;
 		this.avatar = avatar;
 		this.email = email;
 	}
-	public String getNickName() {
-		return nickName;
+	public String getNickname() {
+		return nickname;
 	}
-	public void setNickName(String nickName) {
-		this.nickName = nickName;
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 	public String getAvatar() {
 		return avatar;
@@ -53,11 +53,11 @@ public class Credentials implements Serializable {
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
 	}
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	public String getPassword() {
 		return password;
