@@ -48,6 +48,7 @@ public final class CacheServiceImpl implements CacheService<String,Object> {
 	public static int CACHE_SIZE_LIMIT = 1000000;
 	
 	private static final boolean DISABLE = false;
+	private static final byte[] lock = new byte[0];
 
 	public CacheServiceImpl(String cacheName,ClassLoader classloader) {
 		try {
@@ -57,7 +58,7 @@ public final class CacheServiceImpl implements CacheService<String,Object> {
 			 */
 
 			// resolve a cache manager
-			synchronized(this) {  
+			synchronized(lock) {  
 				cache = Caching.getCache(cacheName,String.class, Object.class);
 				if(cache == null){
 					CachingProvider cachingProvider = Caching.getCachingProvider();
