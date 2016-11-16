@@ -98,7 +98,7 @@ public class Entity implements Serializable, Cloneable {
 		return object;
 	}
 
-	Map<String,Object> getPropertyMap() {
+	public Map<String,Object> getPropertyMap() {
 		return propertyMap;
 	}
 
