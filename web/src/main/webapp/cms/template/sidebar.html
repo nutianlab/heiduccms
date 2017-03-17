@@ -18,12 +18,12 @@
 		<div class="wrapper" style="margin-bottom: 140px; overflow-y: hidden; outline: none;" tabindex="0">
 			<ul class="nav nav-sidebar" id="sidebar-menu">
                 <h4 class="sidebar-headline">管理</h4>
-                <li class="active"><a href="#index"><i class="fa fa-desktop"></i> Dashboard <span class="sr-only">(current)</span></a></li>
-				<li><a href="#pages"><i class="fa fa-dashboard"></i> <%= messages("content") %></a></li>
+                <li class="active"><a href="#index"><i class="fa fa-dashboard"></i> Dashboard <span class="sr-only">(current)</span></a></li>
+				<li><a href="#pages"><i class="fa fa-pencil-square"></i> <%= messages("content") %></a></li>
 				<% if (Heiduc.app.user.admin) { %>
-                <li><a href="#templates"><i class="fa fa-group"></i> <%= messages("templates") %></a></li>
+                <li><a href="#templates"><i class="fa fa-files-o"></i> <%= messages("templates") %></a></li>
                 <% } %>      
-                <li><a href="#folders"><i class="fa fa-rmb"></i> <%= messages("resources") %></a></li>
+                <li><a href="#folders"><i class="fa fa-archive"></i> <%= messages("resources") %></a></li>
                 <% if (Heiduc.app.user.admin) { %>
                 <li><a href="#config"><i class="fa fa-cogs"></i><%= messages("configuration") %></a></li>
 				<% } %>
@@ -37,7 +37,7 @@
 
 			<ul class="nav nav-sidebar">
 				<li class="submenu">
-					<a href="#plugins"><i class="fa fa-plus-square"></i><%= messages("plugins") %></a>
+					<a href="#plugins"><i class="fa fa-puzzle-piece"></i><%= messages("plugins") %></a>
 					<ul>
 						<li><a href="#plugins/config"><%= messages("plugins.config") %></a></li>
 						<li>
