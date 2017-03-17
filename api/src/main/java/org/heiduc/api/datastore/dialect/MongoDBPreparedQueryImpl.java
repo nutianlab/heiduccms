@@ -1,4 +1,4 @@
-package org.heiduc.api.datastore;
+package org.heiduc.api.datastore.dialect;
 
 import static org.heiduc.api.datastore.FetchOptions.Builder.withDefaults;
 
@@ -9,6 +9,11 @@ import java.util.List;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.heiduc.api.datastore.Entity;
+import org.heiduc.api.datastore.FetchOptions;
+import org.heiduc.api.datastore.Key;
+import org.heiduc.api.datastore.PreparedQuery;
+import org.heiduc.api.datastore.Query;
 import org.heiduc.api.datastore.Query.FilterOperator;
 import org.heiduc.api.datastore.Query.FilterPredicate;
 import org.heiduc.api.datastore.Query.SortPredicate;
@@ -19,12 +24,12 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 
-public class PreparedQueryImpl implements PreparedQuery {
+public class MongoDBPreparedQueryImpl implements PreparedQuery {
 
 	private MongoDatabase database;
 	private final Query query;
 	
-	public PreparedQueryImpl(MongoDatabase database , Query query) {
+	public MongoDBPreparedQueryImpl(MongoDatabase database , Query query) {
 		this.database = database;
 		this.query = query;
 	}
