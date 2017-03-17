@@ -1,1 +1,1 @@
-ant runserver
+mvn jetty:run

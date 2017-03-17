@@ -22,27 +22,27 @@ public class Key implements Serializable{
         name = null;
     }
 	
-	Key(String kind)
+	public Key(String kind)
     {
         this(kind, null, 0L);
     }
 	
-	Key(String kind, Key parentKey)
+	public Key(String kind, Key parentKey)
     {
         this(kind, parentKey, 0L);
     }
 	
-    Key(String kind, Key parentKey, long id)
+	public Key(String kind, Key parentKey, long id)
     {
         this(kind, parentKey, id, null);
     }
     
-    Key(String kind, Key parentKey, String name)
+	public Key(String kind, Key parentKey, String name)
     {
         this(kind, parentKey, 0L, name);
     }
 
-    Key(String kind, Key parentKey, long id, String name)
+	public Key(String kind, Key parentKey, long id, String name)
     {
         if(kind == null || kind.length() == 0)
             throw new IllegalArgumentException("No kind specified.");

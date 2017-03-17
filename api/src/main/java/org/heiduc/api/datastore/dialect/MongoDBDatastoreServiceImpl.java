@@ -1,10 +1,18 @@
-package org.heiduc.api.datastore;
+package org.heiduc.api.datastore.dialect;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.heiduc.api.datastore.DatastoreService;
+import org.heiduc.api.datastore.DatastoreServiceFactory;
+import org.heiduc.api.datastore.Entity;
+import org.heiduc.api.datastore.EntityNotFoundException;
+import org.heiduc.api.datastore.IdWorker;
+import org.heiduc.api.datastore.Key;
+import org.heiduc.api.datastore.PreparedQuery;
+import org.heiduc.api.datastore.Query;
 import org.heiduc.api.util.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +25,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.FindOneAndReplaceOptions;
 
-public class DatastoreServiceImpl implements DatastoreService {
+public class MongoDBDatastoreServiceImpl implements DatastoreService {
 	
 	private MongoDatabase database;
 	private static final IdWorker idWorker = new IdWorker(1);
@@ -26,13 +34,13 @@ public class DatastoreServiceImpl implements DatastoreService {
 	private  static final Logger logger = LoggerFactory.getLogger(DatastoreServiceFactory.class);
 
 	
-	public DatastoreServiceImpl(){
+	public MongoDBDatastoreServiceImpl(){
 		database = mongo.getDatabase(Constants.DATABASE_NAME);
 	}
 
 	@Override
 	public PreparedQuery prepare(Query query) {
-		return new PreparedQueryImpl(this.database, query);
+		return new MongoDBPreparedQueryImpl(this.database, query);
 	}
 
 	@Override
