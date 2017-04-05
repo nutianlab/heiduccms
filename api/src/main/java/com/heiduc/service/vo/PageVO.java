@@ -18,6 +18,7 @@ public class PageVO {
 
     private PageEntity page;
     private boolean hasPublishedVersion;
+    private boolean hasChildren;
 
 	public PageVO(final PageEntity entity) {
 		page = entity;
@@ -153,6 +154,14 @@ public class PageVO {
 	
 	public boolean isWikiProcessing() {
 		return page.isWikiProcessing();
+	}
+
+	public boolean isHasChildren() {
+		return hasChildren;
+	}
+
+	public void setHasChildren(boolean hasChildren) {
+		this.hasChildren = hasChildren;
 	}
 
 }

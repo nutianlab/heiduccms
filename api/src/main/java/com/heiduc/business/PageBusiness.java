@@ -43,6 +43,8 @@ public interface PageBusiness {
 	 * @return list of pages.
 	 */
 	List<PageEntity> getByParent(final String url);
+	
+	List<PageEntity> getByParent(String url,boolean deps);
 
 	/**
 	 * Security filtered dao version.

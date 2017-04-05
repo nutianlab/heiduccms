@@ -18,6 +18,14 @@ public interface PageDao extends BaseDao<PageEntity> {
 	List<PageEntity> selectAllChildren(final String parentUrl);
 	
 	/**
+	 * Select all children versions for parent page.
+	 * @param parentUrl - parent page url.
+	 * @param deps - include sub.
+	 * @return pages list.
+	 */
+	List<PageEntity> selectAllChildren(final String parentUrl,final boolean deps);
+	
+	/**
 	 * Select all children versions for parent page with publishDate in period
 	 * between startDate and endDate.
 	 * @param parentUrl - parent page url.
@@ -34,6 +42,8 @@ public interface PageDao extends BaseDao<PageEntity> {
 	 * @return
 	 */
 	List<PageEntity> getByParent(final String url);
+	
+	List<PageEntity> getByParent(final String url,boolean deps);
 
 	/**
 	 * Select pages approved latest versions by parent page.

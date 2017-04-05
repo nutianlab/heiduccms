@@ -1,9 +1,5 @@
-<!-- 
-/**
- */
--->
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE site [
+
 <!ELEMENT site (users,groups,config,structures,pages,forms,folders,messages,
 plugins)>
 
@@ -20,8 +16,8 @@ siteUserLoginUrl)>
 <!ELEMENT commentsEmail (#PCDATA)>
 <!ELEMENT commentsTemplate (#PCDATA)>
 <!ELEMENT enableRecaptcha (#PCDATA)>
-<!ELEMENT languages (language*)>
-<!ELEMENT language EMPTY>
+<!--ELEMENT languages (language*)-->
+<!--ELEMENT language EMPTY-->
 <!ELEMENT siteUserLoginUrl (#PCDATA)>
 
 <!ELEMENT pages (page*)>
@@ -36,21 +32,22 @@ content*,page-version*,comments,page*,permissions)>
 <!ELEMENT modUserEmail (#PCDATA)>
 <!ELEMENT createDate (#PCDATA)>
 <!ELEMENT modDate (#PCDATA)>
-<!ELEMENT structure (#PCDATA)>
+<!--ELEMENT structure (#PCDATA)-->
 <!ELEMENT structureTemplate (#PCDATA)>
 <!ELEMENT pageType (#PCDATA)>
-<!ELEMENT content (#PCDATA)>
+<!--ELEMENT content (#PCDATA)-->
 <!ELEMENT page-version (version,versionTitle,state,createUserId,modUserId,
 createDate,modDate,content*)>
 <!ELEMENT comments (comment*)>
+<!ELEMENT createUserId (#PCDATA)>
+<!ELEMENT modUserId (#PCDATA)>
 <!ELEMENT comment (#PCDATA)>
-
-<!ELEMENT permissions (permission*)>
-<!ELEMENT permission (group,permissionType,allLanguages,languages)>
-<!ELEMENT group (#PCDATA)>
+<!--ELEMENT permissions (permission*)-->
+<!--ELEMENT permission (group,permissionType,allLanguages,languages)-->
+<!--ELEMENT group (#PCDATA)-->
 <!ELEMENT permission-type (#PCDATA)>
 <!ELEMENT allLanguages (#PCDATA)>
-<!ELEMENT languages (#PCDATA)>
+<!--ELEMENT languages (#PCDATA)-->
 
 <!ELEMENT forms (form-config,form*)>
 
@@ -61,75 +58,93 @@ createDate,modDate,content*)>
 <!ELEMENT form (field*)>
 <!ELEMENT field EMPTY>
 
-<!ELEMENT users (user*)>
-<!ELEMENT user (name,email,password,role)>
-<!ELEMENT name (#PCDATA)>
+<!--ELEMENT users (user*)-->
+<!--ELEMENT user (name,email,password,role)-->
+<!--ELEMENT name (#PCDATA)-->
 <!ELEMENT password (#PCDATA)>
 <!ELEMENT role (#PCDATA)>
 
 <!ELEMENT groups (group*)>
-<!ELEMENT group (name,users)>
-<!ELEMENT users (user*)>
-<!ELEMENT user (#PCDATA)>
+<!--ELEMENT group (name,users)-->
+<!--ELEMENT users (user*)-->
+<!--ELEMENT user (#PCDATA)-->
 
 <!ELEMENT folders (folder*)>
 <!ELEMENT folder (name,title,permissions,folder*)>
-<!ELEMENT title (#PCDATA)>
-<!ELEMENT permissions (permission*)>
-<!ELEMENT permission (group,permissionType)>
-<!ELEMENT group (#PCDATA)>
+<!--ELEMENT title (#PCDATA)-->
+<!--ELEMENT permissions (permission*)-->
+<!--ELEMENT permission (group,permissionType)-->
+<!--ELEMENT group (#PCDATA)-->
 <!ELEMENT permissionType (#PCDATA)>
 
-<!ELEMENT messages (mesage*)>
+<!ELEMENT messages (message*)>
 <!ELEMENT message (language, code, value)>
-<!ELEMENT language (#PCDATA)>
+<!--ELEMENT language (#PCDATA)-->
 <!ELEMENT code (#PCDATA)>
 <!ELEMENT value (#PCDATA)>
 
 <!ELEMENT structures (structure*)>
-<!ELEMENT structure (title, content, templates)>
-<!ELEMENT title (#PCDATA)>
-<!ELEMENT content (#PCDATA)>
+<!--ELEMENT structure (title, content, templates)-->
+<!--ELEMENT title (#PCDATA)-->
+<!--ELEMENT content (#PCDATA)-->
 <!ELEMENT templates (template*)>
 <!ELEMENT template (title, type, content)>
 <!ELEMENT type (#PCDATA)>
 
 <!ELEMENT plugins (plugin*)>
 <!ELEMENT plugin (name, configData)>
-<!ELEMENT name (#PCDATA)>
+
+<!--ELEMENT name (#PCDATA)-->
+
 <!ELEMENT configData (#PCDATA)>
 
-<!ATTLIST language code CDATA #REQUIERED>
-<!ATTLIST language title CDATA #REQUIERED>
 
-<!ATTLIST page url CDATA #REQUIERED>
-<!ATTLIST page title CDATA #REQUIERED>
-<!ATTLIST page commentsEnabled CDATA #REQUIERED>
-<!ATTLIST page publishDate CDATA #REQUIERED>
-<!ATTLIST page theme CDATA #REQUIERED>
+<!-- common element -->
+<!ELEMENT languages (#PCDATA|language)*>
+<!ELEMENT language (#PCDATA)>
+<!ELEMENT structure (title?, content?, templates?)>
+<!ELEMENT content (#PCDATA|permission)*>
+<!ELEMENT permissions (permission*)>
+<!ELEMENT permission (group,permissionType,allLanguages?,languages?)>
+<!ELEMENT group (name,users)*>
+<!ELEMENT users (user*)>
+<!ELEMENT user (name?,email?,password?,role?)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT title (#PCDATA)>
 
-<!ATTLIST content language CDATA #REQUIERED>
 
-<!ATTLIST comment name CDATA #REQUIERED>
-<!ATTLIST comment disabled CDATA #REQUIERED>
-<!ATTLIST comment publishDate CDATA #REQUIERED>
 
-<!ATTLIST form name CDATA #REQUIERED>
-<!ATTLIST form title CDATA #REQUIERED>
-<!ATTLIST form email CDATA #REQUIERED>
-<!ATTLIST form letterSubject CDATA #REQUIERED>
-<!ATTLIST form showResetButton CDATA #REQUIERED>
-<!ATTLIST form enableCaptcha CDATA #REQUIERED>
-<!ATTLIST form sendButtonTitle CDATA #REQUIERED>
-<!ATTLIST form resetButtonTitle CDATA #REQUIERED>
 
-<!ATTLIST field name CDATA #REQUIERED>
-<!ATTLIST field title CDATA #REQUIERED>
-<!ATTLIST field fieldType CDATA #REQUIERED>
-<!ATTLIST field mandatory CDATA #REQUIERED>
-<!ATTLIST field values CDATA #REQUIERED>
-<!ATTLIST field defaultValue CDATA #REQUIERED>
-<!ATTLIST field height CDATA #REQUIERED>
-<!ATTLIST field width CDATA #REQUIERED>
+<!ATTLIST language code CDATA #REQUIRED>
+<!ATTLIST language title CDATA #REQUIRED>
 
-]>
+<!ATTLIST page url CDATA #REQUIRED>
+<!ATTLIST page title CDATA #REQUIRED>
+<!ATTLIST page commentsEnabled CDATA #REQUIRED>
+<!ATTLIST page publishDate CDATA #REQUIRED>
+<!ATTLIST page theme CDATA #REQUIRED>
+
+<!ATTLIST content language CDATA #REQUIRED>
+
+<!ATTLIST comment name CDATA #REQUIRED>
+<!ATTLIST comment disabled CDATA #REQUIRED>
+<!ATTLIST comment publishDate CDATA #REQUIRED>
+
+<!ATTLIST form name CDATA #REQUIRED>
+<!ATTLIST form title CDATA #REQUIRED>
+<!ATTLIST form email CDATA #REQUIRED>
+<!ATTLIST form letterSubject CDATA #REQUIRED>
+<!ATTLIST form showResetButton CDATA #REQUIRED>
+<!ATTLIST form enableCaptcha CDATA #REQUIRED>
+<!ATTLIST form sendButtonTitle CDATA #REQUIRED>
+<!ATTLIST form resetButtonTitle CDATA #REQUIRED>
+
+<!ATTLIST field name CDATA #REQUIRED>
+<!ATTLIST field title CDATA #REQUIRED>
+<!ATTLIST field fieldType CDATA #REQUIRED>
+<!ATTLIST field mandatory CDATA #REQUIRED>
+<!ATTLIST field values CDATA #REQUIRED>
+<!ATTLIST field defaultValue CDATA #REQUIRED>
+<!ATTLIST field height CDATA #REQUIRED>
+<!ATTLIST field width CDATA #REQUIRED>
+

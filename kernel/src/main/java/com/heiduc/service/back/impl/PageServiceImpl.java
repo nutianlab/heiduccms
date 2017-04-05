@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +29,6 @@ import com.heiduc.entity.PageEntity;
 import com.heiduc.entity.PageTagEntity;
 import com.heiduc.entity.StructureEntity;
 import com.heiduc.entity.TagEntity;
-import com.heiduc.entity.TemplateEntity;
 import com.heiduc.entity.helper.PageHelper;
 import com.heiduc.enums.PageState;
 import com.heiduc.enums.PageType;
@@ -109,6 +110,7 @@ public class PageServiceImpl extends AbstractServiceImpl
 	private List<PageVO> selectLastVersionPages(List<PageEntity> pages) {
 		Map<String, PageEntity> pageMap = new HashMap<String, PageEntity>();
 		Map<String, Boolean> published = new HashMap<String, Boolean>();
+		Map<String,Integer> children = new HashMap<String,Integer>();
 		for (PageEntity page : pages) {
 			if (page.isForInternalUse()) {
 				continue;
@@ -125,6 +127,13 @@ public class PageServiceImpl extends AbstractServiceImpl
 				pageMap.put(page.getFriendlyURL(), page);
 				published.put(page.getFriendlyURL(), page.isApproved());
 			}
+			
+			int child = 0;
+			if(children.get(page.getParentUrl()) != null){
+				child = children.get(page.getParentUrl());
+			}
+			children.put(page.getParentUrl(), ++child);
+			
 		}
 		List<PageVO> result = PageVO.create(pageMap.values());
 		for (PageVO page : result) {
@@ -133,6 +142,13 @@ public class PageServiceImpl extends AbstractServiceImpl
 				isPublished = published.get(page.getFriendlyURL());
 			}
 			page.setHasPublishedVersion(isPublished);
+			
+			boolean isHasChildren = false;
+			
+			if (children.containsKey(page.getFriendlyURL()) && children.get(page.getFriendlyURL()) > 0) {
+				isHasChildren = true;
+			}
+			page.setHasChildren(isHasChildren);
 		}
 		return result;
 	}
@@ -305,7 +321,7 @@ public class PageServiceImpl extends AbstractServiceImpl
 		Collections.sort(pages, PageHelper.SORT_INDEX_ASC);
 		return PageVO.create(pages);
 	}
-
+	
 	@Override
 	public ServiceResponse deletePages(List<String> ids) {
 		getPageBusiness().remove(StrUtil.toLong(ids));

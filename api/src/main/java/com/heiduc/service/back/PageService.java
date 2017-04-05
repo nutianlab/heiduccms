@@ -15,7 +15,8 @@ import com.heiduc.service.vo.PageVO;
 
 public interface PageService extends AbstractService {
 	
-	TreeItemDecorator<PageVO> getTree();
+	@Deprecated
+	TreeItemDecorator<PageVO> getTree();	
 	
 	PageEntity getPage(final Long id);
 	

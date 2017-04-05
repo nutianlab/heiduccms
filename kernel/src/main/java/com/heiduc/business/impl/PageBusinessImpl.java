@@ -364,7 +364,12 @@ public class PageBusinessImpl extends AbstractBusinessImpl
 
 	@Override
 	public List<PageEntity> getByParent(String url) {
-		return securityFilter(getDao().getPageDao().getByParent(url));
+		return getByParent(url,false);
+	}
+	
+	@Override
+	public List<PageEntity> getByParent(String url,boolean deps) {
+		return securityFilter(getDao().getPageDao().getByParent(url,deps));
 	}
 
 	@Override

@@ -23,7 +23,6 @@ function(LoginView, PagesView, IndexView,
 
 		initialize:function() {
 			this.bind("login", this.login, this);
-			this.bind("renderSide", this.renderSide, this);
 			if (Heiduc.loggedIn) {
 				this.login();
 			}
@@ -120,9 +119,9 @@ function(LoginView, PagesView, IndexView,
 				this.currentView = null;
 			}
 			this.currentView = view;
-			$('#content').hide();
+			//$('#content').hide();
 			view.render();
-			$('#content').fadeIn();
+			//$('#content').fadeIn();
 		},
 		
 		pages: function() {
@@ -268,9 +267,13 @@ function(LoginView, PagesView, IndexView,
 		// Event handlers
 		
 		login: function() {
+			
 			Heiduc.jsonrpcInitialized = false;
 			Heiduc.createJSONRpc();
 		    Heiduc.initJSONRpcSystem(Heiduc.initBackServices);
+		    
+		    var _this = this; 
+		    
 			Heiduc.initJSONRpc(function() {
 				try{
 				Heiduc.jsonrpc.userService.getLoggedIn(function(user) {
@@ -280,8 +283,8 @@ function(LoginView, PagesView, IndexView,
 					$('#topbar').html(_.template(topbarTmpl, 
 						{locale: localeHtml, "Heiduc": Heiduc, "messages": messages}
 					));
-					
-					Heiduc.app.trigger("renderSide");
+					_this.renderSide();
+					//Heiduc.app.trigger("renderSide");
 
 					if (!Backbone.history.start()) {
 						Heiduc.app.navigate('index', true);
@@ -295,7 +298,6 @@ function(LoginView, PagesView, IndexView,
 		
 		renderSide: function(){
 			try{
-			var localeHtml = _.template(localeTmpl, {messages:messages});
 			Heiduc.jsonrpc.pluginService.select(function (r) {
 				plugins = r.list;
 				var html = '';//<li><a href="#plugins/config"><%= messages("plugins.config") %></a></li>
@@ -317,9 +319,8 @@ function(LoginView, PagesView, IndexView,
 				});
 				
 				//渲染侧边栏
-				var localeHtml = _.template(localeTmpl, {messages:messages});
 				$('#topbar').after(_.template(sidebarTmpl, 
-					{locale: localeHtml, "Heiduc": Heiduc, "messages": messages, "plugins" : html }
+					{"Heiduc": Heiduc, "messages": messages, "plugins" : html }
 				));
 				$('.sidebar .nicescroll .wrapper').niceScroll({scrollspeed: 26, cursorcolor:"#429eee", cursorborder: 0, horizrailenabled: false, railoffset: {left:-1}});
 				// collapse

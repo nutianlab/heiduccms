@@ -29,6 +29,13 @@ require.config({
 		i18n : '/i18n',
 		"back-services" : '/static/js/back-services',
 		
+		interact : 'libs/interact.min',
+		"slick.core" : '/static/slickgrid/slick.core',
+		"slick.grid" : '/static/slickgrid/slick.grid',
+		"slick.dataview" : '/static/slickgrid/slick.dataview',
+		"slick.rowselectionmodel" : '/static/slickgrid/slick.rowselectionmodel',
+		"slick.checkboxselectcolumn" : '/static/slickgrid/slick.checkboxselectcolumn',
+		
 	    'cm'				: "/static/js/codemirror/codemirror", 
 	    'cm-css'			: "/static/js/codemirror/css", 
 	    'cm-html'			: "/static/js/codemirror/htmlmixed",
@@ -66,6 +73,7 @@ require.config({
 		"jquery.treeview" : ['jquery'],
 		"jquery.jquote2" : ['jquery'],
 		'jquery.easing' : ['jquery'],
+		"slick.grid" : ['interact','slick.core'],
 		//'tinynav' : ['jquery'],
 		//'tisa-common' : ['tinynav'],
 		//'perfect-scrollbar-0.4.8.with-mousewheel' : ['jquery'],

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.heiduc.api.datastore.DatastoreService;
@@ -272,8 +273,14 @@ public class BaseDaoImpl<T extends BaseEntity>
 			return null;
 		}
 		if (list.size() > 1) {
-			logger.error("May be consistency error. Multiple result for select one query " 
-					+ clazz.getName() + " " + queryId + params.toString());
+			StringBuilder queryParams = new StringBuilder("");
+			for (int i = 0; i < params.length; i++) {
+				queryParams.append((i+1)+"、");
+				queryParams.append(params[i]);
+				queryParams.append("\t");
+			}
+			logger.error("May be consistency error. Multiple result for select one query: " 
+					+ "\nclass:\t" + clazz.getName() + " \nqueryId:\t " + queryId +" \nparams:\t"+ queryParams.toString());
 		}
 		return list.get(0);
 	}

@@ -511,11 +511,11 @@ JSONRpcClient.default_ex_handler = function (e)
 {
   // unhandled exception thrown in jsonrpc handler
   var a,str="";
-  for(a in e)
-  {
-    str+=a +"\t"+e[a]+"\n";
-  }
-  alert(str);
+  //for(a in e)
+  //{
+  //  str+=a +"\t"+e[a]+"\n";
+  //}
+  alert(e);
 };
 
 

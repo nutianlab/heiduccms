@@ -1,8 +1,8 @@
 // file PagesView.js
 
 define(['text!template/pages.html',
-        'jquery.treeview',
-        'view/pages/PageSearchComponent'], function(tmpl) {
+        'interact','slick.grid','slick.dataview','slick.rowselectionmodel',
+        'slick.checkboxselectcolumn'], function(tmpl,interact) {
 	
 	var parentURL = null;
 	var root = null;
@@ -10,104 +10,185 @@ define(['text!template/pages.html',
 	var showTitle = $.cookie("pages.showTitle") != 'names';
 	var invertOrder = $.cookie("pages.invertOrder") == 'true';
 	var searchUI = null;
+	var grid, treeData = [];
+	
+	function reset(){
+		treeData = [];
+		if(grid != undefined){
+			grid.destroy();
+		}
+	}
 	
 	function loadData() {
-		loadTree();
+		reset();
+		//loadTree();
+		loadTreeView();
+		//
 		loadUser();
-	    searchUI = Heiduc.PageSearchComponent('#pageSearch');
+		//从内容管理页面移除搜索功能
+	    //searchUI = Heiduc.PageSearchComponent('#pageSearch');
 	}
 
 	function isRoot() {
 		return page && page.friendlyURL == '/';
 	}
 	
-	function loadTree() {
-		Heiduc.jsonrpc.pageService.getTree(function(r) {
-			root = r;
-			if(r == null){
-				Heiduc.error(messages('content_not_found'));
+	function handleData(data,parent){
+		
+		var item = data.entity;
+		item.parent = parent;
+		if(item.friendlyURL == '/'){
+			item.expanded = true;
+		}
+		treeData.push(item);
+		if (item.hasChildren) {
+			$.each(data.children.list, function(n, value) {
+				handleData(value,item);
+			});
+		}
+	}
+	
+	function loadTreeView(){
+		
+		Heiduc.jsonrpc.pageService.getTree(function(response) {
+			if(response == null){
 				return;
 			}
 			if (invertOrder) {
-				invertChildrenOrder(r);
+				invertChildrenOrder(response);
 			}
-			$('#pages-tree').html(renderPage(r));
-			$("#pages-tree").treeview({
-				animated: "fast",
-				collapsed: true,
-				unique: true,
-				persist: "cookie",
-				cookieId: "pageTree"
-			});
-			$('.content-link').each(function () {
-				$(this).mouseover(function(event) {
-					$('.page_edit').hide()
-					$(event.target).siblings('.page_edit').show()			
-				});
-			});
-			$('#pages-tree li').each(function () {
-				$(this).hover(function(event) {
-					$('.page_edit').hide();
-					$('> .page_edit', event.target).show();			
-				}, function(event) {
-					//$('> .page_edit', event.target).hide();			
-				});
-			});
+			//处理数据
+			handleData(response);
+			renderTreeGrid(treeData);
 		});
 	}
-
-	function renderPage(vo) {
-		var pageUrl = encodeURIComponent(vo.entity.friendlyURL);
-		var title = showTitle ? vo.entity.title : vo.entity.pageFriendlyURL;
-		if (!title) {
-			title = '/';
-		}
-		var p = vo.entity.hasPublishedVersion ? 'published' : 'unpublished';
-		var published_msg = messages(p);
-		var published_link = ' <img src="/static/images/'+ p +'.png" title="' 
-			+ published_msg + '" width="16px" />';
-		if (!vo.entity.hasPublishedVersion) {
-			published_link = ' <a onclick="Heiduc.app.pagesView.onPagePublish(' 
-				+ vo.entity.id + ')">'
-				+ '<img src="/static/images/'+ p +'.png" title="' 
-				+ published_msg + '" width="16px" /></a>';
-		}
-		var html = '<li> ' + published_link
+	
+	function renderTreeGrid(data){
 		
-				+ ' <a href="#page/content/' + vo.entity.id + '" title="'
-				+ messages('page.edit_content') + '" class="content-link">'
-				+ title + '</a> '
-				
-				+ '<span class="page_edit" style="display:none">'
-				
-				+ '<a title="' + messages('add_child') 
-				+ '" onclick="Heiduc.app.pagesView.onPageAdd(\'' + vo.entity.friendlyURL
-				+ '\')"><img src="/static/images/add.png"/></a> '
-				
-				+ '<a title="' + messages('remove') 
-				+ '" onclick="Heiduc.app.pagesView.onPageRemove(\'' 
-				+ vo.entity.friendlyURL + '\')">'
-				+ '<img src="/static/images/02_x.png" /></a> '
-				
-				+ '<a href="#page/' + vo.entity.id + '" title="'
-				+ messages('page.edit_properties') + '">'
-				+ '<img src="/static/images/pencil.png" /></a> '
-				
-				+ '<a onclick="Heiduc.app.pagesView.onChangeTitle(' + vo.entity.id + ')" title="'
-				+ messages('page.edit_url_title') + '">'
-				+ '<img src="/static/images/globe.png" /></a>'
-				
-				+ '</span>';
-		if (vo.children.list.length > 0) {
-			html += '<ul>';
-			$.each(vo.children.list, function(n, value) {
-				html += renderPage(value);
-			});
-			html += '</ul>';
-		}
-		return html + '</li>';
-	}
+		
+		var calcLevel = function (dataContext) {
+			
+			var parent = dataContext.parent,lvl = 0;
+			while (parent) {
+				parent = parent.parent;
+				lvl++;
+			}
+            return lvl;
+        };
+		
+		
+		var treeViewFormatter = function  (row, cell, value, columnDef, dataContext) { 
+			if (!value) {
+				value = '['+messages('undefined')+']';
+			}
+			  value = value.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+			  
+			  var marginLeftPX = 20 * calcLevel(dataContext);
+			  var spacer = '';
+			  if (dataContext.hasChildren) {
+				  if (!dataContext.expanded) {
+					  return spacer + " <span class='toggle icon expand' style='margin-left:"+ marginLeftPX + "px'></span>&nbsp;" + value;
+				  }else{
+					  return spacer + " <span class='toggle icon collapse' style='margin-left:"+ marginLeftPX + "px'></span>&nbsp;" + value;
+				  }
+			  } else {
+			  	  return spacer + "<span class='toggle' style='margin-left:"+ marginLeftPX + "px'></span>&nbsp;" + value;
+			  }
+			};
+		
+			var dataView;
 
+			var columns = [
+			  {id: "title", name: "Title", field: "title", width: 200, cssClass: "cell-title", formatter: treeViewFormatter},//
+			  {id: "friendlyURL", name: "friendlyURL", field: "friendlyURL", minWidth: 220},
+			  {id: "hasPublishedVersion", name: "hasPublishedVersion", field: "hasPublishedVersion", minWidth: 40},
+			  {id: "modDate", name: "modDate", field: "modDate", minWidth: 160}
+			];
+
+			var checkboxSelector = new Slick.CheckboxSelectColumn({
+			      cssClass: "slick-cell-checkboxsel",
+				  width:45
+			    });
+
+				
+			columns.splice(0,0,checkboxSelector.getColumnDefinition());	
+
+			var options = {
+				rowHeight:45,
+				autoEdit:false,
+				autoHeight:true,
+				//forceFitColumns:true,
+				showHeaderRow:false,
+				enableColumnReorder:false,
+				enableCellNavigation: true
+			};
+
+			  var treeViewFilter = function (item) {
+				  if (item.parent != null) {
+				    var parent = item.parent;
+				    while (parent) {
+				      if (!parent.expanded ) {
+				        return false;
+				      }
+				      parent = parent.parent;
+				    }
+				  }
+				  return true;
+				};
+
+			  // initialize the model
+			  dataView = new Slick.Data.DataView();
+			  dataView.beginUpdate();
+			  dataView.setItems(data); 
+			  dataView.setFilter(treeViewFilter);
+			  dataView.endUpdate();
+
+			  // initialize the grid
+			  grid = new Slick.Grid("#treegrid", dataView, columns, options);
+				grid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow:true}));
+				grid.registerPlugin(checkboxSelector);
+				
+				
+				
+
+
+			  grid.onClick.subscribe(function (e, args) {
+			    if ($(e.target).hasClass("toggle")) {
+			    	
+			      var item = dataView.getItem(args.row);
+			      if (item) {
+			        if (!item.expanded) {
+			          item.expanded = true;
+			        } else {
+			        	//移除子项
+			          item.expanded = false;
+			        }
+			        
+			        
+
+			        dataView.updateItem(item.id, item);
+			      }
+			      e.stopImmediatePropagation();
+			    }
+			    //alert($(e.target).attr("class"));
+			  });
+
+			// wire up model events to drive the grid
+			  dataView.onRowCountChanged.subscribe(function (e, args) {
+			    grid.updateRowCount();
+			    grid.render();
+			   	
+			  });
+
+			  // wire up model events to drive the grid
+			  dataView.onRowsChanged.subscribe(function (e, args) {
+			    grid.invalidateRows(args.rows);
+			    grid.render();
+			  });
+
+		
+	}
+	
 	function loadUser() {
 		if (!Heiduc.app.user.admin) {
 		    $('#structuresTab').hide();
@@ -196,12 +277,10 @@ define(['text!template/pages.html',
 
 	function renderInvertOrder() {
 		if (invertOrder) {
-			$('#invertOrder').html('<a href="#" onclick="Heiduc.app.pagesView.onInvertOrder(false)">'
-					+ messages('restore_order') + '</a>');
+			$('#invertOrder').html( messages('restore_order') );
 		}
 		else {
-			$('#invertOrder').html('<a href="#" onclick="Heiduc.app.pagesView.onInvertOrder(true)">'
-					+ messages('invert_order') + '</a>');
+			$('#invertOrder').html(messages('invert_order') );
 		}
 	}
 
@@ -215,20 +294,25 @@ define(['text!template/pages.html',
 	}
 	
 	
+	
+	
+	
 	return Backbone.View.extend({
 		
-		css: ['/static/css/jquery.treeview.css', '/static/css/pages.css'],
+		css: ['/static/css/jquery.treeview.css', '/static/css/pages.css','/static/slickgrid/slick.grid.css','/static/slickgrid/treegrid.css'],
 		
 		el: $('#content'),
 		
-		events: {},
+		events: {
+		},
 		
-		initialize: function() {},
+		initialize: function (){
+			window.interact = interact;
+		},
 		
 		render: function() {
 			Heiduc.addCSSFiles(this.css);
 			this.el.html(_.template(tmpl, {messages: messages}));
-			
 			//$("#page-dialog").dialog({ width: 400, autoOpen: false });
 			Heiduc.initJSONRpc(loadData);
 			//$('#cancelDlgButton').click(function() {
@@ -236,15 +320,89 @@ define(['text!template/pages.html',
 			//});
 		    $('#pageForm').submit(function() {onSave(); return false;});
 		    $('#title').change(this.onTitleChange);
-		    renderShowTitle();
+		    //renderShowTitle();
 		    renderInvertOrder();
-
+		    
+		    var _this = this;
+		    
+		    $("#invertOrder").click(function (){
+		    	_this.onInvertOrder(!invertOrder);
+		    });
+		    
+		    $('#pageAdd').click(function(){
+		    	var rows = grid.getSelectedRows();
+		    	if(rows.length > 1){
+		    		Heiduc.error(messages('pages.only_single_selection'));
+		    		return false;
+		    	}
+		    	var friendlyURL = "/";
+		    	if(rows.length == 1){
+		    		friendlyURL = grid.getDataItem(rows[0]).friendlyURL;
+		    	}
+		    	_this.onPageAdd(friendlyURL);
+		    });
+		    $('#pageEdit').click(function(){
+		    	var rows = grid.getSelectedRows();
+		    	if(rows.length > 1){
+		    		Heiduc.error(messages('pages.only_single_selection'));
+		    		return false;
+		    	}
+		    	if(rows.length == 1){
+		    		document.location.href = "#page/content/"+grid.getDataItem(rows[0]).id;
+		    	}
+		    });
+		    $('#pageDelete').click(function(){
+		    	var rows = grid.getSelectedRows();
+		    	if(rows.length > 1){
+		    		Heiduc.error(messages('pages.only_single_selection'));
+		    		return false;
+		    	}
+		    	if(rows.length == 1){
+		    		_this.onPageRemove(grid.getDataItem(rows[0]).friendlyURL);
+		    	}
+		    });
+		    $('#pageProperty').click(function(){
+		    	var rows = grid.getSelectedRows();
+		    	if(rows.length > 1){
+		    		Heiduc.error(messages('pages.only_single_selection'));
+		    		return false;
+		    	}
+		    	if(rows.length == 1){
+		    		document.location.href = "#page/"+grid.getDataItem(rows[0]).id;
+		    	}
+		    });
+		    $('#pageTitle').click(function(){
+		    	var rows = grid.getSelectedRows();
+		    	if(rows.length > 1){
+		    		Heiduc.error(messages('pages.only_single_selection'));
+		    		return false;
+		    	}
+		    	if(rows.length == 1){
+		    		_this.onChangeTitle(grid.getDataItem(rows[0]));
+		    	}
+		    });
+		    
+		    $('#pagePublish').click(function(){
+		    	var rows = grid.getSelectedRows();
+		    	if(rows.length > 1){
+		    		Heiduc.error(messages('pages.only_single_selection'));
+		    		return false;
+		    	}
+		    	if(rows.length == 1 ){
+		    		var entity = grid.getDataItem(rows[0]);
+		    		if(!entity.status){
+		    		    _this.onPagePublish(entity.id);
+		    		}
+		    	}
+		    });
+		    
 		},
 		
 		remove: function() {
 		    //$("#page-dialog").dialog('destroy').remove();
 			this.el.html('');
 			Heiduc.removeCSSFiles(this.css);
+			reset();
 		},
 		
 		onPageRemove: function(url) {
@@ -270,6 +428,7 @@ define(['text!template/pages.html',
 			page = null;
 		},
 
+		/**/
 		onTitleChange: function() {
 			var url = $("#url").val();
 			var title = $("#title").val();
@@ -311,11 +470,16 @@ define(['text!template/pages.html',
 			loadData();
 		},
 		
-		onChangeTitle: function(id) {
-			var pageItem = findPage(id);
-			page = pageItem.entity;
+		onChangeTitle: function(entity) {
+			//var pageItem = findPage(id);
+			//page = pageItem.entity;
+			page = entity;
 			$('#ui-dialog-title-page-dialog').text(messages('pages.change_page'));
-			parentURL = page.parentUrl == '/' ? '' : page.parentUrl;
+			parentURL = "";
+			if(page.parent != null){
+				parentURL = page.parent.friendlyURL == '/' ? '' : page.parent.friendlyURL;
+				
+			}
 			$('#page-dialog').modal({show:true});
 			$('#parentURL').html(parentURL + '/');
 			$('#title').val(page.title);

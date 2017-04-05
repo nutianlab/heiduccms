@@ -63,8 +63,17 @@ public class PageDaoImpl extends BaseDaoImpl<PageEntity>
 	}
 
 	public List<PageEntity> selectAllChildren(final String parentUrl) {
+		return selectAllChildren(parentUrl,false);
+	}
+	
+	public List<PageEntity> selectAllChildren(final String parentUrl,final boolean deps) {
 		Query q = newQuery();
-		q.addFilter("parentUrl", FilterOperator.EQUAL, parentUrl);
+		if(deps){
+			Pattern p = Pattern.compile("^("+parentUrl+"\\/*)",Pattern.CASE_INSENSITIVE);
+			q.addFilter("parentUrl", FilterOperator.EQUAL, p);
+		}else{
+			q.addFilter("parentUrl", FilterOperator.EQUAL, parentUrl);
+		}
 		return select(q, "selectAllChildren", params(parentUrl));
 	}
 	
@@ -84,6 +93,7 @@ public class PageDaoImpl extends BaseDaoImpl<PageEntity>
 		Query q = newQuery();
 		q.addFilter("parentUrl", FilterOperator.EQUAL, parentUrl);
 		q.addFilter("publishDate", FilterOperator.LESS_THAN, publishDate);
+		//{$regex:'^(?!.*\_default$)'}
 		Pattern p = Pattern.compile("^(?!.*\\/_default$)",Pattern.CASE_INSENSITIVE);
 		q.addSort("publishDate", SortDirection.DESC);
 		q.addFilter("friendlyURL", FilterOperator.EQUAL, p);
@@ -101,7 +111,12 @@ public class PageDaoImpl extends BaseDaoImpl<PageEntity>
 
 	@Override
 	public List<PageEntity> getByParent(final String url) {
-		List<PageEntity> result = filterLatestVersion(selectAllChildren(url));
+		return getByParent(url,false);
+	}
+	
+	@Override
+	public List<PageEntity> getByParent(final String url,final boolean deps) {
+		List<PageEntity> result = filterLatestVersion(selectAllChildren(url,deps));
 		Collections.sort(result, PageHelper.PUBLISH_DATE);
 		return result;
 	}

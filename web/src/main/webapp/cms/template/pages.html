@@ -11,15 +11,58 @@
 						</ul>
 						<div class="tab-content" id="tabs_content_a">
 							<div id="tab-1" class="tab-pane fade in active">
-								<div id="pageSearch"></div>
-						        <div style="float:left">
-						          <div id="showTitleDiv">
-						            <a id="showTitle"><%= messages('show_names') %></a>
-						            <a id="invertOrder"><%= messages('invert_order') %></a>
-						          </div>
-						          <ul id="pages-tree"><img src="/static/images/ajax-loader.gif" /></ul>
-						        </div>
-								
+								<div class="row">
+									<div class="col-md-9">
+										<div id="GridPanel">
+											<div id="ContentBrowseToolbar" class="toolbar">
+												<button id="pageAdd" class="button">
+													<span><%= messages('add') %></span>
+												</button>
+												<button id="pageEdit" class="button">
+													<span><%= messages('edit') %></span>
+												</button>
+												<button id="pageDelete" class="button">
+													<span><%= messages('remove') %></span>
+												</button>
+												<button id="pageProperty" class="button">
+													<span><%= messages('page.edit_properties') %></span>
+												</button>
+												<button id="pageTitle" class="button">
+													<span><%= messages('title') %></span>
+												</button>
+												<button id="pagePublish" class="button">
+													<span><%= messages('approve') %></span>
+												</button>
+												<!-- 
+												<button id="pagePreview" class="button">
+													<span>Preview</span>
+												</button>
+												<button id="pageDuplicate" class="button" disabled>
+													<span>Duplicate</span>
+												</button>
+												<button id="pageMove" class="button">
+													<span>Move</span>
+												</button>
+												<button id="pageSort" class="button">
+													<span>Sort</span>
+												</button>
+												 -->
+											</div>
+											<div id="ContentTreeGrid" class="tree-grid">
+												<div id="TreeGridToolbar" class="toolbar">
+													<button class="button"><span><%= messages('show_names') %></span></button>
+													<button id="invertOrder" class="button"><span><%= messages('invert_order') %></span></button>
+												</div>
+												<div id="treegrid" style="width:calc(100%);" class="grid no-header"></div>
+											
+											</div>
+										</div>	
+									</div>
+									<div class="input-group col-md-3">
+								       
+									</div>
+								</div>
+								<div id="pageSearch" style="display:none;"></div>
 							</div>
 						</div>
 					</div>

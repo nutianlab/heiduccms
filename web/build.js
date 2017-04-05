@@ -4,6 +4,7 @@
     out: "./src/main/webapp/cms/main.min.js",
 		name: "main",
     optimizeCss: 'standard',
+    optimize: "uglify",
     removeCombined: true,
     paths : {
     'jquery': "../static/assets/js/jquery.min",
@@ -22,6 +23,13 @@
 		cms : '../static/js/cms',
 		i18n : 'libs/i18n',
 		"back-services" : '../static/js/back-services',
+		
+		interact : 'libs/interact.min',
+		"slick.core" : '../static/slickgrid/slick.core',
+		"slick.grid" : '../static/slickgrid/slick.grid',
+		"slick.dataview" : '../static/slickgrid/slick.dataview',
+		"slick.rowselectionmodel" : '../static/slickgrid/slick.rowselectionmodel',
+		"slick.checkboxselectcolumn" : '../static/slickgrid/slick.checkboxselectcolumn',
 		
 	    'cm'				: "../static/js/codemirror/codemirror", 
 	    'cm-css'			: "../static/js/codemirror/css", 
@@ -60,7 +68,7 @@
 		"jquery.treeview" : ['jquery'],
 		"jquery.jquote2" : ['jquery'],
 		'jquery.easing' : ['jquery'],
-		
+		"slick.grid" : ['interact','slick.core'],
 		
 		//'tinynav' : ['jquery'],
 		//'tisa-common' : ['tinynav'],
